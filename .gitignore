@@ -1,0 +1,3 @@
+rawData/*
+software/*
+!rawData/popflydata.RData
