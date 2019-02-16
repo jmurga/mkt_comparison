@@ -131,9 +131,9 @@ if __name__ == "__main__":
 				divergenceAndTrueAlpha.append(tmp)
 				listDaf.append(daf)
 
-				tmp.pd.to_csv(args.path + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
+				tmp.to_csv(args.path + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
 
-				daf.pd.to_csv(args.path+args.output+'/'+args.output+'div'+str(i)+'.tab',index=False,header=True, sep='\t')
+				daf.to_csv(args.path+args.output+'/'+args.output+'div'+str(i)+'.tab',index=False,header=True, sep='\t')
 
 
 			# outputDiv = args.path + args.output + '/'
