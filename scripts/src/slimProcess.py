@@ -15,20 +15,16 @@ import rpy2
 import rpy2.robjects as robjects
 from string import Template
 from tempfile import NamedTemporaryFile
-from rpy2 import robjects
-from rpy2.robjects import pandas2ri
+# from rpy2 import robjects
+# from rpy2.robjects import pandas2ri
 
-pandas2ri.activate()
+# pandas2ri.activate()
 
 
 # Write lists to an .RData file. Two functions in order to save differents global variable name.
-def saveDivRdata(ls,filename,path):
-	robjects.r.assign('div', robjects.Vector(ls))
-	robjects.r("save('div', file='{}{}')".format(path,filename))
-
-def saveDafRdata(ls,filename,path):
-	robjects.r.assign('daf', robjects.Vector(ls))
-	robjects.r("save(daf, file='{}{}')".format(path,filename))
+def saveRdata(ls,filename,path,variableName):
+	robjects.r.assign('{}', robjects.Vector(ls)).format(variableName)
+	robjects.r("save({}, file='{}{}')".format(variableName,path,filename))
 
 
 def slimVector(xs):
@@ -100,6 +96,11 @@ if __name__ == "__main__":
 			# trueAlpha = []
 			divergenceAndTrueAlpha = []
 			listDaf = []
+
+			# Remove directory and create again
+			os.rmdir(args.path + args.output)
+			os.mkdir(args.path + args.output)
+
 			for i in range(0,args.replica,1):
 				print(i)
 
@@ -130,13 +131,14 @@ if __name__ == "__main__":
 				divergenceAndTrueAlpha.append(tmp)
 				listDaf.append(daf)
 
-			# Remove directory and create again
-			os.rmdir(args.path + args.output)
-			os.mkdir(args.path + args.output)
+				tmp.pd.to_csv(args.path + args.output + '/' + args.output + 'div' + str(i) '.tab',index=False,header=True, sep='\t')
 
-			outputDiv = args.path + args.output + '/'
-			outputDaf = args.path + args.output + '/'
+				daf.pd.to_csv(args.path + args.output + '/' + args.output + 'div' + str(i) '.tab',index=False,header=True, sep='\t')
+
+
+			# outputDiv = args.path + args.output + '/'
+			# outputDaf = args.path + args.output + '/'
 
 			# Save as RData object including all the scenarios
-			saveDivRdata(divergenceAndTrueAlpha,'div.RData',outputDiv)
-			saveDafRdata(listDaf,'daf.RData',outputDaf)
+			# saveRdata(divergenceAndTrueAlpha,'div.RData',outputDiv,div)
+			# saveRdata(listDaf,'daf.RData',outputDaf,daf)
