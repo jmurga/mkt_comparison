@@ -52,12 +52,13 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 
 		##Asymptotic
 		tryCatch({
+			resultiMK0.1 <- iMKT(listDaf[[simulation]],divergence,xlow = 0.1, xhigh = 0.9)
+			alphaAsymptotic0.1 <- resultiMK0.1$`Asymptotic MK table`$alpha_asymptotic}
 			resultiMK <- iMKT(listDaf[[simulation]],divergence,xlow = 0, xhigh = 1)
-			alphaAsymptotic <- resultiMK$`Asymptotic MK table`$alpha_asymptotic},error=function(e){ alphaAsymptotic <- NA}
+			alphaAsymptotic <- resultiMK$`Asymptotic MK table`$alpha_asymptotic},error=function(e){ alphaAsymptotic0.1 <- NA;alphaAsymptotic <- NA}
 		)
 
-	  
-		result <- data.frame(simulation,alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaAsymptotic,trueAlpha)
+		result <- data.frame(simulation,alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaAsymptotic0.1,alphaAsymptotic,trueAlpha)
 		output <- rbind(output,result)
  
 	}
