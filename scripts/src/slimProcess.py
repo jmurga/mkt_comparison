@@ -11,8 +11,8 @@ import os
 import random
 import subprocess
 import pandas as pd
-import rpy2
-import rpy2.robjects as robjects
+# import rpy2
+# import rpy2.robjects as robjects
 from string import Template
 from tempfile import NamedTemporaryFile
 # from rpy2 import robjects
@@ -131,9 +131,9 @@ if __name__ == "__main__":
 				divergenceAndTrueAlpha.append(tmp)
 				listDaf.append(daf)
 
-				tmp.pd.to_csv(args.path + args.output + '/' + args.output + 'div' + str(i) '.tab',index=False,header=True, sep='\t')
+				tmp.pd.to_csv(args.path + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
 
-				daf.pd.to_csv(args.path + args.output + '/' + args.output + 'div' + str(i) '.tab',index=False,header=True, sep='\t')
+				daf.pd.to_csv(args.path+args.output+'/'+args.output+'div'+str(i)+'.tab',index=False,header=True, sep='\t')
 
 
 			# outputDiv = args.path + args.output + '/'
