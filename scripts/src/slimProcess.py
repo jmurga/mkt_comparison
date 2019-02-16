@@ -98,7 +98,7 @@ if __name__ == "__main__":
 			listDaf = []
 
 			# Remove directory and create again
-			os.rmdir(args.path + args.output)
+			# os.rmdir(args.path + args.output)
 			os.mkdir(args.path + args.output)
 
 			for i in range(0,args.replica,1):
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
 				tmp.to_csv(args.path + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
 
-				daf.to_csv(args.path+args.output+'/'+args.output+'div'+str(i)+'.tab',index=False,header=True, sep='\t')
+				daf.to_csv(args.path+args.output+'/'+args.output+'daf'+str(i)+'.tab',index=False,header=True, sep='\t')
 
 
 			# outputDiv = args.path + args.output + '/'
