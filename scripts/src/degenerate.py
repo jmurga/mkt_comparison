@@ -78,7 +78,7 @@ def transpose(arg1):
 ##################DEGENERATE SEQUENCES#########################
 ###############################################################
 def degenerate(arg,argid,file4fold,file0fold):
-	codon_table_4f={
+	codonTable4f={
 		"TTC":'NNN',"TTT":'NNN',#PHE 002
 	    "TTA":'NNN',"TTG":'NNN',#LEU 202
 	   	"CTT":'NNT',"CTC":'NNC',"CTA":'NNA',"CTG":'NNG',#LUE 204
@@ -106,7 +106,7 @@ def degenerate(arg,argid,file4fold,file0fold):
 		"NNN":'NNN',
 	   	"---":'---',
 	   }
-	codon_table_0f={
+	codonTable0f={
 	  	"TTC":'TTN',"TTT":'TTN',#PHE 002
 		"TTA":'NTN',"TTG":'NTN',#LEU 202
 		"CTT":'NTN',"CTC":'NTN',"CTA":'NTN',"CTG":'NTN',#LUE 204
