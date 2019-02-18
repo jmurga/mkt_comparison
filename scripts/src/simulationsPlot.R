@@ -4,14 +4,15 @@ library(cowplot)
 library(reshape2)
 
 mktOnsimulatedData <- function(scenario,simulationsPath){
-	output <-NULL
-	imkOutput<-NULL
-	
+	output <- NULL
+	plotTable <- list()
+
 	setwd(paste0(simulationsPath,scenario,'/'))
 	listDaf <- lapply(list.files(pattern = 'daf',recursive=T),fread)
 	listDiv <- lapply(list.files(pattern = 'div',recursive=T),fread,sep='\t',header=T)
 	
 	for(simulation in 1:length(listDaf)){
+
 		# Format data from each replicate
 		colnames(listDaf[[simulation]]) <- c('daf','Pi','P0')
 		
@@ -31,6 +32,7 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 		colnames(listDiv[[simulation]]) <- c('Di', 'D0','trueAlpha','m0','mi')
 		trueAlpha <- listDiv[[simulation]][,c('trueAlpha')]
 		divergence <- listDiv[[simulation]][,c('Di','D0','m0','mi')]
+
 		# Execute each mkt test through iMKT package
 		## StandardMKT
 		resultStandard <- standardMKT(listDaf[[simulation]],divergence)
@@ -40,25 +42,26 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 		resultDGRP0.05 <- DGRP(listDaf[[simulation]],divergence,listCutoffs = c(0.025))
 		alphaDGRP0.05 <- resultDGRP0.05$Results$alpha.symbol
 
-		resultDGRP0.15 <- DGRP(listDaf[[simulation]],divergence,listCutoffs = c(0.075))
-		alphaDGRP0.15 <- resultDGRP0.15$Results$alpha.symbol
+		resultDGRP0.1 <- DGRP(listDaf[[simulation]],divergence,listCutoffs = c(0.075))
+		alphaDGRP0.1 <- resultDGRP0.1$Results$alpha.symbol
 		
 		##FWW
 		resultFWW0.05 <- FWW(listDaf[[simulation]],divergence,listCutoffs = c(0.025))
 		alphaFWW0.05 <- resultFWW0.05$Results$alpha.symbol
 
-		resultFWW0.15 <- FWW(listDaf[[simulation]],divergence,listCutoffs = c(0.075))
-		alphaFWW0.15 <- resultFWW0.15$Results$alpha.symbol
+		resultFWW0.1 <- FWW(listDaf[[simulation]],divergence,listCutoffs = c(0.075))
+		alphaFWW0.1 <- resultFWW0.1$Results$alpha.symbol
 
 		##Asymptotic
 		tryCatch({
 			resultiMK0.1 <- iMKT(listDaf[[simulation]],divergence,xlow = 0.1, xhigh = 0.9)
-			alphaAsymptotic0.1 <- resultiMK0.1$`Asymptotic MK table`$alpha_asymptotic}
+			alphaAsymptotic0.1 <- resultiMK0.1$`Asymptotic MK table`$alpha_asymptotic
 			resultiMK <- iMKT(listDaf[[simulation]],divergence,xlow = 0, xhigh = 1)
-			alphaAsymptotic <- resultiMK$`Asymptotic MK table`$alpha_asymptotic},error=function(e){ alphaAsymptotic0.1 <- NA;alphaAsymptotic <- NA}
+			alphaAsymptotic <- resultiMK$`Asymptotic MK table`$alpha_asymptotic
+			},error=function(e){ alphaAsymptotic0.1 <- NA; alphaAsymptotic <- NA}
 		)
 
-		result <- data.frame(simulation,alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaAsymptotic0.1,alphaAsymptotic,trueAlpha)
+		result <- data.frame(simulation,alphaStandard,alphaDGRP0.05,alphaDGRP0.1,alphaFWW0.05,alphaFWW0.1,alphaAsymptotic,alphaAsymptotic0.1,trueAlpha)
 		output <- rbind(output,result)
  
 	}
@@ -67,26 +70,21 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 	dataPlot<-melt(output,id=c('simulation'))
 	
 	
-	mean_sd <-sapply(output, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
+	meanSd <-sapply(output, function(cl) list(means=mean(cl,na.rm=TRUE), sds=sd(cl,na.rm=TRUE)))
 
 	# Ploting
-	plotAlpha <- ggplot(dataPlot, aes(x=variable, y=value, fill=variable)) + geom_boxplot(color="grey20",alpha=0.7) + labs(x = "MKT methods", y=expression(italic(α))) + themePublication() + scaleFillPublication(name="Method", labels=c("alpha_standard"="MKT standard", "alpha_DGRP0.05" = "MKT DGRP cutoff 0.05", "alpha_DGRP0.15" = "MKT DGRP cutoff 0.15", "alpha_FWW0.05" = "MKT FWW cutoff 0.05", "alpha_FWW0.15" = "MKT FWW cutoff 0.15","alpha_iMK"="iMKT", "true_alpha"="Real alpha")) + scale_y_continuous(breaks = pretty(dataPlot$value, n = 5)) + scale_x_discrete(labels=c("alpha_standard"="Standard", "alpha_DGRP0.05" = "DGRP 5%", "alpha_DGRP0.15" = "DGRP 10%", "alpha_FWW0.05" = "FWW 5%", "alpha_FWW0.15" = "FWW 10%","alpha_iMK"="iMKT", "true_alpha"="Real alpha")) +  guides(fill=FALSE) + ggtitle(paste0(scenario))
+	plotAlpha <- ggplot(dataPlot, aes(x=variable, y=value, fill=variable)) + geom_boxplot(color="grey20",alpha=0.7) + labs(x = "MKT methods", y=expression(italic(α))) + themePublication() + scaleFillPublication(name="Method", labels=c("alphaStandard"="Standard", "alphaDGRP0.05" = "eMKT 5%", "alphaDGRP0.1" = "eMKT 10%", "alphaFWW0.05" = "FWW 5%", "alphaFWW0.1" = "FWW 10%","alphaAsymptotic"="Asymptotic MKT","alphaAsymptotic0.1"="Asymptotic MKT", "trueAlpha"="Real alpha")) + scale_y_continuous(breaks = pretty(dataPlot$value, n = 5)) + scale_x_discrete(labels=c("alphaStandard"="Standard", "alphaDGRP0.05" = "eMKT 5%", "alphaDGRP0.1" = "eMKT 10%", "alphaFWW0.05" = "FWW 5%", "alphaFWW0.1" = "FWW 10%","alphaAsymptotic"="Asymptotic MKT","alphaAsymptotic0.1"="Asymptotic MKT", "trueAlpha"="Real alpha")) +  guides(fill=FALSE) + ggtitle(paste0(scenario)) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-	method <- rep(c("Standard","MKT DGRP cutoff 12.5%","MKT DGRP cutoff 17.5%","FWW DGRP cutoff 12.5%","MKT FWW cutoff 17.5%","iMKT","Real alpha"),2)
-	type <- sort(rep(c(T,F),7), decreasing = T)
+	method <- rep(c("Standard","eMKT cutoff 5%","eMKT DGRP 10%","FWW cutoff 5%","MKT FWW cutoff 10%","Asymptotic MKT","Asymptotic MKT","Real alpha"),2)
 					 
-	fractions <- c(1,1,1,1,1,0.9,1,0,0,0,0,0,0.1,0)
-	fraction <- data.frame(method,fractions,type)
 
-	fractionPlot<-ggplot(fraction) + geom_bar(stat="identity", aes_string(x=fct_inorder(as.factor(method)), y=fractions, fill=type), color="black") + themePublication() + ylab(label="Fraction") + xlab(label="Bins")  +     scaleFillPublication(name="Number of analyzable simulations") + theme(axis.line=element_blank())
-					 
-	plot <- plot_grid(plotAlpha + theme(axis.title.x = element_blank(),axis.ticks.x = element_blank(),axis.text.x = element_blank()),fractionPlot,ncol = 1,rel_heights = c(1,0.25))
-
-	dataPlot$type<-scenario
+	plotTable[['plot']] <- plotAlpha
+	plotTable[['table']] <- meanSd
+	# dataPlot$type<-scenario
 	
 	#  Printeado por pantalla, no sabemos si se guardó
 	# table(dataPlot$variable)
-	# mean_sd
+	# meanSd
 	# quantile(output_baseline$alpha_standard,c(0.025,0.975))
 	# quantile(output_baseline$alpha_DGRP0.05,c(0.025,0.975))   
 	# quantile(output_baseline$alpha_DGRP0.15,c(0.025,0.975))   
@@ -95,6 +93,6 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 	# quantile(output_baseline$alpha_iMK,c(0.025,0.975))
 	# quantile(output_baseline$true_alpha,c(0.025,0.975))
 					 
-	return(plotAlpha)
+	return(plotTable)
 
 }
