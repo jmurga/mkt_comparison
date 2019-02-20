@@ -1,83 +1,6 @@
 #!/usr/bin/python
-from __future__ import division
-from Bio import SeqIO
-import os
-import numpy as np
-import pandas as pd
-import sys
-import heapq
-import uuid
-import copy
+def degenerate(seq):
 
-
-def reverse(dna):
-  return dna[::-1]
-
-def complement (dna):
-   basecomplement={'A':'T','C':'G','G':'C','T':'A','N':'N','a':'t','c':'g','g':'c','t':'a','n':'n','-':'-'}
-   letters=list(dna)
-   letters=[basecomplement[base] for base in letters]
-   return "".join(letters)
-
-def reverse_complement(dna):
-   dna=reverse(dna)
-   dna=complement(dna)
-   return dna
-
-arg1 = sys.argv[1]#TFBS
-arg2= sys.argv[2]#4fold file
-arg3 = sys.argv[3]#0fold file
-
-###############################################################
-##################FUNCTIONS####################################
-###############################################################
-###############################################################
-##################PARSING FILE WITH SEQ.IO#####################
-###############################################################
-
-def transpose(arg1):
-	try:
-		f = open(arg1)
-	except IOError:                     
-		print("The file, %s, does not exist" % arg1)
-		return
-
-	ids=[]
-	allSeqs=[]
-	seq_daf=[]
-	seq_maf=[]
-
-	# print(SeqIO.parse(arg1, """fasta"""))
-	print("Parsing fasta file")
-	for seq_record in SeqIO.parse(arg1, """fasta"""):
-
-		if (seq_record.seq[0:0+3]=='TTA') or (seq_record.seq[0:0+3]=='TCA') or (seq_record.seq[0:0+3]=='CTA'):
-			seq_record.seq=reverse_complement(seq_record.seq)
-			allSeqs.append(seq_record.seq) #.seq=sequences, can save in other variable the IDs with .id at the iteration
-			ids.append(seq_record.id)
-			# print('>'+seq_record.id)
-			# print(seq_record.seq)
-		elif (seq_record.seq[0:0+3]=='ATG'):
-			allSeqs.append(seq_record.seq) #.seq=sequences, can save in other variable the IDs with .id at the iteration
-			ids.append(seq_record.id)
-			# print(seq_record.seq)
-		else:
-			continue
-	# print('+++++++in matrix+++++++++')
-	print("Creating sequence matrix")
-
-	matrix_sequences=np.empty([len(allSeqs),len(allSeqs[0])],dtype='str')
-
-	for i in range(0,len(allSeqs),1):
-		matrix_sequences[i]=list(allSeqs[i]) #transform 
-	return(matrix_sequences,ids)
-
-
-
-###############################################################
-##################DEGENERATE SEQUENCES#########################
-###############################################################
-def degenerate(arg,argid,file4fold,file0fold):
 	codonTable4f={
 		"TTC":'NNN',"TTT":'NNN',#PHE 002
 	    "TTA":'NNN',"TTG":'NNN',#LEU 202
@@ -132,85 +55,17 @@ def degenerate(arg,argid,file4fold,file0fold):
 		"AGT":'AGN',"AGC":'AGN',#SER 002
 		"GGT":'GGN',"GGA":'GGN',"GGC":'GGN',"GGG":'GGN',#GLY 004
 		"NNN":'NNN',
-               }
+		}
+	
+	degenerate0fold=''
+	degenerate4fold=''
+	
+	for i in range(0, len(seq),3):
 
-	matrix_4fold=matrix_sequences
-	matrix_0fold=copy.deepcopy(matrix_sequences)
-
-	degenerate_0fold=''
-	degenerate_4fold=''
-	# print(matrix_4fold)
-	# rev_0fold=''
-	# rev_4fold=''
-
-	myfile4fold = open(file4fold, 'w')
-	myfile0fold = open(file0fold, 'w')
-
-	dna=arg[0].tostring()
- 	# print(len(dna))
- 	# print(dna)
-	for i in range(0, len(dna),3):
-		codon=dna[i:i+3]
+		codon = seq[i:i+3]
 		# print(codon)
-		if(dna[0:0+3]=='ATG') or (dna[0:0+3]=='ATN') or (dna[0:0+3]=='ANG') or (dna[0:0+3]=='NTG') or (dna[0:0+3]=='ATA') or (dna[0:0+3]=='---'):
-			if ("N" not in codon) and ("-" not in codon):
-				degenerate_4fold+=codon_table_4f[codon]
-				degenerate_0fold+=codon_table_0f[codon]
-			else:
-				codon='NNN'
-				degenerate_4fold+=codon
-				degenerate_0fold+=codon
-
-		# elif (dna[0:0+3]=='TTA') or (dna[0:0+3]=='TCA') or (dna[0:0+3]=='CTA'):
-		# 	negative=reverse_complement(dna)
-		# 	codon_negative=negative[i:i+3]
-		# 	if ("N" not in codon_negative) and ("-" not in codon_negative):
-		# 			rev_4fold+=codon_table_4f[codon_negative]
-		# 			rev_0fold+=codon_table_0f[codon_negative]
-  # print(rev)
-  	# print(degenerate_4fold,degenerate_0fold)
-  	# print(matrix_4fold.size,matrix_sequences.size)
-	# if (rev_4fold == '') and (rev_0fold == ''):
-	# print(arg.shape,arg.shape[1])
-
-	for j in range(0,arg.shape[1],1):
-		# print(j)
-		if(degenerate_4fold[j]=='N'):
-			matrix_4fold[:,j]='N'  
-		if(degenerate_0fold[j]=='N'):
-			matrix_0fold[:,j]='N'
-	# print(matrix_4fold)
-
-	for row in range(0,arg.shape[0],1):
-		myfile4fold.write('>'+argid[row]+'\n')
-		myfile4fold.write(matrix_4fold[row].tostring()+'\n')
-
-		myfile0fold.write('>'+argid[row]+'\n')
-		myfile0fold.write(matrix_0fold[row].tostring()+'\n')
-
-	# else:
-	# 	for j in range(0,arg.shape[1],1):
-	# 		if(rev_4fold[j]=='N'):
-	# 			matrix_4fold[:,j]='N'  
-	# 		elif (rev_0fold[j]=='N'):
-	# 			matrix_0fold[:,j]='N'
-
-	# 	for row in range(0,arg.shape[0],1):
-	# 		myfile4fold.write('>'+argid[row]+'\n')
-	# 		myfile4fold.write(matrix_4fold[row].tostring()+'\n')
-
-	# 		myfile0fold.write('>'+argid[row]+'\n')
-	# # 		myfile0fold.write(matrix_0fold[row].tostring()+'\n')
-
-	# myfile4fold.close()
-	# myfile0fold.close()
-
-###############################################################
-##################COMMAND LINES################################
-###############################################################
-print('++++++++++Creating 4fold and 0fold file++++++++++')
-matrix_sequences,ids=transpose(arg1)
-# print(matrix_sequences,ids)
-degenerate(matrix_sequences,ids,arg2,arg3)
-# 
-
+		# print(codonTable0f[codon])
+		degenerate4fold += codonTable4f[codon]
+		degenerate0fold += codonTable0f[codon]
+		
+	return(degenerate0fold,degenerate4fold)
