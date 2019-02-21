@@ -6,7 +6,7 @@ def dafWithResampling(id,data,outgroup,resamplingValue,type):
 
 	if(data.shape[0] < resamplingValue):
 		output = pd.DataFrame({'id':id,'rawDerivedAllele':0,'div':0,'type':type},index=['0'])
-		div = output.groupby(['id','type'])['div'].sum()
+		div = output.groupby(['id','type'])['div'].sum().reset_index()
 		daf = output[['id','rawDerivedAllele','type']][output['rawDerivedAllele']!=0]
 		return(daf,div)
 	else:
