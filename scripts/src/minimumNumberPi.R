@@ -1,3 +1,5 @@
+library(RColorBrewer)
+
 createCombinations <- function(listLengthToExpand,ratioD,ratioP){
 
 	combinations <- list()
@@ -85,7 +87,7 @@ tableToIter <- function(data=NULL,iterations,combinations=NULL) {
 				np <- data[i,]$NP
 				
 				mktTable <- data.frame(P = c(p0, pi),Divergence = c(d0, di), row.names = c("Neutral class", "Selected class"))
-				alpha <- 1 - ((di*p0)/(p0*di))
+				alpha <- 1 - ((d0*pi)/(p0*di))
 				pvalue <- fisher.test(mktTable)$p.value
 				
 				result <- data.frame(pi,p0,di,d0,alpha,pvalue,nd,np)
@@ -95,14 +97,12 @@ tableToIter <- function(data=NULL,iterations,combinations=NULL) {
 			output[['results']] <- rbind(output[['results']],tmp)
 			ratioP <- output[['results']]$p0[1]/output[['results']]$pi[1]
 			ratioD <- output[['results']]$di[1]/output[['results']]$p0[1]
+			# myPalette <- colorRampPalette(rev(brewer.pal(11, "Spectral")), space="Lab")
 
 			p<-ggplot(output[['results']])
-			p <- p+geom_tile(aes(np,nd,fill=pvalue))+ggtitle(paste0("α = ",unique(alpha))) + xlab(paste0("Total polymorphic sites (",ratioP,"P0/Pi)")) + ylab(paste0("Total diverge sites (D0/",ratioD,"Di)"))  + scale_fill_distiller(palette = "Spectral",name="P-value")+theme(axis.text.x = element_text(size=14, angle=90)) + themePublication() + scale_x_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 20)) + scale_y_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 20))
-			
+			p <- p + geom_tile(aes(np,nd,fill=pvalue))+ggtitle(paste0("α = ",unique(alpha))) + xlab(paste0("Total polymorphic sites (",ratioP,"P0/Pi)")) + ylab(paste0("Total diverge sites (D0/",ratioD,"Di)"))  + scale_fill_distiller(palette = "Spectral",name="P-value")+theme(axis.text.x = element_text(size=14, angle=90)) + themePublication() + scale_x_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 20)) + scale_y_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 20)) + theme(legend.position = 'right',legend.direction='vertical')
 			output[['plot']] <- p
 			# data <- do.call(rbind.data.frame, output)
-
-
 			}
 	}
 	else if(is.null(combinations)){
@@ -128,7 +128,7 @@ tableToIter <- function(data=NULL,iterations,combinations=NULL) {
 
 		}
 
-		p <- ggplot(tmp, aes(x = i)) + geom_point(aes(y = alpha,  colour = pvalue < 0.05)) + scale_y_continuous(breaks = pretty(tmp$alpha, n = 5)) +scaleColourPublication() +labs(y = "alpha",x = "Pi") + theme(legend.position = c(0.8, 0.9))  + themePublication() 
+		p <- ggplot(tmp, aes(x = i)) + geom_point(aes(y = alpha,  colour = pvalue < 0.05)) + scale_y_continuous(breaks = pretty(tmp$alpha, n = 5)) +scaleColourPublication() +labs(y = "alpha",x = "Pi") + theme(legend.position = c(0.8, 0.9))  + themePublication()
 		
 		output[['results']] <- tmp
 		output[['plot']] <- p
