@@ -8,10 +8,10 @@ def dafWithResampling(id,data,resamplingValue,type):
 	if(data.shape[0] < resamplingValue):
 		
 		if(type == '4fold'):
-			dafDiv = pd.DataFrame({'id':id,'daf4f':0,'p0':0,'d0':0,'type':type},index=['0'])
+			dafDiv = pd.DataFrame({'id':id,'daf4f':'0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0','p0':0,'d0':0,'type':type},index=['0'])
 			return(dafDiv)
 		else:
-			dafDiv = pd.DataFrame({'id':id,'daf0f':0,'pi':0,'di':0,'type':type},index=['0'])
+			dafDiv = pd.DataFrame({'id':id,'daf0f':'0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0','pi':0,'di':0,'type':type},index=['0'])
 			return(dafDiv)
 	else:
 		# Delete reference sequence
