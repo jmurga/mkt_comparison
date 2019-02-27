@@ -55,8 +55,13 @@ def dafWithResampling(id,data,resamplingValue,type):
 			tmp = tmp.reset_index(drop=True)
 			output = pd.concat([output,tmp])
 
+
 		div = output.groupby(['id','type'])['div'].sum().reset_index()
 		div = div[['id','div','type']]
+		if(type == '4fold'):
+			div.columns = ['id','d0','type']
+		else:
+			div.columns = ['id','di','type']
 
 		daf = output[['id','rawDerivedAllele','type']][output['rawDerivedAllele']!=0]
 
