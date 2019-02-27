@@ -1,4 +1,4 @@
-def degenerancy(data):
+def degenerate(data):
 	
 	#DEGENERANCY DICTIONARIES
 	degenerateCodonTable = {"TTC":'002',"TTT":'002',#PHE 002
