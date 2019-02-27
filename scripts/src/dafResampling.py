@@ -21,7 +21,7 @@ def dafWithResampling(id,data,resamplingValue,type):
 		# print(len(data.columns.tolist()))
 		
 		for j in data.columns.tolist():
-			print(j)
+			# print(j)
 			div = 0
 			af = 0
 			
