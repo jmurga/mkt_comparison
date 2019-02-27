@@ -79,7 +79,6 @@ def dafWithResampling(id,data,resamplingValue,type):
 			dafDiv = pd.merge(sfs,div,on='id')
 
 		else:
-			div.columns = ['id','di','type']
 			div = output.groupby(['id','type'])['div'].sum().reset_index()
 			div = div[['id','div','type']]
 			div.columns = ['id','d0','type']
@@ -99,6 +98,4 @@ def dafWithResampling(id,data,resamplingValue,type):
 			sfs = sfs[['id','daf0f','pi']]
 			dafDiv = pd.merge(sfs,div,on='id')
 			
-
-
 	return(dafDiv)
