@@ -6,12 +6,13 @@ def dafWithResampling(id,data,resamplingValue,type):
 	output = pd.DataFrame(columns=columns)
 
 	if(data.shape[0] < resamplingValue):
-		output = pd.DataFrame({'id':id,'rawDerivedAllele':0,'div':0,'type':type},index=['0'])
-		div = output.groupby(['id','type'])['div'].sum().reset_index()
-		div = div[['id','div','type']]
-
-		daf = output[['id','rawDerivedAllele','type']]
-		return(daf,div)
+		
+		if(type == '4fold'):
+			dafDiv = pd.DataFrame({'id':id,'daf4f':0,'p0':0,'d0':0,'type':type},index=['0'])
+			return(dafDiv)
+		else:
+			dafDiv = pd.DataFrame({'id':id,'daf0f':0,'pi':0,'di':0,'type':type},index=['0'])
+			return(dafDiv)
 	else:
 		# Delete reference sequence
 		ref = data.iloc[[0]]
@@ -56,7 +57,7 @@ def dafWithResampling(id,data,resamplingValue,type):
 			tmp = tmp.reset_index(drop=True)
 			output = pd.concat([output,tmp])
 
-
+		# Formating output
 		if(type == '4fold'):
 			div = output.groupby(['id','type'])['div'].sum().reset_index()
 			div = div[['id','div','type']]
