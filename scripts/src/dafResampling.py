@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 def dafWithResampling(id,data,resamplingValue,type):
 
 	columns = ['id','rawDerivedAllele','div','type']
