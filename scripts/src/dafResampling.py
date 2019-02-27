@@ -1,5 +1,5 @@
 import pandas as pd
-def dafWithResampling(id,data,outgroup,resamplingValue,type):
+def dafWithResampling(id,data,resamplingValue,type):
 
 	columns = ['id','rawDerivedAllele','div','type']
 	output = pd.DataFrame(columns=columns)
@@ -12,16 +12,17 @@ def dafWithResampling(id,data,outgroup,resamplingValue,type):
 		daf = output[['id','rawDerivedAllele','type']]
 		return(daf,div)
 	else:
-		
 		# Delete reference sequence
 		ref = data.iloc[[0]]
-		outgroup = outgroup.loc[:,data.columns].rename(index={0:206})
-		print(len(data.columns.tolist()))
+		outgroup = data.iloc[[-1]]
+		data = data.iloc[1:len(data)-1]
+		# print(len(data.columns.tolist()))
+		
 		for j in data.columns.tolist():
-			# print(j)
+			print(j)
 			div = 0
 			af = 0
-			# print(j)
+			
 			if(data[[j]][data[[j]] != 'N'].dropna().shape[0] < 160):
 				continue
 			else:
