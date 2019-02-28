@@ -43,7 +43,7 @@ if __name__ == "__main__":
 	cds = cds.loc[cds.reset_index().groupby(['chr','id'])['transcriptSize'].idxmax()].reset_index(drop=True)
 	# cds = cds.sort_values(['chr','startGene'])
 
-	for index,row in cds.head(5).iterrows():
+	for index,row in cds.iterrows():
 		print(index,row['id'])
 		start = time.time()
 
@@ -146,7 +146,7 @@ if __name__ == "__main__":
 			dmelZeroFoldDafDiv = dafWithResampling(id=row['id'],data=df0f,resamplingValue=160,type='0fold')
 			dmelFourFoldDafDiv['chr'] = row['chr']
 			dmelZeroFoldDafDiv['chr'] = row['chr']
-			
+
 			# Save results to df
 			dmelFourFoldDafDiv.to_csv(args.path + '/alleleFrequencies/' + args.population + 'FourFold.tab',sep='\t',header=False,mode='a',index=False)
 			dmelZeroFoldDafDiv.to_csv(args.path + '/alleleFrequencies/' + args.population + 'ZeroFold.tab',sep='\t',header=False,mode='a',index=False)
