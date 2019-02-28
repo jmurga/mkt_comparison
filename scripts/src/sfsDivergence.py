@@ -148,8 +148,8 @@ if __name__ == "__main__":
 			dmelFourFoldDafDiv['chr'] = row['chr']
 			dmelZeroFoldDafDiv['chr'] = row['chr']
 			# Save results to df
-			dmelFourFoldDafDiv.to_csv(args.path + '/alleleFrequencies/dmelFourFoldSites' + args.population + '.tab',sep='\t',header=False,mode='a',index=False)
-			dmelZeroFoldDafDiv.to_csv(args.path + '/alleleFrequencies/dmelZeroFoldSites' + args.population + '.tab',sep='\t',header=False,mode='a',index=False)
+			dmelFourFoldDafDiv.to_csv(args.path + '/alleleFrequencies/' + args.population + 'FourFold.tab',sep='\t',header=False,mode='a',index=False)
+			dmelZeroFoldDafDiv.to_csv(args.path + '/alleleFrequencies/' + args.population + 'ZeroFold.tab',sep='\t',header=False,mode='a',index=False)
 			
 		else:
 			dmelFourFoldDafDiv = pd.DataFrame({'id':row['id'],'POS':0,'rawDerivedAllele':0,'div':0,'type':'4fold'},index=[0])
@@ -157,7 +157,7 @@ if __name__ == "__main__":
 			dmelFourFoldDafDiv['chr'] = row['chr']
 			dmelZeroFoldDafDiv['chr'] = row['chr']
 
-			dmelFourFoldDafDiv.to_csv(args.path + '/alleleFrequencies/dmelFourFoldSites' + args.population + '.tab',sep='\t',header=False,mode='a',index=False)
-			dmelZeroFoldDafDiv.to_csv(args.path + '/alleleFrequencies/dmelZeroFoldSites' + args.population + '.tab',sep='\t',header=False,mode='a',index=False)
+			dmelFourFoldDafDiv.to_csv(args.path + '/alleleFrequencies/' + args.population + 'FourFold.tab',sep='\t',header=False,mode='a',index=False)
+			dmelZeroFoldDafDiv.to_csv(args.path + '/alleleFrequencies/' + args.population + 'ZeroFold.tab',sep='\t',header=False,mode='a',index=False)
 
 		print("--- %s seconds ---" % (time.time() - start))
