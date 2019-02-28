@@ -144,9 +144,9 @@ if __name__ == "__main__":
 			# Extracting daf and div resampling by position
 			dmelFourFoldDafDiv = dafWithResampling(id=row['id'],data=df4f,resamplingValue=160,type='4fold')
 			dmelZeroFoldDafDiv = dafWithResampling(id=row['id'],data=df0f,resamplingValue=160,type='0fold')
-			print(dmelZeroFoldDafDiv.head())
 			dmelFourFoldDafDiv['chr'] = row['chr']
 			dmelZeroFoldDafDiv['chr'] = row['chr']
+			
 			# Save results to df
 			dmelFourFoldDafDiv.to_csv(args.path + '/alleleFrequencies/' + args.population + 'FourFold.tab',sep='\t',header=False,mode='a',index=False)
 			dmelZeroFoldDafDiv.to_csv(args.path + '/alleleFrequencies/' + args.population + 'ZeroFold.tab',sep='\t',header=False,mode='a',index=False)

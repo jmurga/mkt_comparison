@@ -5,7 +5,7 @@ def dafWithResampling(id,data,resamplingValue,type):
 	columns = ['id','POS','rawDerivedAllele','div','type']
 	output = pd.DataFrame(columns=columns)
 
-	if(data.shape[0] < resamplingValue):
+	if(data.shape[1] < resamplingValue):
 		
 		if(type == '4fold'):
 			dafDiv = pd.DataFrame({'id':id,'POS':0,'rawDerivedAllele':0,'div':0,'type':type},index=[id])
