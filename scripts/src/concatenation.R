@@ -18,20 +18,22 @@ samplingGenes <- function(geneList,sample,B,bins,seed=213,path=NULL){
 }
 
 
-sampleAnalysis <- function(data,sampling,bins){
+sampleAnalysis <- function(data,sampling,bins,population){
 	data <- data %>% as.data.table
-	data <- data[Pop=='RAL']
-
+	data <- data[Pop==population]
+	data$Name <- as.character(data$Name)
 	output <- data.frame()
 
 	for (i in 1:length(sampling)) {
-		print(i)			
-		subsetData <- data[Name %in% sampling[[i]]]
+		print(i)	
+		sampling[[i]] <- sampling[[i]] %>% as.data.frame
+		colnames(sampling[[i]]) <- 'Name'
+		# subsetData <- data[match(data$Name, sampling[[i]]),] %>% na.omit()
+		subsetData <- merge(sampling[[i]],data,by='Name',all.x=T)
 
 		divergence <- subsetData[,c('mi', 'di', 'm0', 'd0')]
 		colnames(divergence) <- c('mi', 'Di', 'm0', 'D0')
 		divergence <- divergence %>% summarize(mi=sum(mi),Di=sum(Di),m0=sum(m0),D0=sum(D0))
-
 
 		sfs0f <- as.data.frame(subsetData[['DAF0f']])
 		colnames(sfs0f) <- 'sfs0f'
@@ -54,7 +56,6 @@ sampleAnalysis <- function(data,sampling,bins){
 		if (P0 == 0 | D0  == 0) {
 			tmp <- data.frame(NA,NA,NA,NA,NA,NA,NA)
 			output <- rbind(output,tmp)
-
 		}else{
 			resultStandard <- standardMKT(daf,divergence)
 			alphaStandard <- resultStandard$alpha.symbol
@@ -75,22 +76,12 @@ sampleAnalysis <- function(data,sampling,bins){
 			alphaAsymptotic0.1 <- NULL
 			resultiMK <- NULL
 			alphaAsymptotic <- NULL
-			try(resultiMK0.1 <- iMKT(daf,divergence,xlow = 0.1, xhigh = 0.9))
-			try(resultiMK <- iMKT(daf,divergence,xlow = 0, xhigh = 1))
 
-			if(is.null(resultiMK)){
-				alphaAsymptotic <- NA
-			}else{
-				alphaAsymptotic <- resultiMK$`Asymptotic MK table`$alpha_asymptotic
-			}
-			if(is.null(resultiMK0.1)){
-				alphaAsymptotic0.1 <- NA
-			}else{
-				alphaAsymptotic0.1 <- resultiMK0.1$`Asymptotic MK table`$alpha_asymptotic
-			}
 		}
 
-		tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaAsymptotic,alphaAsymptotic0.1)
+		tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15)
+		# tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaAsymptotic,alphaAsymptotic0.1)
+
 		output <- rbind(output,tmp)
 		
 	}
