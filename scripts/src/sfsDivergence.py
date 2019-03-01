@@ -142,8 +142,8 @@ if __name__ == "__main__":
 			df0f = df0f.transpose()
 
 			# Extracting daf and div resampling by position
-			dmelFourFoldDafDiv = dafWithResampling(id=row['id'],data=df4f,resamplingValue=160,type='4fold')
-			dmelZeroFoldDafDiv = dafWithResampling(id=row['id'],data=df0f,resamplingValue=160,type='0fold')
+			dmelFourFoldDafDiv = dafWithResampling(id=row['id'],data=df4f,resamplingValue=args.sampling,type='4fold')
+			dmelZeroFoldDafDiv = dafWithResampling(id=row['id'],data=df0f,resamplingValue=args.sampling,type='0fold')
 			dmelFourFoldDafDiv['chr'] = row['chr']
 			dmelZeroFoldDafDiv['chr'] = row['chr']
 

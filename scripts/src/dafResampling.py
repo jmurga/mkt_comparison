@@ -25,24 +25,24 @@ def dafWithResampling(id,data,resamplingValue,type):
 			out = r.iloc[[-1]]
 			r = r.iloc[1:len(r)-1]
 			
-			if(r[r!='N'].dropna().shape[0] < 160):
+			if(r[r!='N'].dropna().shape[0] < resamplingValue):
 				continue
 			else:
 				#Sampling
-				tmp = r[r!='N'].dropna().sample(160,replace=False)
+				tmp = r[r!='N'].dropna().sample(resamplingValue,replace=False)
 				# Merging outgroup
 				tmp = pd.concat([tmp,out])
 				pos = pd.concat([ref,tmp]).reset_index(drop=True)
 				
 				if(pos.iloc[-1]=='N' or pos.iloc[-1]=='-'):
 					continue
-				elif((pos.iloc[-1] != pos.iloc[0]) & (len(pos.iloc[1:161].unique())==1)): 
+				elif((pos.iloc[-1] != pos.iloc[0]) & (len(pos.iloc[1:(resamplingValue+1)].unique())==1)): 
 					div = 1
 					af = 0
 				else:
-					AA = pos.iloc[161]
-					AN = 160
-					AC = pos.iloc[1:161].value_counts()
+					AA = pos.iloc[resamplingValue+1]
+					AN = resamplingValue
+					AC = pos.iloc[1:(resamplingValue+1)].value_counts()
 
 					if(AA not in AC.index):
 						continue
