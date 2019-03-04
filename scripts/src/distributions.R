@@ -21,15 +21,15 @@ distributionSampled <- function(sampling){
 			
 			while(is.null(standard)){
 				subsetGenes <- as.character(sample(genes,sampling,replace=F))
-				try(standard <- PopFlyAnalisis(genes=subsetGenes,pops=pop,recomb=F,test='standardMKT'))
+				try(standard <- PopFlyAnalysis(genes=subsetGenes,pops=pop,recomb=F,test='standardMKT'))
 			}
 
 			standardList[i] <- standard[[paste0('Population =  ',pop)]]$alpha.symbol
 
-			fww <- PopFlyAnalisis(genes=subsetGenes,pops=pop,recomb=F,test='FWW')
+			fww <- PopFlyAnalysis(genes=subsetGenes,pops=pop,recomb=F,test='FWW')
 			FWWList[i] <- fww[[paste0('Population =  ',pop)]]$Results$alpha.symbol[2]
 
-			dgrp <- PopFlyAnalisis(genes=subsetGenes,pops=pop,recomb=F,test='DGRP')
+			dgrp <- PopFlyAnalysis(genes=subsetGenes,pops=pop,recomb=F,test='DGRP')
 			DGRPList[i] <- dgrp[[paste0('Population =  ',pop)]]$Results$alpha.symbol[2]
 			print(DGRPList)
 		}
