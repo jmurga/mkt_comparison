@@ -1,6 +1,6 @@
 distributionSampled <- function(sampling){
 
-	required(iMKT)
+	require(iMKT)
 	path <- '/home/jmurga/mkt/201902/rawData/distributions'
 	for (pop in unique(PopFlyData$Pop)){
 
