@@ -7,7 +7,7 @@ distributionSampled <- function(sampling){
 		print(pop)
 
 		subsetData <- PopFlyData[PopFlyData$Pop == pop, ]
-		genes <- subsetData$symbol
+		genes <- subsetData$Name
 		standardList <- rep(0,100)
 		FWWList <- rep(0,100)
 		DGRPList <- rep(0,100)
