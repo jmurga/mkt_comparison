@@ -119,43 +119,43 @@ def dafWithResampling(id,data,resamplingValue,type):
 
 # 		# Formating output
 # 		# if(type == '4fold'):
-# 			# div = output.groupby(['id','type'])['div'].sum().reset_index()
-# 			# div = div[['id','div','type']]
-# 			# div.columns = ['id','d0','type']
+# 			div = output.groupby(['id','type','pop'])['div'].sum().reset_index()
+# 			div = div[['id','div','type']]
+# 			div.columns = ['id','d0','type']
+# 			daf = output[['id','rawDerivedAllele','type','pop']][output['rawDerivedAllele']!=0]
+
+# 			bins = np.arange(0,1.05,0.05)
+# 			labels = [0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1]
+
+# 			daf['categories'] = pd.cut(daf['rawDerivedAllele'],bins=bins,labels=labels)
+
+# 			sfs = daf.groupby(['id','type','categories','pop']).count().reset_index()
+# 			sfs['rawDerivedAllele'] = sfs['rawDerivedAllele'].fillna(0).astype(int)
+# 			sfs = sfs.groupby(['id','type'])['rawDerivedAllele'].apply(list).reset_index()
+# 			sfs['p'] = sum(sfs['rawDerivedAllele'][0])
+# 			sfs['rawDerivedAllele'] = sfs['rawDerivedAllele'].apply(lambda x:';'.join(map(str,x)))
+# 			sfs.columns = ['id','type','daf4f','p0']
+# 			sfs = sfs[['id','daf4f','p0']]
+# 			dafDiv = pd.merge(sfs,div,on='id')
+
+# # # 		# else:
+# 			div = output.groupby(['id','type'])['div'].sum().reset_index()
+# 			div = div[['id','div','type']]
+# 			div.columns = ['id','di','type']
 # 			daf = output[['id','rawDerivedAllele','type']][output['rawDerivedAllele']!=0]
 
-# 			# bins = np.arange(0,1.05,0.05)
-# 			# labels = [0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1]
+# 			bins = np.arange(0,1.05,0.05)
+# 			labels = [0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1]
 
-# 			# daf['categories'] = pd.cut(daf['rawDerivedAllele'],bins=bins,labels=labels)
+# 			daf['categories'] = pd.cut(daf['rawDerivedAllele'],bins=bins,labels=labels)
 
-# 			# sfs = daf.groupby(['id','type','categories']).count().reset_index()
-# 			# sfs['rawDerivedAllele'] = sfs['rawDerivedAllele'].fillna(0).astype(int)
-# 			# sfs = sfs.groupby(['id','type'])['rawDerivedAllele'].apply(list).reset_index()
-# 			# sfs['p'] = sum(sfs['rawDerivedAllele'][0])
-# 			# sfs['rawDerivedAllele'] = sfs['rawDerivedAllele'].apply(lambda x:';'.join(map(str,x)))
-# 			# sfs.columns = ['id','type','daf4f','p0']
-# 			# sfs = sfs[['id','daf4f','p0']]
-# 			# dafDiv = pd.merge(sfs,div,on='id')
-
-# # 		# else:
-			# div = output.groupby(['id','type'])['div'].sum().reset_index()
-			# div = div[['id','div','type']]
-			# div.columns = ['id','di','type']
-			# daf = output[['id','rawDerivedAllele','type']][output['rawDerivedAllele']!=0]
-
-			# bins = np.arange(0,1.05,0.05)
-			# labels = [0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1]
-
-			# daf['categories'] = pd.cut(daf['rawDerivedAllele'],bins=bins,labels=labels)
-
-			# sfs = daf.groupby(['id','type','categories']).count().reset_index()
-			# sfs['rawDerivedAllele'] = sfs['rawDerivedAllele'].fillna(0).astype(int)
-			# sfs = sfs.groupby(['id','type'])['rawDerivedAllele'].apply(list).reset_index()
-			# sfs['p'] = sfs['rawDerivedAllele'].apply(lambda x: sum(x))
-			# sfs['rawDerivedAllele'] = sfs['rawDerivedAllele'].apply(lambda x:';'.join(map(str,x)))
-			# sfs.columns = ['id','type','daf0f','pi']
-			# sfs = sfs[['id','daf0f','pi']]
-			# dafDiv = pd.merge(sfs,div,on='id')
+# 			sfs = daf.groupby(['id','type','categories']).count().reset_index()
+# 			sfs['rawDerivedAllele'] = sfs['rawDerivedAllele'].fillna(0).astype(int)
+# 			sfs = sfs.groupby(['id','type'])['rawDerivedAllele'].apply(list).reset_index()
+# 			sfs['p'] = sfs['rawDerivedAllele'].apply(lambda x: sum(x))
+# 			sfs['rawDerivedAllele'] = sfs['rawDerivedAllele'].apply(lambda x:';'.join(map(str,x)))
+# 			sfs.columns = ['id','type','daf0f','pi']
+# 			sfs = sfs[['id','daf0f','pi']]
+# 			dafDiv = pd.merge(sfs,div,on='id')
 			
 # 	return(output)
