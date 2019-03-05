@@ -2,7 +2,9 @@ distributionSampled <- function(sampling){
 
 	require(iMKT)
 	path <- '/home/jmurga/mkt/201902/rawData/distributions'
-	for (pop in unique(PopFlyData$Pop)){
+	populations <- c('AUS')
+	# for (pop in unique(PopFlyData$Pop)){
+	for (pop in populations){
 
 		print(pop)
 
