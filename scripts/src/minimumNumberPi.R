@@ -100,9 +100,26 @@ tableToIter <- function(data=NULL,iterations,combinations=NULL) {
 			# myPalette <- colorRampPalette(rev(brewer.pal(11, "Spectral")), space="Lab")
 
 			p<-ggplot(output[['results']])
-			p <- p + geom_tile(aes(np,nd,fill=pvalue))+ggtitle(paste0("α = ",unique(alpha))) + xlab(paste0("Total polymorphic sites (",ratioP,"P0/Pi)")) + ylab(paste0("Total diverge sites (D0/",ratioD,"Di)"))  + scale_fill_distiller(palette = "Spectral",name="P-value")+theme(axis.text.x = element_text(size=14, angle=90)) + themePublication() + scale_x_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 20)) + scale_y_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 20)) + theme(legend.position = 'right',legend.direction='vertical')
-			output[['plot']] <- p
+			p <- p + geom_tile(aes(np,nd,fill=pvalue)) + 
+				ggtitle(paste0("α = ",round(unique(alpha),3))) + 
+				xlab(bquote("Polymorphic sites - Ratio" ~ italic(P)[S]/italic(P)[N]:.(round(ratioP,3))))+
+				# xlab(paste0("Total polymorphic sites (",round(ratioP,3),"P0/Pi)")) + 
+				ylab(bquote("Divergent sites - Ratio"~italic(D)[S]/italic(D)[N]:.(round(ratioD,3)))) + 
+				# ylab(paste0("Total diverge sites (D0/",round(ratioD,3),"Di)"))  +
+				scale_fill_distiller(palette = "Spectral",name="P-value",limits=c(0,1)) + 
+				themePublication() +
+				theme(axis.text = element_text(size=14),legend.position = 'right', legend.direction='vertical',legend.key.size = unit(1,"line")) +
+				scale_x_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 10)) + 
+				scale_y_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 10))
+			
+			customLegend <- get_legend(p)
+			# Remove legend foreach plot
+			p <- p + theme(legend.position='none')
 			# data <- do.call(rbind.data.frame, output)
+			
+			output[['plot']] <- p
+			output[['legend']] <- customLegend
+
 			}
 	}
 	else if(is.null(combinations)){
@@ -128,7 +145,7 @@ tableToIter <- function(data=NULL,iterations,combinations=NULL) {
 
 		}
 
-		p <- ggplot(tmp, aes(x = i)) + geom_point(aes(y = alpha,  colour = pvalue < 0.05)) + scale_y_continuous(breaks = pretty(tmp$alpha, n = 5)) +scaleColourPublication() +labs(y = "alpha",x = "Pi") + theme(legend.position = c(0.8, 0.9))  + themePublication()
+		p <- ggplot(tmp, aes(x = i)) + geom_point(aes(y = alpha,  colour = pvalue < 0.05)) + scale_y_continuous(breaks = pretty(tmp$alpha, n = 5)) +scaleColourPublication() +labs(y = "alpha",x = "Pi") + theme(legend.position = c(0.8, 0.9))  + themePublication() 
 		
 		output[['results']] <- tmp
 		output[['plot']] <- p
