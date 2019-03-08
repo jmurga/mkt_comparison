@@ -1,0 +1,111 @@
+mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL){
+
+	tmp <- data.frame('id'=character(),'population'=character(),'alpha'=integer(),'pvalue'=integer(),test=character())
+
+	for(iter in 1:length(geneList)){
+		## Subset data by geneda
+		print(iter)
+		subsetGene <- data[data[['id']] == geneList[iter],]
+		if(dim(subsetGene)[1] > 1){
+			subsetGene <- subsetGene[1]
+		}
+
+		if(subsetGene$m0 == 0 | subsetGene$mi == 0 | subsetGene$p0 == 0 | subsetGene$pi == 0 | subsetGene$di == 0 | subsetGene$d0 == 0 | subsetGene$m0 < (subsetGene$p0+subsetGene$d0)){
+			tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=test)
+			tmp <- rbind(tmp,tmpDf)
+		}
+		else{
+			## Set counters to 0
+			pi <- c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+			p0 <- c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+			f <- seq(0.025,0.975,0.05)
+			mi <- 0; m0 <- 0
+			di <- 0; d0 <- 0
+
+			## Group genes
+			pi <- do.call(rbind,lapply(as.character(subsetGene$DAF0f), function(z) unlist(strsplit(z, split = ";")) %>% as.numeric())) %>% colSums()
+			p0 <- do.call(rbind,lapply(as.character(subsetGene$DAF4f), function(z) unlist(strsplit(z, split = ";")) %>% as.numeric())) %>% colSums()
+			mi <- subsetGene$mi
+			m0 <- subsetGene$m0
+			di <- subsetGene$di
+			d0 <- subsetGene$d0
+
+			## Proper formats
+			daf <- cbind(f, pi, p0); daf <- as.data.frame(daf)
+			names(daf) <- c("daf","Pi","P0")
+			div <- cbind(mi, di, m0, d0); div <- as.data.frame(div)
+			names(div) <- c("mi","Di","m0","D0")
+			
+			if(test == 'standardMKT'){
+				mkt <- standardMKT(daf=daf,div=div)
+				alpha <- mkt$alpha.symbol
+				pvalue <- mkt$`Fishers exact test P-value`
+			}
+			else if(test == 'FWW' & cutoff==0.05){
+				mkt <- FWW(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
+				alpha <- mkt$Results$alpha.symbol
+				pvalue <- mkt$Results$`Fishers exact test P-value`
+
+			}
+			else if(test == 'FWW' & cutoff==0.1){
+				mkt <- FWW(daf=daf,div=div,listCutoffs=c(0,0.05,0.1),plot=FALSE)
+				alpha <- mkt$Results$alpha.symbol
+				pvalue <- mkt$Results$`Fishers exact test P-value`
+
+			}
+			else if(test == 'eMKT' & cutoff==0.05){
+				mkt <- DGRP(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
+				alpha <- mkt$Results$alpha.symbol
+				pvalue <- mkt$Results$`Fishers exact test P-value`
+
+			}
+			else if(test == 'eMKT' & cutoff==0.1){
+				mkt <- DGRP(daf=daf,div=div,listCutoffs=c(0,0.05,0.1),plot=FALSE)
+				alpha <- mkt$Results$alpha.symbol
+				pvalue <- mkt$Results$`Fishers exact test P-value`
+
+			}
+			else if(test == 'aMKT'){
+				mkt <- tryCatch({asymptoticMKT(daf=daf,div=div,xlow=0.1,xhigh=0.9,plot=FALSE)},error=function(e){mkt<-NULL})
+				print('here')
+				if(is.null(mkt)){
+					alpha <- NA
+					pvalue <- NA
+				}else{
+					alpha <- mkt$Results$alpha.symbol
+					pvalue <- mkt$Results$`Fishers exact test P-value`
+				}
+			}
+			else if(test == 'caMKT'){
+				mkt <- tryCatch({iMKT(daf=daf,div=div,xlow=0.1,xhigh=0.9,plot=FALSE)},error=function(e){mkt<-NULL})
+				if(is.null(mkt)){
+					alpha <- NA
+					pvalue <- NA
+				}else{
+					alpha <- mkt$Results$alpha.symbol
+					pvalue <- mkt$Results$alpha.symbol
+				}
+			}
+
+			tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
+			tmp <- rbind(tmp,tmpDf)			
+		}
+	}
+	## Delete list names to not overwrite current content (saving list positions as populations each gene)
+	tmp <- as.data.table(tmp)
+	
+	allGenes <- matrix(c(dim(tmp %>% na.omit)[1],mean(tmp[['alpha']],na.rm=T),sd(tmp[['alpha']],na.rm=T)),ncol=3,nrow=1)
+	positive <- matrix(c(dim(tmp[alpha>0])[1],mean(tmp[alpha>0,alpha],na.rm=T),sd(tmp[alpha>0,alpha],na.rm=T)),ncol=3,nrow=1)
+	negative <- matrix(c(dim(tmp[alpha<0])[1],mean(tmp[alpha<0,alpha],na.rm=T),sd(tmp[alpha>0,alpha],na.rm=T)),ncol=3,nrow=1)
+
+	output <- as.data.frame(rbind(allGenes,positive,negative))
+	colnames(output) <- c('N','mean','sd')
+	output[['test']] <- test
+	output[['type']] <- c('allGenes','positive','negative')
+	output[['pop']] <- population
+
+	output <- output[,c('test','type','N','mean','sd','pop')]
+	
+	return(output)
+
+}

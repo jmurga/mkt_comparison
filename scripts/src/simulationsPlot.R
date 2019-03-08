@@ -101,7 +101,7 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 		scale_x_discrete(labels=c("alphaStandard"="Standard", "alphaDGRP0.05" = "eMKT 5%", "alphaDGRP0.1" = "eMKT 10%", "alphaFWW0.05" = "FWW 5%", "alphaFWW0.1" = "FWW 10%","alphaAsymptotic"="Asymptotic MKT","alphaAsymptotic0.1"="Asymptotic MKT", "trueAlpha"="Real alpha")) +  
 		guides(fill=FALSE) + 
 		ggtitle(paste0(scenario)) + 
-		theme(axis.text.x = element_text(angle = 45, hjust = 1))
+		theme(axis.text.x = element_text(angle = 45, hjust = 1,size=20),axis.text.y= element_text(size=20),plot.title=element_text(size=20),axis.title.y = element_text(size=24),axis.title.x = element_text(size=24))
 
 	method <- rep(c("Standard","eMKT cutoff 5%","eMKT DGRP 10%","FWW cutoff 5%","MKT FWW cutoff 10%","Asymptotic MKT","Asymptotic MKT","Real alpha"),2)
 					 
