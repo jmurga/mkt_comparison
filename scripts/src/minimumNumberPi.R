@@ -4,7 +4,7 @@ createCombinations <- function(listLengthToExpand,ratioD,ratioP){
 
 	combinations <- list()
 	
-	combinationsD <- expand.grid(rep(list(1:listLengthToExpand), 2)) %>% as.data.table()
+	combinationsD <- suppressMessages(expand.grid(rep(list(1:listLengthToExpand), 2)) %>% as.data.table())
 	colnames(combinationsD) <- c("Di","D0")
 	combinationsD$DivRatio <- combinationsD$D0/combinationsD$Di
 	combinationsD <- combinationsD[DivRatio==ratioD]
@@ -12,7 +12,7 @@ createCombinations <- function(listLengthToExpand,ratioD,ratioP){
 	combinationsD$ND <- combinationsD$Di+combinationsD$D0
 
 
-	combinationsP<-expand.grid(rep(list(1:listLengthToExpand), 2)) %>% as.data.table()
+	combinationsP <- suppressMessages(expand.grid(rep(list(1:listLengthToExpand), 2)) %>% as.data.table())
 	colnames(combinationsP) <- c("Pi","P0")
 	combinationsP$PolRatio <- combinationsP$P0/combinationsP$Pi
 
@@ -102,15 +102,15 @@ tableToIter <- function(data=NULL,iterations,combinations=NULL) {
 			p<-ggplot(output[['results']])
 			p <- p + geom_tile(aes(np,nd,fill=pvalue)) + 
 				ggtitle(paste0("α = ",round(unique(alpha),3))) + 
+				themePublication() +
 				xlab(bquote("Polymorphic sites - Ratio" ~ italic(P)[S]/italic(P)[N]:.(round(ratioP,3))))+
 				# xlab(paste0("Total polymorphic sites (",round(ratioP,3),"P0/Pi)")) + 
 				ylab(bquote("Divergent sites - Ratio"~italic(D)[S]/italic(D)[N]:.(round(ratioD,3)))) + 
 				# ylab(paste0("Total diverge sites (D0/",round(ratioD,3),"Di)"))  +
 				scale_fill_distiller(palette = "Spectral",name="P-value",limits=c(0,1)) + 
-				themePublication() +
-				theme(axis.text = element_text(size=14),legend.position = 'right', legend.direction='vertical',legend.key.size = unit(1,"line")) +
-				scale_x_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 10)) + 
-				scale_y_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 10))
+				theme(axis.text = element_text(size=14), axis.text.x = element_text(angle=90),legend.position = 'right', legend.direction='vertical',legend.key.size = unit(1,"line")) +
+				scale_x_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 8)) + 
+				scale_y_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 8))
 			
 			customLegend <- get_legend(p)
 			# Remove legend foreach plot
