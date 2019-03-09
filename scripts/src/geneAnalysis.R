@@ -79,24 +79,19 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 			else if(test == 'eMKT' & cutoff==0.05){
 
 				## Cleaning slightly deleterious mutation by cutoff
-				pi <- sum(pi); p0 <- sum(p0)
+				Pi <- sum(daf$Pi); P0 <- sum(daf$P0)
 				dafBelowCutoff <- daf[daf$daf <= cutoff, ]
 				dafAboveCutoff <- daf[daf$daf > cutoff, ]
 
-				mktTableStandard <- data.frame(Polymorphism = c(sum(daf$p0), 
-					sum(daf$pi)), divergence = c(div$d0, div$di), 
-					row.names = c("Neutral class", "Selected class"))
+				mktTableStandard <- data.frame(Polymorphism = c(sum(daf$P0),sum(daf$Pi)), divergence = c(div$D0, div$Di),row.names = c("Neutral class", "Selected class"))
 											   
-				mktTable <- data.frame(`dafBelowCutoff` = c(sum(dafBelowCutoff$p0), 
-					sum(dafBelowCutoff$pi)), `dafAboveCutoff` = c(sum(dafAboveCutoff$p0), 
-					sum(dafAboveCutoff$pi)), row.names = c("neutralClass", 
-					"selectedClass"))
-											   
-				fNeutral <- mktTable[1, 1]/sum(daf$p0)
-				piNeutralBelowCutoff <- pi * fNeutral
+				mktTable <- data.frame(`dafBelowCutoff` = c(sum(dafBelowCutoff$P0),sum(dafBelowCutoff$Pi)), `dafAboveCutoff` = c(sum(dafAboveCutoff$P0),
+					sum(dafAboveCutoff$Pi)), row.names = c("neutralClass", "selectedClass"))
+
+				fNeutral <- mktTable[1, 1]/sum(daf$P0)
+				piNeutralBelowCutoff <- Pi * fNeutral
 				piWd <- mktTable[2, 1] - piNeutralBelowCutoff
-				piNeutral <- round(piNeutralBelowCutoff + mktTable[2, 
-					2])
+				piNeutral <- round(piNeutralBelowCutoff + mktTable[2,2])
 
 				if(sum(dafAboveCutoff[['Pi']]) == 0 | piNeutral == 0){
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=test)
@@ -104,9 +99,9 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 				}
 				else{
 					
-					alpha <- 1 - ((piNeutral/p0) * (mktTableStandard[1, 2]/mktTableStandard[2, 2]))
+					alpha <- 1 - ((piNeutral/P0) * (mktTableStandard[1, 2]/mktTableStandard[2, 2]))
 					
-					m <- matrix(c(p0, piNeutral, div$d0, div$di),ncol = 2)
+					m <- matrix(c(p0, piNeutral, div$D0, div$Di),ncol = 2)
 					pvalue <- fisher.test(m)$p.value
 
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
