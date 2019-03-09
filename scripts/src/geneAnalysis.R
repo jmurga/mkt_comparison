@@ -1,7 +1,7 @@
 mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=NULL){
 
 	tmp <- data.frame('id'=character(),'population'=character(),'alpha'=integer(),'pvalue'=integer(),test=character())
-
+	output <- list()
 	for(iter in 1:length(geneList)){
 		## Subset data by geneda
 		print(iter)
@@ -99,14 +99,17 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 	positive <- matrix(c(dim(tmp[alpha>0 & pvalue < 0.05])[1],mean(tmp[alpha>0 & pvalue < 0.05,alpha],na.rm=T),sd(tmp[alpha>0 & pvalue < 0.05,alpha],na.rm=T)),ncol=3,nrow=1)
 	negative <- matrix(c(dim(tmp[alpha<0 & pvalue < 0.05])[1],mean(tmp[alpha<0 & pvalue < 0.05,alpha],na.rm=T),sd(tmp[alpha<0 & pvalue < 0.05,alpha],na.rm=T)),ncol=3,nrow=1)
 
-	output <- as.data.frame(rbind(allGenes,positive,negative))
-	colnames(output) <- c('N','mean','sd')
-	output[['test']] <- test
-	output[['type']] <- c('allGenes','positive','negative')
-	output[['pop']] <- population
+	# Formating alpha table with total, mean and sd
+	output[['alphaTable']] <- as.data.frame(rbind(allGenes,positive,negative))
+	colnames(output[['alphaTable']]) <- c('N','mean','sd')
+	output[['alphaTable']][['test']] <- test
+	output[['alphaTable']][['type']] <- c('allGenes','positive','negative')
+	output[['alphaTable']][['pop']] <- population
 
-	output <- output[,c('test','type','N','mean','sd','pop')]
+	output[['alphaTable']] <- output[['alphaTable']][,c('test','type','N','mean','sd','pop')]
 	
+	output[['posSigGenes']] <- tmp[alpha>0 & pvalue < 0.05,id]
+
 	return(output)
 
 }
