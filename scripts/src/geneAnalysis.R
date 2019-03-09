@@ -146,7 +146,7 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					pvalue <- NA
 				}else{
 					alpha <- mkt$alpha_asymptotic
-					if(mkt$CI_low > 0 &  mkt$CI_high > 0){
+					if(mkt$CI_low > 0 &  mkt$CI_high > 0 & !is.nan(mkt$CI_low) & !is.nan(mkt$CI_high)){
 						pvalue <- 0.005
 					}else{
 						pvalue <- 1
