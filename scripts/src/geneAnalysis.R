@@ -145,10 +145,13 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					alpha <- NA
 					pvalue <- NA
 				}else{
-					alpha <- mkt$Results$alpha.symbol
-					pvalue <- mkt$Results$`Fishers exact test P-value`
+					alpha <- mkt$alpha_asymptotic
+					if(mkt$CI_low > 0 &  mkt$CI_high > 0){
+						pvalue <- 0.005
+					}else{
+						pvalue <- 1
+					}
 				}
-
 				tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
 				tmp <- rbind(tmp,tmpDf)
 			}
@@ -158,8 +161,12 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					alpha <- NA
 					pvalue <- NA
 				}else{
-					alpha <- mkt$Results$alpha.symbol
-					pvalue <- mkt$Results$alpha.symbol
+					alpha <- mkt$`Asymptotic MK table`$alpha_asymptotic
+					if(mkt$`Asymptotic MK table`$CI_low > 0 &  mkt$`Asymptotic MK table`$CI_high > 0){
+						pvalue <- 0.005
+					}else{
+						pvalue <- 1
+					}
 				}
 
 				tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
