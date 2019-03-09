@@ -60,7 +60,7 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 
 			}
 			else if(test == 'eMKT' & cutoff==0.1){
-				mkt <- DGRP(daf=daf,div=div,listCutoffs=c(0,0.05,0.1),plot=FALSE)
+				mkt <- DGRP(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
 				alpha <- mkt$Results$alpha.symbol
 				pvalue <- mkt$Results$`Fishers exact test P-value`
 
@@ -93,10 +93,11 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 	}
 	## Delete list names to not overwrite current content (saving list positions as populations each gene)
 	tmp <- as.data.table(tmp)
-	
+	# tmp[['pvalue']] <- p.adjust(tmp[['pvalue']],method='fdr')
+
 	allGenes <- matrix(c(dim(tmp %>% na.omit)[1],mean(tmp[['alpha']],na.rm=T),sd(tmp[['alpha']],na.rm=T)),ncol=3,nrow=1)
-	positive <- matrix(c(dim(tmp[alpha>0])[1],mean(tmp[alpha>0 & pvalue < 0.05,alpha],na.rm=T),sd(tmp[alpha>0 & pvalue < 0.05,alpha],na.rm=T)),ncol=3,nrow=1)
-	negative <- matrix(c(dim(tmp[alpha<0])[1],mean(tmp[alpha<0 & pvalue < 0.05,alpha],na.rm=T),sd(tmp[alpha<0 & pvalue < 0.05,alpha],na.rm=T)),ncol=3,nrow=1)
+	positive <- matrix(c(dim(tmp[alpha>0 & pvalue < 0.05])[1],mean(tmp[alpha>0 & pvalue < 0.05,alpha],na.rm=T),sd(tmp[alpha>0 & pvalue < 0.05,alpha],na.rm=T)),ncol=3,nrow=1)
+	negative <- matrix(c(dim(tmp[alpha<0 & pvalue < 0.05])[1],mean(tmp[alpha<0 & pvalue < 0.05,alpha],na.rm=T),sd(tmp[alpha<0 & pvalue < 0.05,alpha],na.rm=T)),ncol=3,nrow=1)
 
 	output <- as.data.frame(rbind(allGenes,positive,negative))
 	colnames(output) <- c('N','mean','sd')
