@@ -1,7 +1,7 @@
-mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL){
+mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=NULL){
 
 	tmp <- data.frame('id'=character(),'population'=character(),'alpha'=integer(),'pvalue'=integer(),test=character())
-
+	
 	for(iter in 1:length(geneList)){
 		## Subset data by geneda
 		print(iter)
