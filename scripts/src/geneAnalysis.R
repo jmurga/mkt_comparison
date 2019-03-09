@@ -101,7 +101,7 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 					
 					alpha <- 1 - ((piNeutral/P0) * (mktTableStandard[1, 2]/mktTableStandard[2, 2]))
 					
-					m <- matrix(c(p0, piNeutral, div$D0, div$Di),ncol = 2)
+					m <- matrix(c(P0, piNeutral, div$D0, div$Di),ncol = 2)
 					pvalue <- fisher.test(m)$p.value
 
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
