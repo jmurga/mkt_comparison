@@ -1,4 +1,4 @@
-mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=NULL){
+mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0.05){
 
 	tmp <- data.frame('id'=character(),'population'=character(),'alpha'=integer(),'pvalue'=integer(),test=character())
 	output <- list()
@@ -140,7 +140,7 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 				}
 			}
 			else if(test == 'aMKT'){
-				mkt <- tryCatch({asymptoticMKT(daf=daf,div=div,xlow=0.1,xhigh=0.9,plot=FALSE)},error=function(e){mkt<-NULL})
+				mkt <- tryCatch({asymptoticMKT(daf=daf,div=div,xlow=0.1,xhigh=0.9)},error=function(e){mkt<-NULL})
 				if(is.null(mkt)){
 					alpha <- NA
 					pvalue <- NA
