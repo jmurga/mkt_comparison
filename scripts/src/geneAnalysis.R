@@ -107,17 +107,16 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 			}
 			else if(test == 'aMKT'){
 				mkt <- tryCatch({asymptoticMKT(daf=daf,div=div,xlow=0.1,xhigh=0.9,plot=FALSE)},error=function(e){mkt<-NULL})
-				print('here')
 				if(is.null(mkt)){
 					alpha <- NA
 					pvalue <- NA
 				}else{
 					alpha <- mkt$Results$alpha.symbol
 					pvalue <- mkt$Results$`Fishers exact test P-value`
-					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
-					tmp <- rbind(tmp,tmpDf)
-
 				}
+
+				tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
+				tmp <- rbind(tmp,tmpDf)
 			}
 			else if(test == 'caMKT'){
 				mkt <- tryCatch({iMKT(daf=daf,div=div,xlow=0.1,xhigh=0.9,plot=FALSE)},error=function(e){mkt<-NULL})
@@ -127,10 +126,10 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 				}else{
 					alpha <- mkt$Results$alpha.symbol
 					pvalue <- mkt$Results$alpha.symbol
-					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
-					tmp <- rbind(tmp,tmpDf)
-
 				}
+				
+				tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
+				tmp <- rbind(tmp,tmpDf)
 			}	
 		}
 	}
