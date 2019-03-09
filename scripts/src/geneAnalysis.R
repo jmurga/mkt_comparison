@@ -146,8 +146,10 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					pvalue <- NA
 				}else{
 					alpha <- mkt$alpha_asymptotic
-					if(mkt$CI_low > 0 &  mkt$CI_high > 0 & !is.nan(mkt$CI_low) & !is.nan(mkt$CI_high)){
+					if(alpha > 0 & mkt$CI_low > 0 & !is.nan(mkt$CI_low)){
 						pvalue <- 0.005
+					}else if(alpha < 0 & mkt$CI_high < 0 & !is.nan(mkt$CI_high)){
+
 					}else{
 						pvalue <- 1
 					}
@@ -162,8 +164,10 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					pvalue <- NA
 				}else{
 					alpha <- mkt$`Asymptotic MK table`$alpha_asymptotic
-					if(mkt$`Asymptotic MK table`$CI_low > 0 &  mkt$`Asymptotic MK table`$CI_high > 0){
+					if(alpha > 0 & mkt$`Asymptotic MK table`$CI_low > 0 & !is.nan(mkt$`Asymptotic MK table`$CI_low)){
 						pvalue <- 0.005
+					}else if(alpha < 0 & mkt$`Asymptotic MK table`$CI_high < 0 & !is.nan(mkt$`Asymptotic MK table`$CI_high)){
+
 					}else{
 						pvalue <- 1
 					}
