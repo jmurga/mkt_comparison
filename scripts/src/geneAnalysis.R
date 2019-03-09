@@ -108,7 +108,7 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 
 	output[['alphaTable']] <- output[['alphaTable']][,c('test','type','N','mean','sd','pop')]
 	
-	output[['posSigGenes']] <- tmp[alpha>0 & pvalue < 0.05,id]
+	output[['posSigGenes']] <- as.character(tmp[alpha>0 & pvalue < 0.05,id])
 
 	return(output)
 
