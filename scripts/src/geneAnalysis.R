@@ -45,21 +45,20 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 
 				daf <- daf[daf[['daf']] > cutoff, ]
 
-				if(sum(daf[['Pi']]) > 0 & sum(daf[['P0']]) > 0){
+				if(sum(daf[['Pi']]) == 0 | sum(daf[['P0']]) == 0){
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=test)
 					tmp <- rbind(tmp,tmpDf)
-				}
-				else{
+				}else{
 					mkt <- FWW(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
 					alpha <- mkt$Results$alpha.symbol
-					pvalue <- mkt$Results$`Fishers exact test P-value`	
+					pvalue <- mkt$Results$`Fishers exact test P-value`
 				}
 			}
 			else if(test == 'FWW' & cutoff==0.1){
 
 				daf <- daf[daf[['daf']] > cutoff, ]
 
-				if(sum(daf[['Pi']]) > 0 & sum(daf[['P0']]) > 0){
+				if(sum(daf[['Pi']]) == 0 | sum(daf[['P0']]) == 0){
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=test)
 					tmp <- rbind(tmp,tmpDf)
 				}
@@ -73,7 +72,7 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 
 				daf <- daf[daf[['daf']] > cutoff, ]
 
-				if(sum(daf[['Pi']]) > 0 & sum(daf[['P0']]) > 0){
+				if(sum(daf[['Pi']]) == 0 | sum(daf[['P0']]) == 0){
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=test)
 					tmp <- rbind(tmp,tmpDf)
 				}
@@ -86,7 +85,7 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 			else if(test == 'eMKT' & cutoff==0.1){
 				daf <- daf[daf[['daf']] > cutoff, ]
 
-				if(sum(daf[['Pi']]) > 0 & sum(daf[['P0']]) > 0){
+				if(sum(daf[['Pi']]) == 0 | sum(daf[['P0']]) == 0){
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=test)
 					tmp <- rbind(tmp,tmpDf)
 				}
