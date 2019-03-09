@@ -39,19 +39,23 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 			if(test == 'standardMKT'){
 				mkt <- standardMKT(daf=daf,div=div)
 				alpha <- mkt$alpha.symbol
-				pvalue <- mkt$`Fishers exact test P-value`
+				pvalue <- mkt$`Fishers exact test P-value
+				tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
+				tmp <- rbind(tmp,tmpDf)				`
 			}
 			else if(test == 'FWW' & cutoff==0.05){
+				checkDaf <- daf[daf[['daf']] > cutoff, ]
 
-				daf <- daf[daf[['daf']] > cutoff, ]
-
-				if(sum(daf[['Pi']]) == 0 | sum(daf[['P0']]) == 0){
+				if(sum(checkDaf[['Pi']]) == 0 | sum(checkDaf[['P0']]) == 0){
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=test)
 					tmp <- rbind(tmp,tmpDf)
 				}else{
+					daf[1,]<-c(0.025,0,0)
 					mkt <- FWW(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
 					alpha <- mkt$Results$alpha.symbol
 					pvalue <- mkt$Results$`Fishers exact test P-value`
+					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
+					tmp <- rbind(tmp,tmpDf)
 				}
 			}
 			else if(test == 'FWW' & cutoff==0.1){
@@ -66,6 +70,8 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 					mkt <- FWW(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
 					alpha <- mkt$Results$alpha.symbol
 					pvalue <- mkt$Results$`Fishers exact test P-value`	
+					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
+					tmp <- rbind(tmp,tmpDf)
 				}
 			}
 			else if(test == 'eMKT' & cutoff==0.05){
@@ -80,6 +86,8 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 					mkt <- DGRP(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
 					alpha <- mkt$Results$alpha.symbol
 					pvalue <- mkt$Results$`Fishers exact test P-value`	
+					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
+					tmp <- rbind(tmp,tmpDf)
 				}
 			}
 			else if(test == 'eMKT' & cutoff==0.1){
@@ -93,8 +101,9 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 					mkt <- DGRP(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
 					alpha <- mkt$Results$alpha.symbol
 					pvalue <- mkt$Results$`Fishers exact test P-value`	
+					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
+					tmp <- rbind(tmp,tmpDf)
 				}
-
 			}
 			else if(test == 'aMKT'){
 				mkt <- tryCatch({asymptoticMKT(daf=daf,div=div,xlow=0.1,xhigh=0.9,plot=FALSE)},error=function(e){mkt<-NULL})
@@ -105,6 +114,9 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 				}else{
 					alpha <- mkt$Results$alpha.symbol
 					pvalue <- mkt$Results$`Fishers exact test P-value`
+					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
+					tmp <- rbind(tmp,tmpDf)
+
 				}
 			}
 			else if(test == 'caMKT'){
@@ -115,11 +127,11 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 				}else{
 					alpha <- mkt$Results$alpha.symbol
 					pvalue <- mkt$Results$alpha.symbol
-				}
-			}
+					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
+					tmp <- rbind(tmp,tmpDf)
 
-			tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
-			tmp <- rbind(tmp,tmpDf)			
+				}
+			}	
 		}
 	}
 	## Delete list names to not overwrite current content (saving list positions as populations each gene)
