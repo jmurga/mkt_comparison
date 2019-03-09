@@ -78,17 +78,37 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=N
 			}
 			else if(test == 'eMKT' & cutoff==0.05){
 
-				checkDaf <- daf[daf[['daf']] > cutoff, ]
+				## Cleaning slightly deleterious mutation by cutoff
+				pi <- sum(pi); p0 <- sum(p0)
+				dafBelowCutoff <- daf[daf$daf <= cutoff, ]
+				dafAboveCutoff <- daf[daf$daf > cutoff, ]
 
-				if(sum(checkDaf[['Pi']]) == 0 | sum(checkDaf[['P0']]) == 0){
+				mktTableStandard <- data.frame(Polymorphism = c(sum(daf$p0), 
+					sum(daf$pi)), divergence = c(div$d0, div$di), 
+					row.names = c("Neutral class", "Selected class"))
+											   
+				mktTable <- data.frame(`dafBelowCutoff` = c(sum(dafBelowCutoff$p0), 
+					sum(dafBelowCutoff$pi)), `dafAboveCutoff` = c(sum(dafAboveCutoff$p0), 
+					sum(dafAboveCutoff$pi)), row.names = c("neutralClass", 
+					"selectedClass"))
+											   
+				fNeutral <- mktTable[1, 1]/sum(daf$p0)
+				piNeutralBelowCutoff <- pi * fNeutral
+				piWd <- mktTable[2, 1] - piNeutralBelowCutoff
+				piNeutral <- round(piNeutralBelowCutoff + mktTable[2, 
+					2])
+
+				if(sum(dafAboveCutoff[['Pi']]) == 0 | piNeutral == 0){
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=test)
 					tmp <- rbind(tmp,tmpDf)
 				}
 				else{
-					daf[1,]<-c(0.025,0,0)					
-					mkt <- DGRP(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
-					alpha <- mkt$Results$alpha.symbol
-					pvalue <- mkt$Results$`Fishers exact test P-value`	
+					
+					alpha <- 1 - ((piNeutral/p0) * (mktTableStandard[1, 2]/mktTableStandard[2, 2]))
+					
+					m <- matrix(c(p0, piNeutral, div$d0, div$di),ncol = 2)
+					pvalue <- fisher.test(m)$p.value
+
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
 					tmp <- rbind(tmp,tmpDf)
 				}
