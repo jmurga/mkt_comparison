@@ -39,9 +39,9 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 			if(test == 'standardMKT'){
 				mkt <- standardMKT(daf=daf,div=div)
 				alpha <- mkt$alpha.symbol
-				pvalue <- mkt$`Fishers exact test P-value
+				pvalue <- mkt$`Fishers exact test P-value`
 				tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
-				tmp <- rbind(tmp,tmpDf)				`
+				tmp <- rbind(tmp,tmpDf)
 			}
 			else if(test == 'FWW' & cutoff==0.05){
 				checkDaf <- daf[daf[['daf']] > cutoff, ]
@@ -109,7 +109,6 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 				}
 			}
 			else if(test == 'eMKT' & cutoff==0.1){
-			## Cleaning slightly deleterious mutation by cutoff
 				Pi <- sum(daf$Pi); P0 <- sum(daf$P0)
 				dafBelowCutoff <- daf[daf$daf <= cutoff, ]
 				dafAboveCutoff <- daf[daf$daf > cutoff, ]

@@ -1,9 +1,9 @@
 library(splitstackshape)
 
-samplingGenes <- function(geneList,sample,B,bins,seed=213,path=NULL){
-	set.seed(213)
-	genes <- sample(geneList,size=sample)
-	bootSamples <- matrix(sample(genes,size = B*bins,replace=T),B,bins)
+samplingGenes <- function(geneList,B,bins,seed=213,path=NULL){
+	set.seed(seed)
+	
+	bootSamples <- matrix(sample(geneList,size = B*bins,replace=T),B,bins)
 	
 	output <- list()
 	for (i in 1:B) {
@@ -82,8 +82,7 @@ sampleAnalysis <- function(data,sampling,bins,population){
 		tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15)
 		# tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaAsymptotic,alphaAsymptotic0.1)
 
-		output <- rbind(output,tmp)
-		
+		output <- rbind(output,tmp)	
 	}
 	output[['bin']] <- bins
 	return(output)

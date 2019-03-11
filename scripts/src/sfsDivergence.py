@@ -36,7 +36,6 @@ if __name__ == "__main__":
 		outgroupFastas = '/data/shared/dgn/outgroup/dyak'
 		outputHeader = 'Dyakuba'
 
-
 	dfGenes = pd.read_csv(args.path + '/annotations/'+args.genes,header = 0,sep='\t')
 	cds = pd.read_csv(args.path + '/annotations/'+args.cds,header = 0,sep='\t')
 	cds = pd.merge(cds, dfGenes,  how='inner', left_on=['chr','name'], right_on = ['chr','name'])
