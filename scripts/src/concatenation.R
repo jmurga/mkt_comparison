@@ -20,16 +20,16 @@ samplingGenes <- function(geneList,B,bins,seed=213,path=NULL){
 
 sampleAnalysis <- function(data,sampling,bins,population){
 	data <- data %>% as.data.table
-	data <- data[Pop==population]
-	data$Name <- as.character(data$Name)
+	data <- data[pop==population]
+	data$id <- as.character(data$id)
 	output <- data.frame()
 
 	for (i in 1:length(sampling)) {
 		print(i)	
 		sampling[[i]] <- sampling[[i]] %>% as.data.frame
-		colnames(sampling[[i]]) <- 'Name'
+		colnames(sampling[[i]]) <- 'id'
 		# subsetData <- data[match(data$Name, sampling[[i]]),] %>% na.omit()
-		subsetData <- merge(sampling[[i]],data,by='Name',all.x=T)
+		subsetData <- merge(sampling[[i]],data,by='id',all.x=T)
 
 		divergence <- subsetData[,c('mi', 'di', 'm0', 'd0')]
 		colnames(divergence) <- c('mi', 'Di', 'm0', 'D0')
@@ -52,10 +52,14 @@ sampleAnalysis <- function(data,sampling,bins,population){
 		Di <- divergence$Di %>% sum
 		Pi <- sum(daf$Pi)
 		P0 <- sum(daf$P0)
+		mi <- sum(divergence$mi) #?
+		m0 <- sum(divergence$m0) #?
 
-		if (P0 == 0 | D0  == 0) {
-			tmp <- data.frame(NA,NA,NA,NA,NA,NA,NA)
-			output <- rbind(output,tmp)
+		if (P0 == 0 | D0  == 0 | Pi == 0 | Di == 0 | mi  == 0 | m0 == 0) {
+			tmp <- data.frame(NA,NA,NA,NA,NA)
+			#output <- rbind(output,tmp)
+			colnames(tmp) <- c('alphaStandard','alphaDGRP0.05','alphaDGRP0.15','alphaFWW0.05','alphaFWW0.15')
+			
 		}else{
 			resultStandard <- standardMKT(daf,divergence)
 			alphaStandard <- resultStandard$alpha.symbol
@@ -77,11 +81,12 @@ sampleAnalysis <- function(data,sampling,bins,population){
 			resultiMK <- NULL
 			alphaAsymptotic <- NULL
 
+			tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15)
+
 		}
-
-		tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15)
+		
+		
 		# tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaAsymptotic,alphaAsymptotic0.1)
-
 		output <- rbind(output,tmp)	
 	}
 	output[['bin']] <- bins
