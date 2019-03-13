@@ -18,7 +18,7 @@ samplingGenes <- function(geneList,B,bins,seed=213,path=NULL){
 }
 
 
-sampleAnalysis <- function(data,sampling,bins,population){
+sampleAnalysis <- function(data,sampling,bins,population,recomb=FALSE){
 	data <- data %>% as.data.table
 	data <- data[pop==population]
 	data$id <- as.character(data$id)
@@ -55,10 +55,10 @@ sampleAnalysis <- function(data,sampling,bins,population){
 		mi <- sum(divergence$mi) #?
 		m0 <- sum(divergence$m0) #?
 
-		if (P0 == 0 | D0  == 0 | Pi == 0 | Di == 0 | mi  == 0 | m0 == 0) {
-			tmp <- data.frame(NA,NA,NA,NA,NA)
+		if (P0 == 0 | D0  == 0 | Pi == 0 | Di == 0 | mi  == 0 | m0 == 0 | sum(m0) < (sum(P0)+sum(D0))) {
+			tmp <- data.frame(NA,NA,NA,NA,NA,NA)
 			#output <- rbind(output,tmp)
-			colnames(tmp) <- c('alphaStandard','alphaDGRP0.05','alphaDGRP0.15','alphaFWW0.05','alphaFWW0.15')
+			colnames(tmp) <- c('alphaStandard','alphaDGRP0.05','alphaDGRP0.15','alphaFWW0.05','alphaFWW0.15','alphaiMKT')
 			
 		}else{
 			resultStandard <- standardMKT(daf,divergence)
@@ -76,12 +76,15 @@ sampleAnalysis <- function(data,sampling,bins,population){
 			resultFWW0.15 <- FWW(daf,divergence,listCutoffs = c(0.075))
 			alphaFWW0.15 <- resultFWW0.15$Results$alpha.symbol
 
-			resultiMK0.1 <- NULL
-			alphaAsymptotic0.1 <- NULL
-			resultiMK <- NULL
-			alphaAsymptotic <- NULL
+			resultiMKT <- tryCatch({iMKT(daf=daf,div=divergence,xlow=0.1,xhigh=0.9,plot=FALSE)},error=function(e){resultiMKT<-NULL})
 
-			tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15)
+			if(is.null(resultiMKT)){
+				alphaiMKT <- NA	
+			}else{
+				alphaiMKT <- resultiMKT$`Asymptotic MK table`$alpha_asymptotic
+			}
+			
+			tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaiMKT)
 
 		}
 		
@@ -92,3 +95,4 @@ sampleAnalysis <- function(data,sampling,bins,population){
 	output[['bin']] <- bins
 	return(output)
 }
+
