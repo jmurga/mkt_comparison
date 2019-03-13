@@ -145,16 +145,19 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					pvalue <- NA
 				}else{
 					alpha <- mkt$alpha_asymptotic
-					if(alpha > 0 & mkt$CI_low > 0 & !is.nan(mkt$CI_low)){
+
+					if(alpha > 0 & alpha < 1 & mkt$CI_low > 0 & !is.nan(mkt$CI_low)){
 						pvalue <- 0.005
 					}else if(alpha < 0 & mkt$CI_high < 0 & !is.nan(mkt$CI_high)){
-
+						pvalue <- 0.005
 					}else{
 						pvalue <- 1
 					}
 				}
+
 				tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test)
 				tmp <- rbind(tmp,tmpDf)
+
 			}
 			else if(test == 'caMKT'){
 				mkt <- tryCatch({iMKT(daf=daf,div=div,xlow=0.1,xhigh=0.9,plot=FALSE)},error=function(e){mkt<-NULL})
@@ -163,10 +166,9 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					pvalue <- NA
 				}else{
 					alpha <- mkt$`Asymptotic MK table`$alpha_asymptotic
-					if(alpha > 0 & mkt$`Asymptotic MK table`$CI_low > 0 & !is.nan(mkt$`Asymptotic MK table`$CI_low)){
+					if(alpha > 0 & alpha < 1  & mkt$`Asymptotic MK table`$CI_low > 0 & !is.nan(mkt$`Asymptotic MK table`$CI_low)){
 						pvalue <- 0.005
-					}else if(alpha < 0 & mkt$`Asymptotic MK table`$CI_high < 0 & !is.nan(mkt$`Asymptotic MK table`$CI_high)){
-
+					}else if(alpha < 0 & mkt$`Asymptotic MK table`$CI_high < 0 & !is.nan(mkt$`Asymptotic MK table`$CI_high)){						pvalue <- 0.005
 					}else{
 						pvalue <- 1
 					}
