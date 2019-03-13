@@ -313,7 +313,7 @@ dosByGene <- function(data=NULL,geneList=NULL,population=NULL,cutoff=NULL){
 
 		output[['dosTable']] <- output[['dosTable']][,c('Pi','type','N','mean','sd','pop')]
 		
-		output[['posSigGenes']] <- as.character(tmp[alpha>0 & pvalue < 0.05,id])
+		output[['posSigGenes']] <- as.character(tmp[dos>0 & pvalue < 0.05,id])
 	}
 
 	return(output)
