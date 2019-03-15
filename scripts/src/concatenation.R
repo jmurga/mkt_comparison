@@ -76,6 +76,13 @@ sampleAnalysis <- function(data,sampling,bins,population,recomb=FALSE){
 			resultFWW0.15 <- FWW(daf,divergence,listCutoffs = c(0.075))
 			alphaFWW0.15 <- resultFWW0.15$Results$alpha.symbol
 
+			# daf1 <- daf
+			# daf1$daf10 <- sort(rep(seq(0.05, 0.95, 0.1), 
+			# 2))
+			# daf1 <- daf1[c("daf10", "Pi", "P0")]
+			# daf1 <- aggregate(. ~ daf10, data = daf1, FUN = sum)
+			# colnames(daf1) <- c("daf", "Pi", "P0")
+			
 			resultiMKT <- tryCatch({iMKT(daf=daf,div=divergence,xlow=0.1,xhigh=0.9,plot=FALSE)},error=function(e){resultiMKT<-NULL})
 
 			if(is.null(resultiMKT)){
