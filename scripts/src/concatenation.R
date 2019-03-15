@@ -18,7 +18,7 @@ samplingGenes <- function(geneList,B,bins,seed=213,path=NULL){
 }
 
 
-sampleAnalysis <- function(data,sampling,bins,population,recomb=FALSE){
+sampleAnalysis <- function(data,sampling,bins,population,recomb=FALSE,xlow=0.1,xhigh=0.9){
 	data <- data %>% as.data.table
 	data <- data[pop==population]
 	data$id <- as.character(data$id)
@@ -83,7 +83,7 @@ sampleAnalysis <- function(data,sampling,bins,population,recomb=FALSE){
 			# daf1 <- aggregate(. ~ daf10, data = daf1, FUN = sum)
 			# colnames(daf1) <- c("daf", "Pi", "P0")
 			
-			resultiMKT <- tryCatch({iMKT(daf=daf,div=divergence,xlow=0.1,xhigh=0.9,plot=FALSE)},error=function(e){resultiMKT<-NULL})
+			resultiMKT <- tryCatch({iMKT(daf=daf,div=divergence,xlow=xlow,xhigh=xhigh,plot=FALSE)},error=function(e){resultiMKT<-NULL})
 
 			if(is.null(resultiMKT)){
 				alphaiMKT <- NA	
