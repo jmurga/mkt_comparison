@@ -25,7 +25,6 @@ createCombinations <- function(listLengthToExpand,ratioD,ratioP){
 	return(combinations)
 }
 
-
 tableToIter <- function(data=NULL,iterations,combinations=NULL) {
 	if(combinations == 'divergence'){
 		output <- list()

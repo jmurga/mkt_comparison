@@ -111,5 +111,4 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 	plotTable[['data']] <- dataPlot
 					 
 	return(plotTable)
-
 }
