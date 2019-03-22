@@ -53,7 +53,7 @@ if __name__ == "__main__":
 	parser.add_argument("--output", type = str,help = "Output name without extension")
 
 	# Default arguments
-	parser.add_argument("--path", type = str, default = '/home/jmurga/mkt/201902/rawData/simulations/', help = "Path to output file")
+	parser.add_argument("--path", type = str, default = '/home/jmurga/mkt/201902/rawData/dmel/simulations/', help = "Path to output file")
 
 	
 	# Parsing common arguments
@@ -97,9 +97,8 @@ if __name__ == "__main__":
 			divergenceAndTrueAlpha = []
 			listDaf = []
 
-			# Remove directory and create again
-			# os.rmdir(args.path + args.output)
-			os.mkdir(args.path + args.output)
+			# Create directory
+			os.makedirs(args.path + args.output,exist_ok=True)
 
 			for i in range(0,args.replica,1):
 				print(i)
