@@ -1,76 +1,80 @@
 import time 
-start = time.time()
+import textwrap
 from pyfaidx import Fasta
+start = time.time()
+
+
+text = textwrap.dedent(tmp).strip()
 file = Fasta('2l.seq')
 coordinates = pd.read_csv('test.bed',sep='\t',header=None).iloc[:,[1,2]].values.tolist() 
 
 samples = list(file.keys())
 
-matrix4f = np.empty([len(samples),len(file.get_spliced_seq(samples[0], coordinates))+1],dtype='str')
-matrix0f = np.empty([len(samples),len(file.get_spliced_seq(samples[0], coordinates))+1],dtype='str')
+matrix = np.empty([len(samples),len(file.get_spliced_seq(samples[0], coordinates))+1],dtype='str')
 
 # matrix[0] = file.get_spliced_seq(samples[0], coordinates).seq.upper()
-refSeq0f,refSeq4f = degenerate(file.get_spliced_seq(samples[0], coordinates).seq.upper()+'C')
+degenCode = degenerate(file.get_spliced_seq(samples[0], coordinates).seq.upper()+'C')
 
 deleteIndex = list()
-for i in range(1,len(samples),1):
+seq = []
+
+for i in range(2,len(samples),1):
 	tmp = file.get_spliced_seq(samples[i],coordinates).seq.upper()
+
 	if(tmp == ('N' * len(tmp))):
 		deleteIndex.append(i)
 	else:
-		matrix4f[i] = list(tmp+'C')
-		matrix0f[i] = list(tmp+'C')
-	matrix[i] = tmp
+		matrix[i] = list(tmp+'C')
 
-matrix4f = np.delete(matrix4f,deleteIndex,0)
-matrix0f = np.delete(matrix0f,deleteIndex,0)
+matrix = np.delete(matrix,deleteIndex,0)
+matrix[0] = list(degenCode);matrix[1] = list(file.get_spliced_seq(samples[0], coordinates).seq.upper()+'C')
 
-matrix4f[0] = list(refSeq4f)
-matrix0f[0] = list(refSeq0f)
 
-df4f = pd.DataFrame(matrix4f)
-# df4f = df4f.loc[:,df4f.iloc[0]!='N']   
-# nunique = df4f.apply(pd.Series.nunique)
-# cols_to_drop = nunique[nunique == 1].index
-df4f=df4f.drop(cols_to_drop, axis=1)
-df0f = pd.DataFrame(matrix4f)
-df0f = df0f.loc[:,df0f.iloc[0]!='N']  
-
-df4f = df4f.transpose()
-df0f = df0f.transpose()
-
-output=pd.DataFrame()
-for index,r in df4f.iterrows():
-	# print(j)
-	div = 0
-	af = 0
-	
-	ref = r.iloc[0]
-	out = r.iloc[-1]
-	
-	if(out == 'N' or out == '-'):
-		continue
-	elif((out != ref)): 
-		div = 1
-		af = 0
-	else:
-		AA = out
-		AN = r.shape[0]-2
-		AC = r.iloc[1:(r.shape[0]-1)].value_counts()
-
-		if(AA not in AC.index):
-			continue
+start = time.time()
+output = list()
+for x in np.nditer(matrix,flags=['external_loop'], order='F'): 
+	if((x[0] == '4') or (x[0] == '0')):
+		
+		if(x[0] == '4'):
+			functionalClass = '4fold'
 		else:
-			AC = AC[AC!=AC[AA]]
-			if(len(AC) == 0):
-				af=0
+			functionalClass = '0fold'
+
+		div = 0
+		af = 0
+
+		REF = x[1]
+		AA = x[-1]
+
+		if(out == 'N' or out == '-'):
+			next
+		elif((AA != REF) and (np.unique(x[2:-1]).shape[0] == 1)): 
+			div = 1
+			af = 0
+		else:
+			AN = x[2:-1].shape[0]
+			AC = pd.DataFrame(data=np.unique(x[2:-1], return_counts=True)[1],index=np.unique(x[2:-1], return_counts=True)[0])
+ 			
+			if(AA not in AC.index):
+				next
 			else:
-				af=AC[0]/AN
-	tmp = pd.DataFrame({'rawDerivedAllele':af,'div':div,'type':'4fold'},index=[id])
-	tmp = tmp.reset_index(drop=True)
-	output = pd.concat([output,tmp])
-output=pd.DataFrame()
-for index,r in df0f.iterrows():
+				AC = AC[AC.index!=AA]
+				if(len(AC) == 0):
+					AF=0
+				else:
+					AF=AC.iloc[0]/AN
+					AF = AF.iloc[0]
+		# tmp = pd.DataFrame({'derivedAlleleFrequency':AF,'div':div,'type':functionalClass})
+		# tmp = tmp.reset_index(drop=True)
+		tmp = [AF,div,functionalClass]
+		# print(tmp)
+		output.append(tmp)
+	else:
+		next
+time.time() - start
+start = time.time()
+output = pd.DataFrame()
+for index,r in df.iterrows():
 	# print(j)
 	div = 0
 	af = 0
@@ -99,7 +103,7 @@ for index,r in df0f.iterrows():
 	tmp = pd.DataFrame({'rawDerivedAllele':af,'div':div,'type':'0fold'},index=[id])
 	tmp = tmp.reset_index(drop=True)
 	output = pd.concat([output,tmp])
-
+time.time()-start
 div = output.groupby(['type'])['div'].sum().reset_index()
 # div = div.pivot_table(index=['type'],columns=['type'],values='div').reset_index()
 
