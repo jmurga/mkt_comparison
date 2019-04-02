@@ -1,129 +1,140 @@
-import time 
-import textwrap
+import time
+import numpy as np
 from pyfaidx import Fasta
+def degenerancy(data):
+	
+	#DEGENERANCY DICTIONARIES
+	degenerateCodonTable = {"TTC":'002',"TTT":'002',#PHE 002
+						"TTA":'002',"TTG":'002',#LEU 002
+						"CTT":'204',"CTC":'204',"CTA":'204',"CTG":'204',#LUE 204
+						"ATG":'000',#MET 000
+						"ATT":'003',"ATC":'003',"ATA":'003',#ILE 003
+						"GTC":'004',"GTT":'004',"GTA":'004',"GTG":'004',#VAL 004
+						"TCT":'004',"TCA":'004',"TCC":'004',"TCG":'004',#SER 004
+						"CCT":'004',"CCA":'004',"CCC":'004',"CCG":'004',#PRO 004
+						"ACT":'004',"ACA":'004',"ACC":'004',"ACG":'004',#THR 004
+						"GCT":'004',"GCA":'004',"GCC":'004',"GCG":'004',#ALA 004
+						"TAT":'002',"TAC":'002',#TYR 002
+						"TAA":'000',"TAG":'000',"TGA":'000',#STOP 000
+						"CAT":'002',"CAC":'002',#HIS 002
+						"CAA":'002',"CAG":'002',#GLN 002
+						"AAT":'002',"AAC":'002',#ASN 002
+						"AAG":'002',"AAA":'002',#LYS 002
+						"GAT":'002',"GAC":'002',#ASP 002
+						"GAA":'002',"GAG":'002',#GLU 002
+						"TGT":'002',"TGC":'002',#CYS 002
+						"TGG":'000',#TRP 000
+						"CGT":'204',"CGG":'204',"CGA":'204',"CGC":'204',#ARG 204
+						"AGA":'002',"AGG":'002',#ARG 002
+						"AGT":'002',"AGC":'002',#SER 002
+						"GGT":'004',"GGA":'004',"GGC":'004',"GGG":'004',#GLY 004					
+	}
+	
+	degenerancy = ''
+	for i in range(0, len(data),3):
+		codon = data[i:i+3]
+		if(codon == 'NNN'):
+			degenerancy += codon
+		else:
+			degenerancy += degenerateCodonTable[codon]
+
+	return(degenerancy)
 start = time.time()
 
-
-text = textwrap.dedent(tmp).strip()
-file = Fasta('2l.seq')
-coordinates = pd.read_csv('test.bed',sep='\t',header=None).iloc[:,[1,2]].values.tolist() 
-
+file = Fasta('kilobase.fa')
+# file = Fasta('kilobase.fa')
 samples = list(file.keys())
 
-matrix = np.empty([len(samples),len(file.get_spliced_seq(samples[0], coordinates))+1],dtype='str')
+matrix = np.empty([len(samples),len(file[samples[0]][:-1].seq)],dtype='str')
+print(time.time() - start)
 
-# matrix[0] = file.get_spliced_seq(samples[0], coordinates).seq.upper()
-degenCode = degenerate(file.get_spliced_seq(samples[0], coordinates).seq.upper()+'C')
+# Degenerate reference sequences (always first entry at file)
+degenCode = degenerancy(file[samples[0]][:-1].seq.upper())
 
+# List to append indexes if whole sequence at any population is len(seq) * 'N'
 deleteIndex = list()
-seq = []
-
-for i in range(2,len(samples),1):
-	tmp = file.get_spliced_seq(samples[i],coordinates).seq.upper()
-
+for i in range(1,len(samples),1):
+	# Extract each sample sequence
+	tmp = file[samples[i]][:-1].seq.upper()
 	if(tmp == ('N' * len(tmp))):
 		deleteIndex.append(i)
 	else:
-		matrix[i] = list(tmp+'C')
+		matrix[i] = list(tmp)
+print(time.time() - start)
 
+# Delete lines
 matrix = np.delete(matrix,deleteIndex,0)
-matrix[0] = list(degenCode);matrix[1] = list(file.get_spliced_seq(samples[0], coordinates).seq.upper()+'C')
+# Put degenerancy in first ndarray element
+matrix[0] = list(degenCode)
+# NEED TO SOLVE THIS
+solve = time.time()
+d = np.asarray(matrix[:,(matrix[0]=='0') | (matrix[0]=='4')],order='C')  
+print(time.time() - solve)
 
 
-start = time.time()
 output = list()
-for x in np.nditer(matrix,flags=['external_loop'], order='F'): 
-	if((x[0] == '4') or (x[0] == '0')):
-		
+print(time.time() - start)
+
+for x in np.nditer(d, order='F',flags=['external_loop']): 
+	print(x)
+	REF = x[1]
+	AA = x[-1]
+	# Undefined Ancestra Allele. Try to clean out of the loop
+	if(AA == 'N' or AA == '-'):
+		next
+	# Monomorphic sites. Try to clean out of the loop
+	elif(np.unique(x[1:][np.where(x[1:]!='N')]).shape[0] == 1):
+		next
+	else:
+		# print(np.unique(x[1:][np.where(x[1:]!='N')]).shape[0])
+		pol = x[2:-1][np.where(x[2:-1]!='N')]
 		if(x[0] == '4'):
 			functionalClass = '4fold'
 		else:
 			functionalClass = '0fold'
-
-		div = 0
-		af = 0
-
-		REF = x[1]
-		AA = x[-1]
-
-		if(out == 'N' or out == '-'):
-			next
-		elif((AA != REF) and (np.unique(x[2:-1]).shape[0] == 1)): 
-			div = 1
-			af = 0
+		# CHECK IF POL != AA
+		if((AA != REF) and (np.unique(pol).shape[0] == 1) and (np.unique(pol)[0] != AA)):
+		# if((AA != REF)): 
+			div = 1; AF = 0
+			tmp = [AF,div,functionalClass]
+			output.append(tmp)
 		else:
 			AN = x[2:-1].shape[0]
 			AC = pd.DataFrame(data=np.unique(x[2:-1], return_counts=True)[1],index=np.unique(x[2:-1], return_counts=True)[0])
- 			
+			div = 0
 			if(AA not in AC.index):
 				next
 			else:
 				AC = AC[AC.index!=AA]
 				if(len(AC) == 0):
-					AF=0
+					next
 				else:
 					AF=AC.iloc[0]/AN
 					AF = AF.iloc[0]
-		# tmp = pd.DataFrame({'derivedAlleleFrequency':AF,'div':div,'type':functionalClass})
-		# tmp = tmp.reset_index(drop=True)
-		tmp = [AF,div,functionalClass]
-		# print(tmp)
-		output.append(tmp)
-	else:
-		next
-time.time() - start
-start = time.time()
-output = pd.DataFrame()
-for index,r in df.iterrows():
-	# print(j)
-	div = 0
-	af = 0
-	
-	ref = r.iloc[0]
-	out = r.iloc[-1]
-	
-	if(out == 'N' or out == '-'):
-		continue
-	elif((out != ref)): 
-		div = 1
-		af = 0
-	else:
-		AA = out
-		AN = r.shape[0]-2
-		AC = r.iloc[1:(r.shape[0]-1)].value_counts()
-
-		if(AA not in AC.index):
-			continue
-		else:
-			AC = AC[AC!=AC[AA]]
-			if(len(AC) == 0):
-				af=0
-			else:
-				af=AC[0]/AN
-	tmp = pd.DataFrame({'rawDerivedAllele':af,'div':div,'type':'0fold'},index=[id])
-	tmp = tmp.reset_index(drop=True)
-	output = pd.concat([output,tmp])
-time.time()-start
-div = output.groupby(['type'])['div'].sum().reset_index()
-# div = div.pivot_table(index=['type'],columns=['type'],values='div').reset_index()
-
-
-daf = output[output['rawDerivedAllele']!=0]
-
-bins = np.arange(0,1.05,0.05)
-labels = [0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1]
-
-daf['categories'] = pd.cut(daf['rawDerivedAllele'],bins=bins,labels=labels)
-
-sfs = daf.groupby(['type','categories']).count().reset_index()
-sfs['rawDerivedAllele'] = sfs['rawDerivedAllele'].fillna(0).astype(int)
-sfs = sfs.groupby(['type'])['rawDerivedAllele'].apply(list).reset_index()
-
-# sfs['p0'] = sum(sfs[sfs['type']=='4fold']['rawDerivedAllele'].iloc[0])
-# sfs['pi'] = sum(sfs[sfs['type']=='0fold']['rawDerivedAllele'].iloc[0])
-
+			tmp = [AF,div,functionalClass]
+			output.append(tmp)
 print(time.time() - start)
 
-# coordinates = '640959,644314,644437,645716,647989,648361,648479,648886,648991,649765,649934,650293,652786,653288,654247,654700,655274,655866,656712,657384,705871,707766,6973477,6973508,6973574,6973684,6973745,6975132,6975514,6975609,6975731,6975856,6975925,6976300,6976373,6981691,6981760,6983250,6983316,6983518,6983583,6985013,6987119,6987200,6999742,6999856'
-# coordinates = array(coordinates.split(',')).astype(int).tolist()
-# coordinates =  [coordinates[i:i+2] for i in range(0, len(coordinates), 2)]
+df = pd.DataFrame(output)
+df['id'] = 'uploaded'
+df.columns = ['derivedAlleleFrequency','d','functionalClass','id']
+
+# Extract divergence data
+div = df[['derivedAlleleFrequency','id','functionalClass','d']]
+div = div.groupby(['id','functionalClass'])['d'].count().reset_index()
+div = div.pivot_table(index=['id'],columns=['functionalClass'],values='d').reset_index()
+div = div[['0fold','4fold']]
+div['mi'] =  matrix[0][np.where(matrix[0]=='0')].shape
+div['m0'] =  matrix[0][np.where(matrix[0]=='4')].shape     
+div.columns = ['Di','D0','mi','m0']
+# div = div.pivot_table(index=['functionalClass'],columns=['functionalClass'],values='div').reset_index()
+
+# Create SFS pd.DataFrame by functionClass and 20 frequency bin
+daf = df[df['d']!=1][['derivedAlleleFrequency','functionalClass','id']]
+bins = np.arange(0,1.05,0.05)
+labels = [0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1]
+daf['categories'] = pd.cut(daf['derivedAlleleFrequency'],bins=bins,labels=labels)
+daf = daf.groupby(['functionalClass','id','categories']).count().reset_index()
+sfs = pd.DataFrame({'daf':daf['categories'].unique(),'P0':daf[daf['functionalClass']=='4fold']['derivedAlleleFrequency'].reset_index(drop=True),'Pi':daf[daf['functionalClass']=='0fold']['derivedAlleleFrequency'].reset_index(drop=True)})
+
+print(time.time() - start)
