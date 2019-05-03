@@ -141,14 +141,8 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 			}
 			else if(test == 'aMKT'){
 
-				# daf1 <- daf
-				# daf1$daf10 <- sort(rep(seq(0.05, 0.95, 0.1), 
-				# 2))
-				# daf1 <- daf1[c("daf10", "Pi", "P0")]
-				# daf1 <- aggregate(. ~ daf10, data = daf1, FUN = sum)
-				# colnames(daf1) <- c("daf", "Pi", "P0")
-
 				mkt <- tryCatch({asymptoticMKT(daf=daf,div=div,xlow=0.1,xhigh=0.9)},error=function(e){mkt<-NULL})
+
 				if(is.null(mkt)){
 					alpha <- NA
 					pvalue <- NA
@@ -173,8 +167,31 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 
 				mkt <- tryCatch({iMKT(daf=daf,div=div,xlow=0,xhigh=0.9,plot=FALSE)},error=function(e){mkt<-NULL})
 				if(is.null(mkt)){
-					alpha <- NA
-					pvalue <- NA
+					# daf1 <- daf
+					# daf1 <- inputDaf
+					# daf1$daf10 <- sort(rep(seq(0.05, 0.95, 0.1), 
+					# 2))
+					# daf1 <- daf1[c("daf10", "Pi", "P0")]
+					# daf1 <- aggregate(. ~ daf10, data = daf1, FUN = sum)
+					# colnames(daf1) <- c("daf", "Pi", "P0")
+
+					mkt <- tryCatch({iMKT(daf=daf1,div=div,xlow=0,xhigh=0.9,plot=FALSE)},error=function(e){mkt<-NULL})
+
+					if(is.null(mkt)){
+						alpha <- NA
+						pvalue <- NA
+					}
+					else{
+						alpha <- mkt$`Asymptotic MK table`$alpha_asymptotic
+						if(alpha > 0 & alpha < 1  & mkt$`Asymptotic MK table`$CI_low > 0 & !is.nan(mkt$`Asymptotic MK table`$CI_low)){
+							pvalue <- 0.005
+						}else if(alpha < 0 & mkt$`Asymptotic MK table`$CI_high < 0 & !is.nan(mkt$`Asymptotic MK table`$CI_high)){
+							pvalue <- 0.005
+						}else{
+							pvalue <- 1
+						}
+					}
+
 				}else{
 					alpha <- mkt$`Asymptotic MK table`$alpha_asymptotic
 					if(alpha > 0 & alpha < 1  & mkt$`Asymptotic MK table`$CI_low > 0 & !is.nan(mkt$`Asymptotic MK table`$CI_low)){
