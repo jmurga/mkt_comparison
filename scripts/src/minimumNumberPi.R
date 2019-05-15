@@ -95,7 +95,7 @@ tableToIter <- function(data=NULL,iterations,combinations=NULL) {
 
 			output[['results']] <- rbind(output[['results']],tmp)
 			ratioP <- output[['results']]$p0[1]/output[['results']]$pi[1]
-			ratioD <- output[['results']]$di[1]/output[['results']]$p0[1]
+			ratioD <- output[['results']]$d0[1]/output[['results']]$di[1]
 			# myPalette <- colorRampPalette(rev(brewer.pal(11, "Spectral")), space="Lab")
 
 			p<-ggplot(output[['results']])
@@ -106,7 +106,7 @@ tableToIter <- function(data=NULL,iterations,combinations=NULL) {
 				# xlab(paste0("Total polymorphic sites (",round(ratioP,3),"P0/Pi)")) + 
 				ylab(bquote("Divergent sites - Ratio"~italic(D)[S]/italic(D)[N]:.(round(ratioD,3)))) + 
 				# ylab(paste0("Total diverge sites (D0/",round(ratioD,3),"Di)"))  +
-				scale_fill_distiller(palette = "Spectral",name="P-value",limits=c(0,1)) + 
+				scale_fill_distiller(palette = "Spectral",name="P-value",limits=c(0,1),direction=1) + 
 				theme(axis.text = element_text(size=14), axis.text.x = element_text(angle=90),legend.position = 'right', legend.direction='vertical',legend.key.size = unit(1,"line")) +
 				scale_x_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 8)) + 
 				scale_y_continuous(expand = c(0,0),breaks = scales::pretty_breaks(n = 8))
