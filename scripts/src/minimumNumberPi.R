@@ -1,7 +1,7 @@
 library(RColorBrewer)
 
 createCombinations <- function(listLengthToExpand,ratioD,ratioP){
-
+	
 	combinations <- list()
 	
 	combinationsD <- suppressMessages(expand.grid(rep(list(1:listLengthToExpand), 2)) %>% as.data.table())
