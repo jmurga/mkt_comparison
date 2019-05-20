@@ -21,12 +21,12 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 			listDiv[[simulation]]$mi <- 1e8
 		}
 		else if(scenario=='length1e6'){
-			  listDiv[[simulation]]$m0<-1e6
-			  listDiv[[simulation]]$mi<-1e6
+			listDiv[[simulation]]$m0<-1e6
+			listDiv[[simulation]]$mi<-1e6
 		}
 		else{
-			  listDiv[[simulation]]$m0<-1e7
-			  listDiv[[simulation]]$mi<-1e7
+			listDiv[[simulation]]$m0<-1e7
+			listDiv[[simulation]]$mi<-1e7
 		}
 		
 		colnames(listDiv[[simulation]]) <- c('Di', 'D0','trueAlpha','m0','mi')
