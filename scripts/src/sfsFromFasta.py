@@ -3,6 +3,7 @@ import time
 import numpy as np
 import pandas as pd
 import pyfaidx as px
+import pybedtools
 def degenerancy(data,codonDict):
 	
 	#DEGENERANCY DICTIONARIES
