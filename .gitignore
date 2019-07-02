@@ -1,4 +1,5 @@
 rawData/*
 software/*
+scripts/src/iMKT*
 !rawData/popflydata.RData
 
