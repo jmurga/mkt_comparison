@@ -163,8 +163,8 @@ wdOnConcatenation <- function(sizes,pop,data){
 
 			if(is.null(resultsiMKT)){
 				
-				output <- rbind(output,c(NA,NA,'aMKT 5%'))
-				resultsiMKT3 <- c(NA,NA,'aMKT')
+				output <- rbind(fractions,data.table(NA,NA,'aMKT 5%'))
+				output <- rbind(fractions,data.table(NA,NA,'aMKT'))
 				
 			}
 			else{

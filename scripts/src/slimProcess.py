@@ -36,7 +36,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="SLiM simulations based on baseline recipe extract from asymptoticMK github, based on Messer et al 2013.")
 
 	# Required arguments
-	parser.add_argument("--recipe", type = str, required = True, help = "Slim recipe to execute",choices=['baseline'])
+	parser.add_argument("--recipe", type = str, required = True, help = "Slim recipe to execute")
 	parser.add_argument("--length", type = float, required = 1e7, help = "0-based start and stop SLiM length to simulate.")
 	parser.add_argument("--mutRate", type = float, required = 1e-9, help = "Mutation rate in the simulated region")
 	parser.add_argument("--recombRate", type = float, required = 1e-7, help = "Recombination rate in the simulated region")
@@ -65,54 +65,55 @@ if __name__ == "__main__":
 	burnin = 10 * args.ancSize
 
 	# Selecting baseline recipe
-	if(args.recipe == 'baseline'):
+
+	slimRecipe = Template(open("/home/jmurga/mkt/201902/scripts/slimRecipes/" + args.recipe + '.slim', "r").read())
+
+	mapping = {
+		# 'genomicElements' : genomicElements,
+		'mutRate' : args.mutRate,
+		'length' : int(args.length),
+		'recombRate' : args.recombRate,
+		'rb' : float(args.rb),
+		'sb' : float(args.sb),
+		'sd' : float(args.sd),
+		'h' : float(args.dominanceCoef),
+		'ancSize' : args.ancSize,
+		'generations' : args.generations,
+		'burnin' : args.burnin,
+		'bins' : int(args.bins),
+		'binsApply' : int(args.bins)-1,
+		'output' : output
+	}
+
+	# print(slimRecipe.substitute(mapping))
 	
-		slimRecipe = Template(open("/home/jmurga/mkt/201902/scripts/slimRecipes/" + args.recipe + '.slim', "r").read())
-
-		mapping = {
-			# 'genomicElements' : genomicElements,
-			'mutRate' : args.mutRate,
-			'length' : int(args.length),
-			'recombRate' : args.recombRate,
-			'rb' : float(args.rb),
-			'sb' : float(args.sb),
-			'sd' : float(args.sd),
-			'h' : float(args.dominanceCoef),
-			'ancSize' : args.ancSize,
-			'generations' : args.generations,
-			'burnin' : args.burnin,
-			'bins' : int(args.bins),
-			'binsApply' : int(args.bins)-1,
-			'output' : output
-		}
-
+	with NamedTemporaryFile("w") as slim_file:
+		print(slimRecipe.substitute(mapping), file= slim_file,flush=True)
 		# print(slimRecipe.substitute(mapping))
+		# d0 = []
+		# d = []
+		# trueAlpha = []
+		divergenceAndTrueAlpha = []
+		listDaf = []
+
+		# Create directory
+		os.makedirs(args.path + args.recipe + '/' + args.output,exist_ok=True)
+
+		for i in range(0,args.replica,1):
+			print(i)
+
+			# Opening slim procces and save custom string output in python variable
+			slimResults = subprocess.run(["/home/jmurga/mkt/201902/software/SLiM2.5/bin/slim", "-s", str(random.randint(1, 10**13)),slim_file.name],universal_newlines=True,stdout=subprocess.PIPE)
+			
+			# Parsing string output, we checked position on slim custom printed output and procces each variable taking into account correspondent positions. 
+			rawResults = slimResults.stdout.split('\n')
 		
-		with NamedTemporaryFile("w") as slim_file:
-			print(slimRecipe.substitute(mapping), file= slim_file,flush=True)
-			# print(slimRecipe.substitute(mapping))
-			# d0 = []
-			# d = []
-			# trueAlpha = []
-			divergenceAndTrueAlpha = []
-			listDaf = []
-
-			# Create directory
-			os.makedirs(args.path + args.output,exist_ok=True)
-
-			for i in range(0,args.replica,1):
-				print(i)
-
-				# Opening slim procces and save custom string output in python variable
-				slimResults = subprocess.run(["/home/jmurga/mkt/201902/software/SLiM2.5/bin/slim", "-s", str(random.randint(1, 10**13)),slim_file.name],universal_newlines=True,stdout=subprocess.PIPE)
-				
-				# Parsing string output, we checked position on slim custom printed output and procces each variable taking into account correspondent positions. 
-				rawResults = slimResults.stdout.split('\n')
-
-				# Need to extract position [0] on list due to split function return a list based on split pattern. Each line is an element at the list
+			# Need to extract position [0] on list due to split function return a list based on split pattern. Each line is an element at the list
+			if(args.recipe=='baseline'):
 				rawD0 = float(rawResults[15:16][0].split(':')[1])
 				rawD = float(rawResults[16:17][0].split(':')[1])
 				rawTrueAlpha = float(rawResults[17:18][0].split(':')[1])
+	
 				rawDaf = rawResults[18:]
 
 				rawDaf = [x.split('\t') for x in rawDaf] 
@@ -126,18 +127,53 @@ if __name__ == "__main__":
 				# d0.append(rawD0)
 				# d.append(rawD)
 				# trueAlpha.append(rawTrueAlpha)
-				tmp = pd.DataFrame({'d':rawD,'d0':rawD0,'trueAlpha':rawTrueAlpha},index=[0])
-				divergenceAndTrueAlpha.append(tmp)
-				listDaf.append(daf)
+				# divergenceAndTrueAlpha.append(div)
+				# listDaf.append(daf)
 
-				tmp.to_csv(args.path + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
+				print(rawWd)
 
-				daf.to_csv(args.path+args.output+'/'+args.output+'daf'+str(i)+'.tab',index=False,header=True, sep='\t')
+				div = pd.DataFrame({'d':rawD,'d0':rawD0,'trueAlpha':rawTrueAlpha},index=[0])
+				print(div)
+				print(daf)
+				div.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
+
+				daf.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output+'daf'+str(i)+'.tab',index=False,header=True, sep='\t')
+
+			elif(args.recipe=='wdFraction'):
+				
+				rawD0 = float(rawResults[15:16][0].split(':')[1])
+				rawD = float(rawResults[16:17][0].split(':')[1])
+				rawWd = rawResults[17:18][0].split(':')[1].split("\t")[1:3]
+				
+				wd = [float(i) for i in rawWd]
+
+				rawTrueAlpha = float(rawResults[18:19][0].split(':')[1])
+				rawDaf = rawResults[19:]
+
+				rawDaf = [x.split('\t') for x in rawDaf] 
+				rawDaf = rawDaf[:-1]
+				header = rawDaf[0]
+				rawDaf = rawDaf[1:]
+
+				daf = pd.DataFrame(rawDaf,columns=header)
+
+				div = pd.DataFrame({'d':rawD,'d0':rawD0,'trueAlpha':rawTrueAlpha,'wd':wd[0],'wdFraction':wd[1]},index=[0])
+
+				
+				div.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
+				daf.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output+'daf'+str(i)+'.tab',index=False,header=True, sep='\t')
+
+				# Save results in lists based on scenario replicas
+				# d0.append(rawD0)
+				# d.append(rawD)
+				# trueAlpha.append(rawTrueAlpha)
+				# divergenceAndTrueAlpha.append(div)
+				# listDaf.append(daf)
 
 
-			# outputDiv = args.path + args.output + '/'
-			# outputDaf = args.path + args.output + '/'
+		# outputDiv = args.path + args.output + '/'
+		# outputDaf = args.path + args.output + '/'
 
-			# Save as RData object including all the scenarios
-			# saveRdata(divergenceAndTrueAlpha,'div.RData',outputDiv,div)
-			# saveRdata(listDaf,'daf.RData',outputDaf,daf)
+		# Save as RData object including all the scenarios
+		# saveRdata(divergenceAndTrueAlpha,'div.RData',outputDiv,div)
+		# saveRdata(listDaf,'daf.RData',outputDaf,daf)

@@ -1,5 +1,7 @@
 rawData/*
 software/*
 scripts/src/iMKT*
+results/b/ciCeu.RData
+results/b/ciRal.RData
 !rawData/popflydata.RData
 
