@@ -61,11 +61,11 @@ $burnin:$generations late()	// generations after burn-in
 
 
 	// Calculate p_0 from polymorphism in m1 mutations
-	p_0 = apply(0:$binsApply, "{ sum((m1_f >= applyValue / 20) & (m1_f < (applyValue + 1) / 20)); }");
+	p_0 = sapply(0:$binsApply, " sum((m1_f >= applyValue / 20) & (m1_f < (applyValue + 1) / 20)); ");
 	
 	// Calculate p from polymorphism in m2+m3 mutations
 	m23_f = c(m2_f, m3_f);
-	p = apply(0:$binsApply, "{ sum((m23_f >= applyValue / 20) & (m23_f < (applyValue + 1) / 20)); }");
+	p = sapply(0:$binsApply, " sum((m23_f >= applyValue / 20) & (m23_f < (applyValue + 1) / 20)); ");
 	
 	// Add this generation's values in to our accumulators
 	sim.setValue("p_0_acc", sim.getValue("p_0_acc") + p_0);
