@@ -35,11 +35,11 @@ initialize() {
 	//INITIALIZE ELEMENT AND MUTATIONS
 	initializeMutationRate(mu);
 	initializeMutationType('m1', $h, 'f', 0.0);// neutral
-	initializeMutationType('m2', $h, 'g', s_d, 0.2);// deleterious
-	//initializeMutationType('m2', $h, 'f', -0.0002);// deleterious
+	initializeMutationType('m2', $h, 'f', s_d);// deleterious
 	initializeMutationType('m3', $h, 'f', s_b);// beneficial
+	initializeMutationType('m4', $h, 'f', 0.0);// beneficial
 	
-	initializeGenomicElementType('g1', c(m1, m2, m3), c(r_f, r_d, r_b));
+	initializeGenomicElementType('g1', c(m1, m2, m3, m4), c(r_f, r_d, r_b,r_f-0.1));
 	initializeGenomicElement(g1, 0, length);
 	initializeRecombinationRate($recombRate);
 
@@ -53,6 +53,7 @@ initialize() {
 	sim.setValue('p_acc', rep(0, $bins));
 	sim.setValue('p_wd', rep(0, $bins));
 	sim.setValue('p_b', rep(0, $bins));
+	sim.setValue('p0', rep(0, $bins));
 
 }
 
@@ -63,7 +64,6 @@ $burnin:$generations late()	// generations after burn-in
 	
 	muts = sim.mutations;
 	gammaMuts = sim.mutationsOfType(m2);
-	gammaMuts = gammaMuts[gammaMuts.selectionCoeff < (-1/$ancSize) & gammaMuts.selectionCoeff > -0.009];
 	
 	gammaMuts = sim.mutationFrequencies(NULL, gammaMuts);
 
@@ -71,17 +71,18 @@ $burnin:$generations late()	// generations after burn-in
 	m1_f = freqs[muts.mutationType == m1];
 	m2_f = freqs[muts.mutationType == m2];
 	m3_f = freqs[muts.mutationType == m3];
+	m4_f = freqs[muts.mutationType == m4];
 
 
 	// Calculate p_0 from polymorphism in m1 mutations
 	p_0 = sapply(0:$binsApply, " sum((m1_f >= applyValue / $bins) & (m1_f < (applyValue + 1) / $bins)); ");
 
 	// Calculate p from polymorphism in m2+m3 mutations
-	m23_f = c(m2_f, m3_f);
-	p = sapply(0:$binsApply, " sum((m23_f >= applyValue / $bins) & (m23_f < (applyValue + 1) / $bins)); ");
+	// m23_f = c(m2_f, m3_f);
+	// p = sapply(0:$binsApply, " sum((m23_f >= applyValue / $bins) & (m23_f < (applyValue + 1) / $bins)); ");
 
-	// m123_f = c(m1_f,m2_f, m3_f);
-	// p = apply(0:$binsApply, "{ sum((m123_f >= applyValue / $bins) & (m123_f < (applyValue + 1) / $bins)); }");
+	m234_f = c(m4_f,m2_f, m3_f);
+	p = sapply(0:$binsApply, " sum((m234_f >= applyValue / $bins) & (m234_f < (applyValue + 1) / $bins)); ");
 	// Calculate sligthly deleterious polymorphism
 	pWd = sapply(0:$binsApply, " sum((gammaMuts >= applyValue / $bins) & (gammaMuts < (applyValue + 1) / $bins)); ");
 	pb = sapply(0:$binsApply, "sum((m3_f >= applyValue / $bins) & (m3_f < (applyValue + 1) / $bins)); ");
@@ -102,11 +103,12 @@ $generations late()
 	m1_subs = subs[subs.mutationType == m1];
 	m2_subs = subs[subs.mutationType == m2];
 	m3_subs = subs[subs.mutationType == m3];
+	m4_subs = subs[subs.mutationType == m4];
 	
 	// Calculate d_0 and d from substitutions of m1 and m2+m3
 	d_0 = m1_subs.size();
-	// d = m1_subs.size() + m2_subs.size() + m3_subs.size();
-	d = m2_subs.size() + m3_subs.size();
+	d = m4_subs.size() + m2_subs.size() + m3_subs.size();
+	//d = m2_subs.size() + m3_subs.size();
 	cat("D0:" + d_0 + "\n");
 	cat("Di:" + d + "\n");
 	

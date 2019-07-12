@@ -83,13 +83,7 @@ sampleAnalysis <- function(data,sampling,bins,population,recomb=FALSE,xlow=0.1,x
 			# daf1 <- aggregate(. ~ daf10, data = daf1, FUN = sum)
 			# colnames(daf1) <- c("daf", "Pi", "P0")
 			
-			resultiMKT <- tryCatch({iMKT(daf=daf,div=divergence,xlow=xlow,xhigh=xhigh,plot=FALSE)},error=function(e){resultiMKT<-NULL})
-
-			if(is.null(resultiMKT)){
-				alphaiMKT <- NA	
-			}else{
-				alphaiMKT <- resultiMKT$`Asymptotic MK table`$alpha_asymptotic
-			}
+			resultiMKT <- tryCatch({iMKT(daf=daf,div=divergence,xlow=xlow,xhigh=xhigh,plot=FALSE);alphaiMKT <- resultiMKT$`Asymptotic MK table`$alpha_asymptotic},error=function(e){alphaiMKT <- NA	})
 			
 			tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaiMKT)
 
@@ -120,7 +114,7 @@ wdOnConcatenation <- function(sizes,pop,data){
 
 		data <- data %>% as.data.table
 		data <- data[pop==population]
-		data$id <- as.character(data$id)
+		data[['id']] <- as.character(data[['id']])
 		fractions <- data.table()
 		ci <- data.table()
 		xlow <- 0; xhigh <- 1
@@ -160,32 +154,40 @@ wdOnConcatenation <- function(sizes,pop,data){
 			
 			
 			resultsiMKT <- tryCatch(iMKT(daf=daf,div=divergence,xlow=xlow,xhigh=xhigh,plot=T),error=function(e){resultiMKT=NULL})
-
+			
+			print(resultsiMKT$Fractions)
 			if(is.null(resultsiMKT)){
-				
-				output <- rbind(fractions,data.table(NA,NA,'aMKT 5%'))
-				output <- rbind(fractions,data.table(NA,NA,'aMKT'))
+
+				fractions <- rbind(fractions,data.table(NA,NA,'aMKT'))
+				fractions <- rbind(fractions,data.table(NA,NA,'aMKT 5%'))
+				fractions <- rbind(fractions,data.table(NA,NA,'aMKT S'))
+				fractions <- rbind(fractions,data.table(NA,NA,'aMKT notCorrected'))
 				
 			}
 			else{
 
-				fractions <- rbind(fractions,data.table(resultsiMKT[['Fractions']][2,2],resultsiMKT[['Fractions']][4,2],'aMKT 5%'))
-				fractions <- rbind(fractions,data.table(resultsiMKT[['Fractions']][3,2],resultsiMKT[['Fractions']][5,2],'aMKT'))
+				fractions <- rbind(fractions,data.table(NA,resultsiMKT[['Fractions']][2,2],'aMKT'))
+				fractions <- rbind(fractions,data.table(NA,resultsiMKT[['Fractions']][3,2],'aMKT S'))
+				fractions <- rbind(fractions,data.table(NA,resultsiMKT[['Fractions']][4,2],'aMKT 5%'))
+				fractions <- rbind(fractions,data.table(NA,resultsiMKT[['Fractions']][5,2],'aMKT notCorrected'))
+				
 
 				ci <- rbind(ci,data.table(resultsiMKT[['asymptoticMkTable']][['alpha_asymptotic']],resultsiMKT[['asymptoticMkTable']][['CI_low']],resultsiMKT[['asymptoticMkTable']][['CI_high']],as.numeric(s)))
 			}
 		}
 		
 		colnames(fractions) <- c('f','b','test')
-		fractions[['test']] <- factor(fractions[['test']],levels=c('eMKT 5%','eMKT 10%','aMKT 5%','aMKT'))
+		fractions[['test']] <- factor(fractions[['test']],levels=c('eMKT 5%','eMKT 10%','aMKT','aMKT S','aMKT 5%','aMKT notCorrected'))
 	 	
-		df <- melt(fractions)
+		# df <- melt(fractions)
+		df <- melt(fractions[,2:3])
 
 		p <- ggplot(df) + geom_boxplot(aes(x=test,y=value,fill=variable)) + themePublication() + scaleFillPublication() + xlab('Method') + ylab('Proportion of mutations') + guides(fill=guide_legend(title='Mutation type'))
 
 		out[[paste0(s)]][['plot']] <- p
 		colnames(ci) <- c('alpha','ciLow','ciHigh','subetLength')
 		out[[paste0(s)]][['ci']] <- ci
+		out[[paste0(s)]][['Fractions']] <- fractions
 
 	}
 

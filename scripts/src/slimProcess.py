@@ -55,7 +55,7 @@ if __name__ == "__main__":
 	parser.add_argument("--output", type = str,help = "Output name without extension")
 
 	# Default arguments
-	parser.add_argument("--path", type = str, default = '/home/jmurga/mkt/201902/rawData/dmel/simulations/', help = "Path to output file")
+	parser.add_argument("--path", type = str, default = '/home/jmurga/mkt/201902/rawData/simulations/', help = "Path to output file")
 
 	
 	# Parsing common arguments
@@ -143,7 +143,7 @@ if __name__ == "__main__":
 				div.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
 
 				daf.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output+'daf'+str(i)+'.tab',index=False,header=True, sep='\t')
-			elif(args.recipe=='wdFraction'):
+			elif(args.recipe=='wdFraction' or args.recipe=='fixedWdFraction'):
 
 				print(rawResults)
 
@@ -163,13 +163,25 @@ if __name__ == "__main__":
 				rawDaf = rawDaf[1:-1]
 
 				daf = pd.DataFrame(rawDaf,columns=header,dtype=float)
+
+				uDaf = daf[daf['daf'] <= 0.3]
+				bDaf = daf[daf['daf'] > 0.3]
+				
+				b = np.arange(0.3,1.10,0.05)
+				l = np.arange(0.3,1.05,0.05)
+
+				bDaf['daf'] = pd.cut(bDaf['daf'], bins=b,labels=l)
+				bDaf = bDaf.groupby(['daf']).sum().reset_index()
+
+				newDaf = pd.concat([uDaf,bDaf])
+
 				div = pd.DataFrame({'Di':rawD,'D0':rawD0,'trueAlpha':rawTrueAlpha,'mi':1e7,'m0':1e7},index=[0],dtype=float)
 
-				print(daf)
+				print(newDaf)
 				print(div)
 
 				div.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
-				daf.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output+'daf'+str(i)+'.tab',index=False,header=True, sep='\t')
+				newDaf.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output+'daf'+str(i)+'.tab',index=False,header=True, sep='\t')
 
 				# Save results in lists based on scenario replicas
 				# d0.append(rawD0)
