@@ -16,11 +16,11 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 		# Format data from each replicate
 		colnames(listDaf[[simulation]]) <- c('daf','Pi','P0')
 		
-		if(scenario=='length1e8'){
+		if(scenario == 'length1e8'){
 			listDiv[[simulation]]$m0<-1e8
 			listDiv[[simulation]]$mi <- 1e8
 		}
-		else if(scenario=='length1e6'){
+		else if(scenario == 'length1e6'){
 			listDiv[[simulation]]$m0<-1e6
 			listDiv[[simulation]]$mi<-1e6
 		}
@@ -55,16 +55,16 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 		##Asymptotic
 		alphaAsymptotic0.1 <- tryCatch({
 			resultiMK0.1 <- iMKT(listDaf[[simulation]],divergence,xlow = 0.1, xhigh = 0.9)
-			alphaAsymptotic0.1 <- resultiMK0.1$`Asymptotic MK table`$alpha_asymptotic
+			alphaAsymptotic0.1 <- resultiMK0.1$asymptoticMkTable$alpha_asymptotic
 			},error=function(e){ alphaAsymptotic0.1 <- NA; alphaAsymptotic <- NA}
 		)
 
 		alphaAsymptotic <- tryCatch({
 			resultiMK <- iMKT(listDaf[[simulation]],divergence,xlow = 0, xhigh = 1)
-			alphaAsymptotic <- resultiMK$`Asymptotic MK table`$alpha_asymptotic
+			alphaAsymptotic <- resultiMK$asymptoticMkTable$alpha_asymptotic
 			},error=function(e){ alphaAsymptotic0.1 <- NA; alphaAsymptotic <- NA})
 
-		result <- data.frame(simulation,alphaStandard,alphaDGRP0.05,alphaDGRP0.1,alphaFWW0.05,alphaFWW0.1,alphaAsymptotic,alphaAsymptotic0.1,trueAlpha)
+		result <- data.table(simulation,alphaStandard,alphaDGRP0.05,alphaDGRP0.1,alphaFWW0.05,alphaFWW0.1,alphaAsymptotic,alphaAsymptotic0.1,trueAlpha)
 		output <- rbind(output,result)
  
 	}
@@ -96,14 +96,14 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 		geom_boxplot(color="grey20",alpha=0.7) + 
 		labs(x = "MKT methods", y=expression(italic(α))) + 
 		themePublication() + 
-		scaleFillPublication(name="Method", labels=c("alphaStandard"="Standard", "alphaDGRP0.05" = "eMKT 5%", "alphaDGRP0.1" = "eMKT 10%", "alphaFWW0.05" = "FWW 5%", "alphaFWW0.1" = "FWW 10%","alphaAsymptotic"="Asymptotic MKT","alphaAsymptotic0.1"="Asymptotic MKT", "trueAlpha"="Real alpha")) + 
+		scaleFillPublication(name="Method", labels=c("alphaStandard"="Standard", "alphaDGRP0.05" = "eMKT 5%", "alphaDGRP0.1" = "eMKT 10%", "alphaFWW0.05" = "FWW 5%", "alphaFWW0.1" = "FWW 10%","alphaAsymptotic"="Asymptotic MKT","alphaAsymptotic0.1"="Asymptotic MKT", "trueAlpha"="True alpha")) + 
 		scale_y_continuous(breaks = pretty(dataPlot$value, n = 5)) + 
-		scale_x_discrete(labels=c("alphaStandard"="Standard", "alphaDGRP0.05" = "eMKT 5%", "alphaDGRP0.1" = "eMKT 10%", "alphaFWW0.05" = "FWW 5%", "alphaFWW0.1" = "FWW 10%","alphaAsymptotic"="Asymptotic MKT","alphaAsymptotic0.1"="Asymptotic MKT", "trueAlpha"="Real alpha")) +  
+		scale_x_discrete(labels=c("alphaStandard"="Standard", "alphaDGRP0.05" = "eMKT 5%", "alphaDGRP0.1" = "eMKT 10%", "alphaFWW0.05" = "FWW 5%", "alphaFWW0.1" = "FWW 10%","alphaAsymptotic"="Asymptotic MKT","alphaAsymptotic0.1"="Asymptotic MKT 0.1-0.9", "trueAlpha"="True alpha")) +  
 		guides(fill=FALSE) + 
 		ggtitle(paste0(scenario)) + 
 		theme(axis.text.x = element_text(angle = 45, hjust = 1,size=20),axis.text.y= element_text(size=20),plot.title=element_text(size=20),axis.title.y = element_text(size=24),axis.title.x = element_text(size=24))
 
-	method <- rep(c("Standard","eMKT cutoff 5%","eMKT DGRP 10%","FWW cutoff 5%","MKT FWW cutoff 10%","Asymptotic MKT","Asymptotic MKT","Real alpha"),2)
+	method <- rep(c("Standard","eMKT cutoff 5%","eMKT DGRP 10%","FWW cutoff 5%","MKT FWW cutoff 10%","Asymptotic MKT","Asymptotic MKT 0.1-0.9","True alpha"),2)
 					 
 
 	plotTable[['plot']] <- plotAlpha

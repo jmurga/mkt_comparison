@@ -83,7 +83,11 @@ sampleAnalysis <- function(data,sampling,bins,population,recomb=FALSE,xlow=0.1,x
 			# daf1 <- aggregate(. ~ daf10, data = daf1, FUN = sum)
 			# colnames(daf1) <- c("daf", "Pi", "P0")
 			
-			resultiMKT <- tryCatch({iMKT(daf=daf,div=divergence,xlow=xlow,xhigh=xhigh,plot=FALSE);alphaiMKT <- resultiMKT$`Asymptotic MK table`$alpha_asymptotic},error=function(e){alphaiMKT <- NA	})
+			tryCatch({resultiMKT <- iMKT(daf=daf,div=divergence,xlow=xlow,xhigh=xhigh,plot=FALSE)},error=function(e){alphaiMKT <- NA})
+			
+			if(is.null(alphaiMKT)){
+				alphaiMKT <- NA
+			}
 			
 			tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaiMKT)
 
