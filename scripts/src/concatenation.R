@@ -90,7 +90,7 @@ sampleAnalysis <- function(data,sampling,bins,population,recomb=FALSE,xlow=0.1,x
 			}
 			
 			tmp <- data.frame(alphaStandard,alphaDGRP0.05,alphaDGRP0.15,alphaFWW0.05,alphaFWW0.15,alphaiMKT)
-
+			
 		}
 		
 		
