@@ -11,6 +11,7 @@ import os
 import random
 import subprocess
 import pandas as pd
+import numpy as np
 # import rpy2
 # import rpy2.robjects as robjects
 from string import Template
@@ -21,8 +22,8 @@ from tempfile import NamedTemporaryFile
 # pandas2ri.activate()
 
 
-# Write lists to an .RData file. Two functions in order to save differents global variable name.
-def saveRdata(ls,filename,path,variableName):
+# Write lists to an .deleteriousFreqata file. Two functions in odeleteriousFreqer to save differents global variable name.
+def savedeleteriousFreqata(ls,filename,path,variableName):
 	robjects.r.assign('{}', robjects.Vector(ls)).format(variableName)
 	robjects.r("save({}, file='{}{}')".format(variableName,path,filename))
 
@@ -41,27 +42,28 @@ if __name__ == "__main__":
 	parser.add_argument("--mutRate", type = float, required = 1e-9, help = "Mutation rate in the simulated region")
 	parser.add_argument("--recombRate", type = float, required = 1e-7, help = "Recombination rate in the simulated region")
 	parser.add_argument("--dominanceCoef", type = float, required = 0.5, help = "")
-	parser.add_argument("--rf", type = float, required = 0.5, help = "")
-	parser.add_argument("--rd", type = float, required = 0.5, help = "")
-	parser.add_argument("--rb", type = float, required = 0.0005, help = "")
-	parser.add_argument("--sd", type = float, required = 0.1, help = "")
-	parser.add_argument("--sb", type = float, required = 0.2, help = "")
+	parser.add_argument("--neutralFreq", type = float, required = 0.5, help = "")
+	parser.add_argument("--deleteriousFreq", type = float, required = 0.5, help = "")
+	parser.add_argument("--beneficialFreq", type = float, required = 0.0005, help = "")
+	parser.add_argument("--deleteriousFitness", type = float, required = 0.1, help = "")
+	parser.add_argument("--beneficialFitness", type = float, required = 0.2, help = "")
 	parser.add_argument("--ancSize", type = int, required = 1000, help = "Effective population size of the ancestral population")
 	parser.add_argument("--burnin", type = int, required = 10000, help = "Burnin period")
 	parser.add_argument("--generations", type = int, required = 210000, help = "Burnin period")
 	parser.add_argument("--bins", type = int, required = 20, help = "Burnin period")
 	parser.add_argument("--replica", type = int, required = 20, help = "Number of replica by scenario")
 
-	parser.add_argument("--output", type = str,help = "Output name without extension")
-
+	parser.add_argument("--scenario", type = str,help = "Output name without extension")
+	parser.add_argument("--output", type = str,help = "output")
+	
 	# Default arguments
-	parser.add_argument("--path", type = str, default = '/home/jmurga/mkt/201902/rawData/simulations/', help = "Path to output file")
+	parser.add_argument("--path", type = str, default = '/home/jmurga/mkt/201902/rawData/simulations', help = "Path to output file")
 
 	
 	# Parsing common arguments
 	args = parser.parse_args()
 
-	output = args.path + '/' + args.output + '.txt'
+	output = args.path + '/' + args.recipe + '/' + args.scenario + '/' + args.output
 	regions = pd.DataFrame({'start':0, 'end':args.length}, index=[0])
 	regions = regions[['start','end']]
 	burnin = 10 * args.ancSize
@@ -75,32 +77,28 @@ if __name__ == "__main__":
 		'mutRate' : args.mutRate,
 		'length' : int(args.length),
 		'recombRate' : args.recombRate,
-		'rf' : float(args.rf),
-		'rb' : float(args.rb),
-		'rd' : float(args.rd),
-		'sb' : float(args.sb),
-		'sd' : float(args.sd),
+		'neutralFreq' : float(args.neutralFreq),
+		'beneficialFreq' : float(args.beneficialFreq),
+		'deleteriousFreq' : float(args.deleteriousFreq),
+		'beneficialFitness' : float(args.beneficialFitness),
+		'deleteriousFitness' : float(args.deleteriousFitness),
 		'h' : float(args.dominanceCoef),
 		'ancSize' : args.ancSize,
 		'generations' : args.generations,
 		'burnin' : args.burnin,
 		'bins' : int(args.bins),
-		'binsApply' : int(args.bins)-1,
 		'output' : output
 	}
+
+
 
 	# print(slimRecipe.substitute(mapping))
 	
 	with NamedTemporaryFile("w") as slim_file:
 		print(slimRecipe.substitute(mapping), file= slim_file,flush=True)
-		
-		# print(slimRecipe.substitute(mapping))
-		
-		divergenceAndTrueAlpha = []
-		listDaf = []
 
 		# Create directory
-		os.makedirs(args.path + args.recipe + '/' + args.output,exist_ok=True)
+		os.makedirs(output,exist_ok=True)
 
 		for i in range(0,args.replica,1):
 			print(i)
@@ -110,16 +108,16 @@ if __name__ == "__main__":
 			slimResults = subprocess.run(["/home/jmurga/mkt/201902/software/SLiM3.3/slim", "-s", str(random.randint(1, 10**13)),slim_file.name],universal_newlines=True,stdout=subprocess.PIPE)
 			
 			# Parsing string output, we checked position on slim custom printed output and procces each variable taking into account correspondent positions. Excluding recipe execution info
-			rawResults = slimResults.stdout.split('\n')
-			rawResults = rawResults[15:]
-		
+			slimResults = slimResults.stdout.split('\n')
+			
 			# Need to extract position [0] on list due to split function return a list based on split pattern. Each line is an element at the list
 			if(args.recipe=='baseline'):
-				rawD0 = float(rawResults[15:16][0].split(':')[1])
-				rawD = float(rawResults[16:17][0].split(':')[1])
-				rawTrueAlpha = float(rawResults[17:18][0].split(':')[1])
+
+				rawD0 = float(slimResults[15:16][0].split(':')[1])
+				rawD = float(slimResults[16:17][0].split(':')[1])
+				rawTrueAlpha = float(slimResults[17:18][0].split(':')[1])
 	
-				rawDaf = rawResults[18:]
+				rawDaf = slimResults[18:]
 
 				rawDaf = [x.split('\t') for x in rawDaf] 
 				rawDaf = rawDaf[:-1]
@@ -135,65 +133,49 @@ if __name__ == "__main__":
 				# divergenceAndTrueAlpha.append(div)
 				# listDaf.append(daf)
 
-				print(rawWd)
+				print(daf)
 
 				div = pd.DataFrame({'d':rawD,'d0':rawD0,'trueAlpha':rawTrueAlpha},index=[0])
-				print(div)
-				print(daf)
+				
 				div.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
 
 				daf.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output+'daf'+str(i)+'.tab',index=False,header=True, sep='\t')
-			elif(args.recipe=='wdFraction' or args.recipe=='fixedWdFraction'):
 
-				print(rawResults)
+			elif(args.recipe=='wdEstimation'):
+					
+				# Cleaning results
+				# Daf
+				slimDaf = slimResults[slimResults.index('daf\tPi\tP0\tPneu\tPwd'):slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tb')]
+				slimDaf = [x.split('\t') for x in slimDaf]
 
-				# # Divergence values
-				rawD0 = float(rawResults[0:1][0].split(':')[1])
-				rawD = float(rawResults[1:2][0].split(':')[1])
+				# Header
+				h = slimDaf[0]
 
-				# True alpha values
-				rawTrueAlpha = float(rawResults[2:3][0].split(':')[1])
+				# Daf
+				d = slimDaf[1:]
+
+				daf = pd.DataFrame(d,columns=h)
+				print(daf)
 				
-				# Daf values
-				rawDaf = rawResults[3:]
-				# rawDaf = rawResults[-22:]
-
-				rawDaf = [x.split('\t') for x in rawDaf] 
-				header = rawDaf[0]
-				rawDaf = rawDaf[1:-1]
-
-				daf = pd.DataFrame(rawDaf,columns=header,dtype=float)
-
-				uDaf = daf[daf['daf'] <= 0.3]
-				bDaf = daf[daf['daf'] > 0.3]
+				# Processing div info
+				slimDiv = slimResults[slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tb'):-1]
+				slimDiv = [x.split('\t') for x in slimDiv]
 				
-				b = np.arange(0.3,1.10,0.05)
-				l = np.arange(0.3,1.05,0.05)
+				# Header
+				h = slimDiv[0]
+				# Divergence
+				d = slimDiv[1]
 
-				bDaf['daf'] = pd.cut(bDaf['daf'], bins=b,labels=l)
-				bDaf = bDaf.groupby(['daf']).sum().reset_index()
+				div = pd.DataFrame([d],columns=h)
 
-				newDaf = pd.concat([uDaf,bDaf])
-
-				div = pd.DataFrame({'Di':rawD,'D0':rawD0,'trueAlpha':rawTrueAlpha,'mi':1e7,'m0':1e7},index=[0],dtype=float)
-
-				print(newDaf)
 				print(div)
 
-				div.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
-				newDaf.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output+'daf'+str(i)+'.tab',index=False,header=True, sep='\t')
-
-				# Save results in lists based on scenario replicas
-				# d0.append(rawD0)
-				# d.append(rawD)
-				# trueAlpha.append(rawTrueAlpha)
-				# divergenceAndTrueAlpha.append(div)
-				# listDaf.append(daf)
-
+				daf.to_csv(output + '/' + 'daf' + str(i) + '.tab',index=False,header=True, sep='\t')
+				div.to_csv(output + '/' + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
 
 		# outputDiv = args.path + args.output + '/'
 		# outputDaf = args.path + args.output + '/'
 
-		# Save as RData object including all the scenarios
-		# saveRdata(divergenceAndTrueAlpha,'div.RData',outputDiv,div)
-		# saveRdata(listDaf,'daf.RData',outputDaf,daf)
+		# Save as deleteriousFreqata object including all the scenarios
+		# savedeleteriousFreqata(divergenceAndTrueAlpha,'div.deleteriousFreqata',outputDiv,div)
+		# savedeleteriousFreqata(listDaf,'daf.deleteriousFreqata',outputDaf,daf)

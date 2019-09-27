@@ -1,0 +1,152 @@
+//  simulate_alpha.slim
+//  asymptoticMK
+//
+//  Created by Ben Haller on 3/12/2017.
+//  Copyright (c) 2017 Philipp Messer.  All rights reserved.
+//  A product of the Messer Lab, http://messerlab.org/
+//
+//  This file is part of asymptoticMK.
+//
+//  asymptoticMK is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+//
+//  asymptoticMK is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along with asymptoticMK.  If not, see <http://www.gnu.org/licenses/>.
+// This web service should be available at http://benhaller.com/messerlab/asymptoticMK.html
+// The Github repository for asymptoticMK is at https://github.com/MesserLab/asymptoticMK
+initialize() {
+	// These are the parameters we vary; the run length is varied by modifying the
+	// generations used for the events below.
+	// This is the baseline recipe modificate to parse any value on python script
+
+
+	//DEFINE CONSTANT TO INITIALIZE GENOMIC ELEMENT AND MUTATIONS TYPE
+	defineConstant('mu', $mutRate);
+	defineConstant('length', $length);
+	defineConstant('bins', $bins);
+
+	defineConstant('neutralFreq', $neutralFreq);
+	defineConstant('beneficialFreq', $beneficialFreq);
+	defineConstant('deleteriousFreq', $deleteriousFreq);
+	defineConstant('deleteriousFitness', $deleteriousFitness);
+	defineConstant('beneficialFitness', $beneficialFitness);
+	defineConstant('h', $h);
+
+	//INITIALIZE ELEMENT AND MUTATIONS
+	initializeMutationRate(mu);
+	initializeMutationType('m1', $h, 'f', 0);// neutral
+	initializeMutationType('m2', $h, 'g', deleteriousFitness, 4);// deleterious
+	initializeMutationType('m3', $h, 'f', beneficialFitness);// beneficial
+	initializeMutationType('m4', h, 'f', 0);// neutral
+
+
+	initializeGenomicElementType('g1', c(m1), c(1)); //mS
+	initializeGenomicElementType('g2', c(m4, m2, m3), c(neutralFreq,deleteriousFreq,beneficialFreq)); //mN
+	initializeGenomicElement(g2, 0, length);
+	//initializeGenomicElement(g1, length+1, (length+length+1));
+	initializeGenomicElement(g1, length+1, (length+1e7+1));
+
+	initializeRecombinationRate($recombRate);	
+
+}
+
+1 {
+
+	sim.addSubpop('p1', 1000);
+
+	sim.setValue('p0', rep(0, bins));
+	sim.setValue('pi', rep(0, bins));
+	sim.setValue('pwd', rep(0, bins));
+	
+
+}
+
+$burnin:$generations late()	// generations after burn-in
+{
+	if (sim.generation % 500 != 0)
+		return;
+	
+	muts = sim.mutations;
+
+	freqs = sim.mutationFrequencies(NULL);
+	m1_f = freqs[muts.mutationType == m1];
+	m2_f = freqs[muts.mutationType == m2];
+	m4_f = freqs[muts.mutationType == m4];
+
+
+	// Calculate p_0 from polymorphism in m1 mutations
+	p0Count = sapply(0:(bins-1), " sum((m1_f >= applyValue / bins) & (m1_f < (applyValue + 1) / bins)); ");
+
+	// Calculate p from polymorphism in m1+m2 mutations
+	m42_f = c(m4_f,m2_f);
+	piCount = sapply(0:(bins-1), " sum((m42_f >= applyValue / bins) & (m42_f < (applyValue + 1) / bins)); ");
+	pwdCount = sapply(0:(bins-1), " sum((m2_f >= applyValue / bins) & (m2_f < (applyValue + 1) / bins)); ");
+	
+	
+	// Add this generation's values in to our accumulators
+	sim.setValue("p0", sim.getValue("p0") + p0Count);
+	sim.setValue("pi", sim.getValue("pi") + piCount);
+	sim.setValue("pwd", sim.getValue("pwd") + pwdCount);
+
+}
+
+$generations late()
+{
+	// Get substitution and mutation info
+	subs = sim.substitutions;
+	m1_subs = subs[subs.mutationType == m1];
+	m4_subs = subs[subs.mutationType == m4];
+	m3_subs = subs[subs.mutationType == m3];
+	
+	// Calculate d_0 and d from substitutions of m1 and m2+m3
+	d0 = m1_subs.size();
+	di = m4_subs.size() + m3_subs.size();
+
+	f = (0:(bins-1) + 0.5) / bins;
+	
+	// Emit p0, pi and pwd
+	p0 = sim.getValue("p0");
+	pi = sim.getValue("pi");
+	pwd = sim.getValue("pwd");	
+
+	// Calculate the true alpha: m3 / (m4+m3) substitutions
+	trueAlpha = m3_subs.size() / (m3_subs.size() + m4_subs.size());
+	// Calculate the non-asymptotic MK estimate
+	alpha = 1 - (d0/di) * (sum(pi)/sum(p0));
+	
+
+	// Output data in the format expected by the MK web service
+	cat("daf\tPi\tP0\tPneu\tPwd\n");
+	
+	for (i in 0:(bins-1)){
+		catn(f[i] + "\t" + pi[i] + "\t" + p0[i] + "\t" + (pi[i]-pwd[i]) + "\t" + pwd[i]);
+	}
+
+
+	catn('D0\tDi\tm0\tmi\ttrueAlpha\tb');
+	catn(d0 + '\t' + di + '\t' + length + '\t' + length + '\t' + trueAlpha + '\t' + (sum(pwd)/sum(p0)*(length/length)));
+
+	//nSyn = (subs.position < length);
+	//syn = (subs.position > length);
+//
+	//catn(size(subs) + " substitutions occurred.");
+	//catn(mean(subs[syn].mutationType == m1)*100 + "% are neutral in S.");
+	//catn(mean(subs[nSyn].mutationType == m4)*100 + "% are neutral in NS.");
+	//catn(mean(subs[nSyn].mutationType == m2)*100 + "% are non-neutral in NS.");
+	//catn(mean(subs[nSyn].mutationType == m3)*100 + "% are non-neutral in NS.");
+	//catn();
+	//catn();
+//
+	//catn('++++++++++++++++++');
+	//catn(size(m1_subs));
+	//catn(size(m2_subs));
+	//catn(size(m3_subs));
+	//catn(size(m4_subs));
+	//catn();
+	//catn();
+	// Emit f
+
+
+}
