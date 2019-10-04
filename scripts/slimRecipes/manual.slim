@@ -1,0 +1,191 @@
+initialize() {
+
+	//DEFINE CONSTANT TO INITIALIZE GENOMIC ELEMENT AND MUTATIONS TYPE
+	defineConstant('mu', 1e-9);
+	defineConstant('length', 1e7);
+	defineConstant('bins', 20);
+	defineConstant('proportion', 2);
+	defineConstant('nameDaf', 'dafBaseProp2');
+	defineConstant('nameDiv', 'divBaseProp2');
+
+	defineConstant('neutralFreq', 0.5);
+	defineConstant('beneficialFreq', 0.0005);
+	defineConstant('deleteriousFreq', 0.5);
+	defineConstant('deleteriousFitness', -0.02);
+	defineConstant('beneficialFitness', 0.1);
+	defineConstant('gammaShape', 0.2);
+	defineConstant('h', 0.5);
+	
+	
+
+
+	//INITIALIZE ELEMENT AND MUTATIONS
+	initializeMutationRate(mu);
+	initializeRecombinationRate(1e-8);
+	initializeMutationType('m1', h, 'f', 0);// neutral
+	initializeMutationType('m2', h, 'g', deleteriousFitness, gammaShape);// deleterious
+	initializeMutationType('m3', h, 'f', beneficialFitness);// beneficial
+
+	//Non-synonymous positions
+	initializeGenomicElementType('g1', c(m2,m3), c(deleteriousFreq,beneficialFreq));  
+	// Synonymous positions
+	initializeGenomicElementType('g2', c(m1), c(neutralFreq));
+	
+	types = rep(c(g1,g2), length);
+
+	if(proportion == 1)
+	{
+		starts = repEach(seqLen(length) * 2, 2) + rep(c(0,1), length);
+		ends = repEach(seqLen(length) * 2, 2) + rep(c(0,1), length);		
+	}
+	else
+	{
+		starts = repEach(seqLen(length) * 3, 2) + rep(c(0,2), length);	
+		ends = starts + rep(c(1,0), length);
+	}
+
+	//Intercalate starts and ends with genomcis elements; each coordinate [start[0]-end[0]] contains non-synonymous positions (length==2) and synonymous positions (length==1) changing length between elements
+	initializeGenomicElement(types, starts, ends);
+	//Example		//Example2
+	//<g1> <g2>		//<g1> <g2>
+	//0 	2 		//0 	1 
+	//1 	2 		//0 	1 
+	//l=2	l=1		//l=1	l=1
+
+
+}
+
+1 {
+
+	sim.addSubpop('p1', 1000);
+
+	sim.setValue('p0', rep(0, bins));
+	sim.setValue('pi', rep(0, bins));
+	sim.setValue('pwd', rep(0, bins));
+	sim.setValue('pneu', rep(0, bins));
+	
+
+}
+
+10000:21000 late()	// generations after burn-in
+{
+
+	if (sim.generation % 500 != 0)
+	{
+		return;
+	}
+	
+	muts = sim.mutations;
+	// Get m2 mutations
+	gammaMuts = sim.mutationsOfType(m2);
+	//Check weaklyDel through fitness coefficient in gamma distribution
+	weaklyDeleterious = gammaMuts[gammaMuts.selectionCoeff < (-1/1000)];
+	weaklyDeleterious = sim.mutationFrequencies(NULL, weaklyDeleterious);
+	//Check effectively neutral mutations through fitness coefficient in gamma distribution
+	effectivelyNeutral = gammaMuts[gammaMuts.selectionCoeff >= (-1/1000)];
+	effectivelyNeutral = sim.mutationFrequencies(NULL, effectivelyNeutral);
+
+	//Get all mutations frequencies
+	freqs  = sim.mutationFrequencies(NULL);
+	m1Freq = freqs[muts.mutationType == m1];
+	m2Freq = freqs[muts.mutationType == m2];
+	m3Freq = freqs[muts.mutationType == m3];
+
+
+	// Calculate p0 from polymorphism in m1 mutations
+	p0Count   = sapply(0:(bins-1), " sum((m1Freq >= applyValue / bins) & (m1Freq < (applyValue + 1) / bins)); ");
+	
+	// Calculate pi from polymorphism in m2+m3 mutations
+	m23Freq   = c(m2Freq,m3Freq);
+	piCount   = sapply(0:(bins-1), " sum((m23Freq >= applyValue / bins) & (m23Freq < (applyValue + 1) / bins)); ");
+	pwdCount  = sapply(0:(bins-1), " sum((weaklyDeleterious >= applyValue / bins) & (weaklyDeleterious < (applyValue + 1) / bins)); ");
+	pneuCount = sapply(0:(bins-1), " sum((effectivelyNeutral >= applyValue / bins) & (effectivelyNeutral < (applyValue + 1) / bins)); ");
+	
+	
+	// Add this generation's values in to variables	
+	sim.setValue("p0", sim.getValue("p0") + p0Count);
+	sim.setValue("pi", sim.getValue("pi") + piCount);
+	sim.setValue("pwd", sim.getValue("pwd") + pwdCount);
+	sim.setValue("pneu", sim.getValue("pneu") + pneuCount);
+
+}
+
+21000 late()
+{
+
+
+	// Get substitution and mutation info
+	subs = sim.substitutions;
+
+	m1Subs = subs[subs.mutationType == m1];
+	m2Subs = subs[subs.mutationType == m2];
+	//Any m2 substitution should be an effectively neutral mutation
+	effectivelyNeutralDiv = m2Subs[m2Subs.selectionCoeff > (-1/1000)];
+	m3Subs = subs[subs.mutationType == m3];
+	
+	// Calculate d and di from substitutions of m1 and m2+m3
+	d0 = m1Subs.size();
+	di = m2Subs.size() + m3Subs.size();
+
+	//Extract mi and m0
+	if(proportion == 1)
+	{
+		mi = length / 2;
+		m0 = length / 2;
+	}
+	else
+	{
+		mi = length - (length / 3);
+		m0 = length / 3;
+	}
+ 
+
+	f = (0:(bins-1) + 0.5) / bins;
+	
+	// Emit p0, pi and pwd
+	p0 = sim.getValue("p0");
+	pi = sim.getValue("pi");
+	pwd = sim.getValue("pwd");	
+	pneu = sim.getValue("pneu");	
+
+	// Calculate the true alpha: m3 / (m2+m3) substitutions
+	trueAlpha = m3Subs.size() / (m3Subs.size() + m2Subs.size());
+	// Calculate the non-asymptotic MK estimate
+	alpha = 1 - (d0/di) * (sum(pi)/sum(p0));
+	
+
+	// Output data in the format expected by the MK web service
+	catn("daf\tPi\tP0\tPneu\tPwd");
+	line = "daf\tPi\tP0\tPneu\tPwd";
+	writeFile("/home/jmurga/mkt/201902/scripts/slimRecipes/" + nameDaf + ".tab", line, append=F);
+	for (i in 0:(bins-1)){
+		catn(f[i] + "\t" + pi[i] + "\t" + p0[i] + "\t" + pneu[i] + "\t" + pwd[i]);
+		line = f[i] + "\t" + pi[i] + "\t" + p0[i] + "\t" + pneu[i] + "\t" + pwd[i];
+		writeFile("/home/jmurga/mkt/201902/scripts/slimRecipes/" + nameDaf+".tab", line, append=T);
+	}
+
+	catn("Pi\tP0\tPneu\tPwd");
+	catn(sum(pi) + '\t' + sum(p0)+ '\t' +sum(pneu)+ '\t' +sum(pwd));
+
+
+	catn('D0\tDi\tm0\tmi\ttrueAlpha\tb');
+	catn(d0 + '\t' + di + '\t' + m0 + '\t' + mi + '\t' + trueAlpha + '\t' + (sum(pwd)/sum(p0)*(m0/mi)));
+	
+	line = 'D0\tDi\tm0\tmi\ttrueAlpha\tb';
+	writeFile("/home/jmurga/mkt/201902/scripts/slimRecipes/" + nameDiv+".tab", line, append=F);
+	line = d0 + '\t' + di + '\t' + m0 + '\t' + mi + '\t' + trueAlpha + '\t' + (sum(pwd)/sum(p0)*(m0/mi));
+	writeFile("/home/jmurga/mkt/201902/scripts/slimRecipes/" + nameDiv+".tab", line, append=T);
+	
+
+	syn = (subs.position % 3 == 2);
+	nSyn = !syn;
+	
+	catn('--------------------');
+	catn(size(subs) + " substitutions occurred.");
+	catn(mean(subs[syn].mutationType == m1)*100 + "% are neutral in S.");
+	catn(mean(subs[nSyn].mutationType == m2)*100 + "% are neutral in NS.");
+	catn(mean(subs[nSyn].mutationType == m3)*100 + "% are non-neutral in NS.");
+	catn();
+
+
+}

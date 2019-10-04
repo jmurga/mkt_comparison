@@ -1,0 +1,124 @@
+// Recipe based on asymptotic mkt simulations
+
+initialize() {
+
+	//DEFINE CONSTANT TO INITIALIZE GENOMIC ELEMENT AND MUTATIONS TYPE
+	defineConstant('mu', $mutRate);
+	defineConstant('lengthG1', $lengthG1);
+	defineConstant('lengthG2', $lengthG2);
+	defineConstant('bins', $bins);
+
+	defineConstant('neutralFreq', $neutralFreq);
+	defineConstant('beneficialFreq', $beneficialFreq);
+	defineConstant('deleteriousFreq', $deleteriousFreq);
+	defineConstant('deleteriousFitness', $deleteriousFitness);
+	defineConstant('beneficialFitness', $beneficialFitness);
+	defineConstant('gammaShape', $gammaShape);
+	defineConstant('h', $h);
+
+	//INITIALIZE ELEMENT AND MUTATIONS
+	initializeMutationRate(mu);
+	// neutral
+	initializeMutationType('m1', h, 'f', 0);
+	// deleterious in gamma distribution (shape 0.2 should include mutations nearly neutral)
+	initializeMutationType('m2', h, 'g', deleteriousFitness, gammaShape);
+	// beneficial
+	initializeMutationType('m3', h, 'f', beneficialFitness);
+
+	// Synonymous element
+	initializeGenomicElementType('g1', c(m1), c(neutralFreq)); 
+	initializeGenomicElement(g1, 0, lengthG1);
+	// Non-synonymous element
+	initializeGenomicElementType('g2', c(m2, m3), c(deleteriousFreq,beneficialFreq)); 
+	initializeGenomicElement(g2, lengthG1+1,(lengthG1+lengthG2+1));
+	
+
+	initializeRecombinationRate($recombRate);
+
+	types = rep(c(g1,g2), length);
+
+	//if(asInteger(proportion) == 1)
+	//{
+	//	starts = repEach(seqLen(length) * 2, 2) + rep(c(0,1), length);
+	//	ends = repEach(seqLen(length) * 2, 2) + rep(c(0,1), length);		
+	//}
+	//initializeGenomicElement(types, starts, ends);
+
+
+
+}
+
+1 {
+
+	sim.addSubpop('p1', $ancSize);
+	
+	sim.setValue('p0', rep(0, bins));
+	sim.setValue('pi', rep(0, bins));
+
+}
+
+$burnin:$generations late()	// generations after burn-in
+{
+
+	// Get historical segregation sites each 500 generations to get enough polymorphism
+	if (sim.generation % 500 != 0)
+		return;
+	
+	// Get mutations and frequencies
+	muts = sim.mutations;
+
+	freqs = sim.mutationFrequencies(NULL);
+	m1Freq = freqs[muts.mutationType == m1];
+	m2Freq = freqs[muts.mutationType == m2];
+	m3Freq = freqs[muts.mutationType == m3];
+	
+	// Calculate p0 from polymorphism in m1 mutations
+	p0Count = sapply(0:($bins - 1), " sum((m1Freq >= applyValue / 20) & (m1Freq < (applyValue + 1) / 20)); ");
+	
+	// Calculate pi from polymorphism in m2+m3 mutations
+	m23Freq = c(m2Freq, m3Freq);
+	piCount = sapply(0:($bins - 1), " sum((m23Freq >= applyValue / 20) & (m23Freq < (applyValue + 1) / 20)); ");
+	
+	// Add this generation's values in to variables
+	sim.setValue("p0", sim.getValue("p0") + p0Count);
+	sim.setValue("pi", sim.getValue("pi") + piCount);
+
+
+}
+
+$generations late()
+{
+	
+	// Get substitution and mutation info
+	subs = sim.substitutions;
+	m1Subs = subs[subs.mutationType == m1];
+	m2Subs = subs[subs.mutationType == m2];
+	m3Subs = subs[subs.mutationType == m3];
+	
+	// Calculate d_0 and d from substitutions of m1 and m2+m3
+	d0 = m1Subs.size();
+	di = m2Subs.size() + m3Subs.size();
+
+	f = (0:(bins-1) + 0.5) / bins;
+	
+	// Emit p0, pi and pwd
+	p0 = sim.getValue("p0");
+	pi = sim.getValue("pi");
+
+	// Calculate the true alpha: m3 / (m4+m3) substitutions
+	trueAlpha = m3Subs.size() / (m2Subs.size() + m3Subs.size());
+	
+	// Calculate alpha from standard mkt 
+	alpha = 1 - (d0/di) * (sum(pi)/sum(p0));
+	
+	// Output data
+	catn("daf\tPi\tP0");
+	
+	for (i in 0:(bins-1)){
+		catn(f[i] + "\t" + pi[i] + "\t" + p0[i]);
+	}
+
+	catn('D0\tDi\tm0\tmi\ttrueAlpha');
+	catn(d0 + '\t' + di + '\t' + lengthG1 + '\t' + lengthG2 + '\t' + trueAlpha);
+
+}

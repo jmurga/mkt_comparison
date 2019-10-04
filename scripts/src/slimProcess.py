@@ -39,6 +39,7 @@ if __name__ == "__main__":
 	# Required arguments
 	parser.add_argument("--recipe", type = str, required = True, help = "Slim recipe to execute")
 	parser.add_argument("--length", type = float, required = 1e7, help = "0-based start and stop SLiM length to simulate.")
+	# parser.add_argument("--lengthG2", type = float, required = 1e7, help = "0-based start and stop SLiM length to simulate.")
 	parser.add_argument("--mutRate", type = float, required = 1e-9, help = "Mutation rate in the simulated region")
 	parser.add_argument("--recombRate", type = float, required = 1e-7, help = "Recombination rate in the simulated region")
 	parser.add_argument("--dominanceCoef", type = float, required = 0.5, help = "")
@@ -51,10 +52,11 @@ if __name__ == "__main__":
 	parser.add_argument("--burnin", type = int, required = 10000, help = "Burnin period")
 	parser.add_argument("--generations", type = int, required = 210000, help = "Burnin period")
 	parser.add_argument("--bins", type = int, required = 20, help = "Burnin period")
+	parser.add_argument("--gammaShape", type = float, required=True, help = "Burnin period")
+	# parser.add_argument("--proportion", type = int, required=True, help = "Burnin period")
 	parser.add_argument("--replica", type = int, required = 20, help = "Number of replica by scenario")
 
-	parser.add_argument("--scenario", type = str,help = "Output name without extension")
-	parser.add_argument("--output", type = str,help = "output")
+	parser.add_argument("--scenario", type = str, required=True ,help = "Output name without extension")
 	
 	# Default arguments
 	parser.add_argument("--path", type = str, default = '/home/jmurga/mkt/201902/rawData/simulations', help = "Path to output file")
@@ -63,9 +65,7 @@ if __name__ == "__main__":
 	# Parsing common arguments
 	args = parser.parse_args()
 
-	output = args.path + '/' + args.recipe + '/' + args.scenario + '/' + args.output
-	regions = pd.DataFrame({'start':0, 'end':args.length}, index=[0])
-	regions = regions[['start','end']]
+	output = args.path + '/' + args.recipe + '/' + args.scenario 
 	burnin = 10 * args.ancSize
 
 	# Selecting baseline recipe
@@ -73,27 +73,27 @@ if __name__ == "__main__":
 	slimRecipe = Template(open("/home/jmurga/mkt/201902/scripts/slimRecipes/" + args.recipe + '.slim', "r").read())
 
 	mapping = {
-		# 'genomicElements' : genomicElements,
-		'mutRate' : args.mutRate,
-		'length' : int(args.length),
-		'recombRate' : args.recombRate,
-		'neutralFreq' : float(args.neutralFreq),
-		'beneficialFreq' : float(args.beneficialFreq),
-		'deleteriousFreq' : float(args.deleteriousFreq),
+		'mutRate'           : args.mutRate,
+		'length'          : int(args.length),
+		# 'lengthG2'          : int(args.lengthG2),
+		'recombRate'        : args.recombRate,
+		'neutralFreq'       : float(args.neutralFreq),
+		'beneficialFreq'    : float(args.beneficialFreq),
+		'deleteriousFreq'   : float(args.deleteriousFreq),
 		'beneficialFitness' : float(args.beneficialFitness),
-		'deleteriousFitness' : float(args.deleteriousFitness),
-		'h' : float(args.dominanceCoef),
-		'ancSize' : args.ancSize,
-		'generations' : args.generations,
-		'burnin' : args.burnin,
-		'bins' : int(args.bins),
-		'output' : output
+		'deleteriousFitness': float(args.deleteriousFitness),
+		'h'                 : float(args.dominanceCoef),
+		'ancSize'           : args.ancSize,
+		'generations'       : args.generations,
+		'burnin'            : args.burnin,
+		'bins'              : int(args.bins),
+		'gammaShape'        : float(args.gammaShape),
+		'output'            : output
 	}
 
 
 
 	# print(slimRecipe.substitute(mapping))
-	
 	with NamedTemporaryFile("w") as slim_file:
 		print(slimRecipe.substitute(mapping), file= slim_file,flush=True)
 
@@ -111,71 +111,32 @@ if __name__ == "__main__":
 			slimResults = slimResults.stdout.split('\n')
 			
 			# Need to extract position [0] on list due to split function return a list based on split pattern. Each line is an element at the list
-			if(args.recipe=='baseline'):
+			slimDaf = slimResults[slimResults.index('daf\tPi\tP0\tPneu\tPwd'):slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tb')]
+			slimDiv = slimResults[slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tb'):-1]
 
-				rawD0 = float(slimResults[15:16][0].split(':')[1])
-				rawD = float(slimResults[16:17][0].split(':')[1])
-				rawTrueAlpha = float(slimResults[17:18][0].split(':')[1])
-	
-				rawDaf = slimResults[18:]
 
-				rawDaf = [x.split('\t') for x in rawDaf] 
-				rawDaf = rawDaf[:-1]
-				header = rawDaf[0]
-				rawDaf = rawDaf[1:]
+			# Extract daf info from slim results
+			slimDaf = [x.split('\t') for x in slimDaf]
 
-				daf = pd.DataFrame(rawDaf,columns=header)
+			# Header
+			h = slimDaf[0]
+			# Data
+			d = slimDaf[1:]
+			# Pandas dataframe
+			daf = pd.DataFrame(d,columns=h)
+			
+			# Extract divergence info from slim results
+			slimDiv = [x.split('\t') for x in slimDiv]
+			
+			# Header
+			h = slimDiv[0]
+			# Data
+			d = slimDiv[1]
+			# Pandas dataframe
+			div = pd.DataFrame([d],columns=h)
 
-				# Save results in lists based on scenario replicas
-				# d0.append(rawD0)
-				# d.append(rawD)
-				# trueAlpha.append(rawTrueAlpha)
-				# divergenceAndTrueAlpha.append(div)
-				# listDaf.append(daf)
+			# Writting files into output directory
+			daf.to_csv(output + '/' + 'daf' + str(i) + '.tab',index=False,header=True, sep='\t')
+			div.to_csv(output + '/' + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
 
-				print(daf)
-
-				div = pd.DataFrame({'d':rawD,'d0':rawD0,'trueAlpha':rawTrueAlpha},index=[0])
-				
-				div.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
-
-				daf.to_csv(args.path + args.recipe + '/' + args.output + '/' + args.output+'daf'+str(i)+'.tab',index=False,header=True, sep='\t')
-
-			elif(args.recipe=='wdEstimation'):
-					
-				# Cleaning results
-				# Daf
-				slimDaf = slimResults[slimResults.index('daf\tPi\tP0\tPneu\tPwd'):slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tb')]
-				slimDaf = [x.split('\t') for x in slimDaf]
-
-				# Header
-				h = slimDaf[0]
-
-				# Daf
-				d = slimDaf[1:]
-
-				daf = pd.DataFrame(d,columns=h)
-				print(daf)
-				
-				# Processing div info
-				slimDiv = slimResults[slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tb'):-1]
-				slimDiv = [x.split('\t') for x in slimDiv]
-				
-				# Header
-				h = slimDiv[0]
-				# Divergence
-				d = slimDiv[1]
-
-				div = pd.DataFrame([d],columns=h)
-
-				print(div)
-
-				daf.to_csv(output + '/' + 'daf' + str(i) + '.tab',index=False,header=True, sep='\t')
-				div.to_csv(output + '/' + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
-
-		# outputDiv = args.path + args.output + '/'
-		# outputDaf = args.path + args.output + '/'
-
-		# Save as deleteriousFreqata object including all the scenarios
-		# savedeleteriousFreqata(divergenceAndTrueAlpha,'div.deleteriousFreqata',outputDiv,div)
-		# savedeleteriousFreqata(listDaf,'daf.deleteriousFreqata',outputDaf,daf)
+			print(daf); print(div)
