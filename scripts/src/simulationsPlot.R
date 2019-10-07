@@ -185,13 +185,14 @@ wdOnsimulatedData <- function(scenario,simulationsPath){
 	meanSd$scenario <- scenario
 
 	# Ploting
-	p <-ggplot(dataPlot, aes(x=variable, y=value, fill=measure)) + 
-		geom_boxplot(color="grey20",alpha=0.7) + 
-		labs(x = "MKT methods",y="Alpha/b estimations") + 
+	dp <- dataPlot[dataPlot$measure=='b',]
+	p <- ggplot(dp, aes(x=variable, y=value, fill=measure)) + 
+		geom_boxplot(color="grey20",alpha=0.7,show.legend=F) + 
+		labs(x = "MKT methods",y="B estimations") + 
 		themePublication() + 
 		scaleFillPublication(name="Method", labels=c("DGRP" = "eMKT","asymp1"="Asymptotic MKT","asymp2"="Asymptotic MKT 0.1-0.9", "trueValue"="True alpha/b")) + 
 		scale_y_continuous(breaks = pretty(dataPlot$value, n = 5)) + 
-		scale_x_discrete(labels=c("DGRP" = "eMKT","asymp1"="Asymptotic MKT","asymp2"="Asymptotic MKT 0.1-0.9", "trueValue"="True alpha/b")) +  
+		scale_x_discrete(labels=c("DGRP" = "eMKT","asymp1"="Asymptotic MKT","asymp2"="Asymptotic MKT 0.1-0.9", "trueValue"="b")) +  
 		ggtitle(paste0(scenario)) + 
 		theme(axis.text.x = element_text(angle = 45, hjust = 1,size=20),axis.text.y= element_text(size=20),plot.title=element_text(size=20),axis.title.y = element_text(size=24),axis.title.x = element_text(size=24))
 
