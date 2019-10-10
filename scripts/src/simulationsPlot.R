@@ -30,8 +30,9 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 		alphaStandard <- resultStandard$alpha$alpha
 
 		##DGRP
-		resultDGRP <- eMKT(daf,divergence, plot=F)
+		resultDGRP <- eMKT(daf,divergence, cutoff=0.075, plot=F)
 		alphaDGRP <- resultDGRP$alphaCorrected$alphaCorrected
+		alphaDGRP2 <- resultDGRP$alphaCorrected$alphaCorrected2
 
 		##FWW
 		resultFWW1 <- FWW(daf,divergence,listCutoffs = c(0.025), plot=F)
@@ -52,7 +53,8 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 			},error=function(alphaAsymptotic2){ alphaAsymptotic2 <- NA}
 		)
 
-		result <- data.table(simulation,alphaStandard,alphaDGRP,alphaFWW1,alphaFWW2,alphaAsymptotic1,alphaAsymptotic2,trueAlpha)
+		# result <- data.table(simulation,alphaStandard,alphaDGRP,alphaFWW1,alphaFWW2,alphaAsymptotic1,alphaAsymptotic2,trueAlpha)
+		result <- data.table(simulation,alphaStandard,alphaDGRP,alphaDGRP2,alphaFWW1,alphaFWW2,alphaAsymptotic1,alphaAsymptotic2,trueAlpha)
 		output <- rbind(output,result)
 	}
 	
@@ -62,6 +64,7 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 	# Errors
 	standardError <- mean(abs(output[['alphaStandard']]-output[['trueAlpha']]),na.rm=TRUE)
 	DGRPError <- mean(abs(output[['alphaDGRP']]-output[['trueAlpha']]),na.rm=TRUE)
+	DGRP2Error <- mean(abs(output[['alphaDGRP2']]-output[['trueAlpha']]),na.rm=TRUE)
 	FWWError <- mean(abs(output[['alphaFWW1']]-output[['trueAlpha']]),na.rm=TRUE)
 	FWW1Error <- mean(abs(output[['alphaFWW2']]-output[['trueAlpha']]),na.rm=TRUE)
 	asymptoticError <- mean(abs(output[['alphaAsymptotic1']]-output[['trueAlpha']]),na.rm=TRUE)
@@ -82,14 +85,14 @@ mktOnsimulatedData <- function(scenario,simulationsPath){
 		geom_boxplot(color="grey20",alpha=0.7) + 
 		labs(x = "MKT methods", y=expression(italic(α))) + 
 		themePublication() + 
-		scaleFillPublication(name="Method", labels=c("alphaStandard"="Standard", "alphaDGRP" = "eMKT 5%", "alphaDGRP0.1" = "eMKT 10%", "alphaFWW1" = "FWW 5%", "alphaFWW2" = "FWW 10%","alphaAsymptotic1"="Asymptotic MKT","alphaAsymptotic2"="Asymptotic MKT", "trueAlpha"="True alpha")) + 
+		scaleFillPublication(name="Method", labels=c("alphaStandard"="Standard", "alphaDGRP" = "eMKT 10%", "alphaDGRP2" = "new eMKT 10%", "alphaFWW1" = "FWW 5%", "alphaFWW2" = "FWW 10%","alphaAsymptotic1"="Asymptotic MKT","alphaAsymptotic2"="Asymptotic MKT", "trueAlpha"="True alpha")) + 
 		scale_y_continuous(breaks = pretty(dataPlot$value, n = 5)) + 
-		scale_x_discrete(labels=c("alphaStandard"="Standard", "alphaDGRP" = "eMKT 5%", "alphaDGRP0.1" = "eMKT 10%", "alphaFWW1" = "FWW 5%", "alphaFWW2" = "FWW 10%","alphaAsymptotic1"="Asymptotic MKT","alphaAsymptotic2"="Asymptotic MKT 0.1-0.9", "trueAlpha"="True alpha")) +  
+		scale_x_discrete(labels=c("alphaStandard"="Standard", "alphaDGRP" = "eMKT 10%", "alphaDGRP2" = "new eMKT 10%", "alphaFWW1" = "FWW 5%", "alphaFWW2" = "FWW 10%","alphaAsymptotic1"="Asymptotic MKT","alphaAsymptotic2"="Asymptotic MKT 0.1-0.9", "trueAlpha"="True alpha")) +  
 		guides(fill=FALSE) + 
 		ggtitle(paste0(scenario)) + 
 		theme(axis.text.x = element_text(angle = 45, hjust = 1,size=20),axis.text.y= element_text(size=20),plot.title=element_text(size=20),axis.title.y = element_text(size=24),axis.title.x = element_text(size=24))
 
-	method <- rep(c("Standard","eMKT","FWW cutoff 5%","MKT FWW cutoff 10%","Asymptotic MKT","Asymptotic MKT 0.1-0.9","True alpha"),2)
+	# method <- rep(c("Standard","eMKT","FWW cutoff 5%","MKT FWW cutoff 10%","Asymptotic MKT","Asymptotic MKT 0.1-0.9","True alpha"),2)
 					 
 
 	plotTable[['plot']] <- plotAlpha
