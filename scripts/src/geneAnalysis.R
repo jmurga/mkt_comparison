@@ -6,10 +6,11 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 	output <- list()
 
 	for(iter in 1:length(geneList)){
-	# for(iter in 1:length(genes)){
+	# for(iter in 1:10){
 		## Subset data by geneda
 		print(iter)
 		subsetGene <- data[data[['id']] == geneList[iter],]
+
 		# subsetGene <- data[data[['id']] == genes[iter],]
 		if(dim(subsetGene)[1] > 1){
 			subsetGene <- subsetGene[1]
@@ -59,12 +60,10 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					tmp[[iter]] <- tmpDf
 					# tmp <- rbind(tmp,tmpDf)
 				}else{
-					fayDaf<-daf
-					fayDaf[1,]<-c(0.025,0,0)
-					fayDaf[2,]<-c(0.075,0,0)
 
-					mkt <- FWW(daf=fayDaf,div=div,listCutoffs=cutoff,plot=FALSE)
-					alpha <- mkt$alphaCorrected$alpha
+
+					mkt <- FWW(daf=checkDaf,div=div,listCutoffs=cutoff,plot=FALSE)
+					alpha <- mkt$alphaCorrected$alphaCorrected
 					pvalue <- mkt$alphaCorrected$pvalue
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test,stringsAsFactors=F)
 					tmp[[iter]] <- tmpDf
@@ -83,19 +82,13 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					tmp[[iter]] <- tmpDf
 					
 				}else{
-
 	
-					ratioP0     = P0Minus/P0Greater
-					deleterious = PiMinus - (PiGreater * ratioP0)
+					mkt <- eMKT(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
+					alpha <- mkt$alphaCorrected$alphaCorrected
+					pvalue <- mkt$alphaCorrected$pvalue
+					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test,stringsAsFactors=F)
+					tmp[[iter]] <- tmpDf
 
-					alpha = 1 - (((sum(daf$Pi) - deleterious)/sum(daf$P0))*(d0/di))
-					m      = matrix(c(sum(daf$P0),(sum(daf$Pi) - deleterious),div[['D0']],div[['Di']]), ncol=2)
-					pvalue = fisher.test(round(m))$p.value
-
-
-					# mkt <- eMKT(daf=daf,div=div,cutoff=cutoff,plot=FALSE)
-					# alpha <- mkt$alphaCorrected$alphaCorrected2
-					# pvalue <- mkt$alphaCorrected$fisherTest
 					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test,stringsAsFactors=F)
 					tmp[[iter]] <- tmpDf
 					# tmp <- rbind(tmp,tmpDf)
