@@ -170,7 +170,7 @@ wdOnsimulatedData <- function(scenario,simulationsPath){
 	# Ploting
 	plotAlpha <- ggplot(dataPlot, aes(x=variable, y=value, fill=variable)) + 
 		geom_boxplot(color="grey20",alpha=0.7) + 
-		labs(x = "MKT methods", y=expression(italic(α))) + 
+		labs(x = "MKT methods", y='b') + 
 		themePublication() + 
 		scaleFillPublication(name="Method", labels=c('bDGRP1' = 'eMKT 5%', 'bDGRP2' = 'eMKT 10%', 'bFWW1' = 'FWW 5%', 'bFWW2' = 'FWW 10%','bAsymptotic1'='Asymptotic MKT','bAsymptotic2'='Asymptotic MKT', 'trueB'='True b')) + 
 		scale_y_continuous(breaks = pretty(dataPlot$value, n = 5)) + 
