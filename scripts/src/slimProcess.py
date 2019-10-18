@@ -65,7 +65,10 @@ if __name__ == "__main__":
 	# Parsing common arguments
 	args = parser.parse_args()
 
-	output = args.path + '/' + args.recipe + '/' + args.scenario 
+	if(args.recipe == 'wdEstimation'):
+		output = args.path + '/' + args.recipe + '/ne' + str(args.ancSize) + '/' + args.scenario 
+	else:	
+		output = args.path + '/' + args.recipe + '/' + args.scenario 
 	burnin = 10 * args.ancSize
 
 	# Selecting baseline recipe
