@@ -51,7 +51,6 @@ if __name__ == "__main__":
 	parser.add_argument("--ancSize", type = int, required = 1000, help = "Effective population size of the ancestral population")
 	parser.add_argument("--generations", type = int, required = 210000, help = "Burnin period")
 	parser.add_argument("--bins", type = int, required = 20, help = "Burnin period")
-	parser.add_argument("--sample", type = int, required = 20, help = "Number of replica by scenario")
 	parser.add_argument("--gammaShape", type = float, required=True, help = "Burnin period")
 	parser.add_argument("--replica", type = int, required = 20, help = "Number of replica by scenario")
 
@@ -90,7 +89,6 @@ if __name__ == "__main__":
 		'burnin'            : burnin,
 		'bins'              : int(args.bins),
 		'gammaShape'        : float(args.gammaShape),
-		'sample'	    : int(args.sample),
 		'output'            : output
 	}
 
@@ -118,8 +116,9 @@ if __name__ == "__main__":
 				slimDaf = slimResults[slimResults.index('daf\tPi\tP0\tPneu\tPwd\tPd'):slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tf\tb\td')]
 				slimDiv = slimResults[slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tf\tb\td'):-1]
 			else:
-				slimDaf = slimResults[slimResults.index('daf\tPi\tP0\tPneu'):slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha')]
-				slimDiv = slimResults[slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha'):-1]
+				slimDaf = slimResults[slimResults.index('daf\tPi\tP0\tPneu\tPwd'):slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tb')]
+				slimDiv = slimResults[slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tb'):-1]
+
 
 			# Extract daf info from slim results
 			slimDaf = [x.split('\t') for x in slimDaf]

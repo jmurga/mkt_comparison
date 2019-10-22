@@ -134,6 +134,10 @@ wdOnsimulatedData <- function(scenario,simulationsPath){
 			}
 		)
 
+		# if((resultiMK1$alphaCorrected$ciHigh - resultiMK1$alphaCorrected$ciLow) > 1){
+		# 	bAsymptotic1 <- NA
+		# }
+
 		bAsymptotic2 <- tryCatch({
 			resultiMK2 <- aMKT(daf,divergence,xlow = 0.1, xhigh = 0.9, plot=F)
 			bAsymptotic2<- resultiMK2$fractions$b
@@ -142,6 +146,10 @@ wdOnsimulatedData <- function(scenario,simulationsPath){
 				bAsymptotic2 <- NA
 			}
 		)
+
+		# if((resultiMK2$alphaCorrected$ciHigh - resultiMK2$alphaCorrected$ciLow) > 1){
+		# 	bAsymptotic1 <- NA
+		# }
 
 		result <- data.table(simulation,bDGRP[1],bDGRP[2],bAsymptotic1,bAsymptotic2,trueB)
 		colnames(result) <- c('simulation','bDGRP1','bDGRP2','bAsymptotic1','bAsymptotic2','trueB')
