@@ -24,7 +24,7 @@ sampleAnalysis = function(data,sampling,bins,population,recomb=FALSE,xlow=0.1,xh
 	tmp = list()
 
 	for (i in 1:length(sampling)) {
-	# for (i in 2640:2642) {
+	# for (i in 2600:3500) {
 		print(i)	
 		sampling[[i]]           = sampling[[i]] %>% as.data.frame
 		colnames(sampling[[i]]) = 'id'
