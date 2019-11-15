@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
 			# Opening slim procces and save custom string output in python variable v
 			# str(random.randint(1, 10**13))
-			slimResults = subprocess.run(["/home/jmurga/mkt/201902/software/SLiM3.3/slim", "-s", str(random.randint(1, 10**13)),slim_file.name],universal_newlines=True,stdout=subprocess.PIPE)
+			slimResults = subprocess.run(["/home/jmurga/software/SLiM3.3/slim", "-s", str(random.randint(1, 10**13)),slim_file.name],universal_newlines=True,stdout=subprocess.PIPE)
 			
 			# Parsing string output, we checked position on slim custom printed output and procces each variable taking into account correspondent positions. Excluding recipe execution info
 			slimResults = slimResults.stdout.split('\n')
