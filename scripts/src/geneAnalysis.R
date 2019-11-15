@@ -102,10 +102,11 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					alpha <- NA
 					pvalue <- NA
 				}else{
-					alpha <- mkt$alpha <- mkt$alphaCorrected$alphaAsymptotic
-					if(alpha > 0 & alpha < 1  & mkt$alphaCorrected$ciLow > 0 & !is.nan(mkt$alphaAsymptotic$CI_low)){
+					alpha <- mkt$alphaCorrected$alphaAsymptotic
+					ci <- mkt$alphaCorrected$ciHigh - mkt$alphaCorrected$ciLow
+					if((alpha > 0 & alpha < 1) & (ci < (alpha * 10)) & (!is.nan(ci))){
 						pvalue <- 0.005
-					}else if(alpha < 0 & mkt$alphaCorrected$ciHigh < 0 & !is.nan(mkt$alphaAsymptotic$ciHigh)){
+					}else if((alpha < 0) & (ci < abs((alpha * 10))) & (!is.nan(ci))){
 						pvalue <- 0.005
 					}else{
 						pvalue <- 1
@@ -123,10 +124,11 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					alpha <- NA
 					pvalue <- NA
 				}else{
-					alpha <- mkt$alpha <- mkt$alphaCorrected$alphaAsymptotic
-					if(alpha > 0 & alpha < 1  & mkt$alphaCorrected$ciLow > 0 & !is.nan(mkt$alphaAsymptotic$CI_low)){
+					alpha <- mkt$alphaCorrected$alphaAsymptotic
+					ci <- mkt$alphaCorrected$ciHigh - mkt$alphaCorrected$ciLow
+					if((alpha > 0 & alpha < 1) & (ci < (alpha * 10)) & (!is.nan(ci))){
 						pvalue <- 0.005
-					}else if(alpha < 0 & mkt$alphaCorrected$ciHigh < 0 & !is.nan(mkt$alphaAsymptotic$ciHigh)){
+					}else if((alpha < 0) & (ci < abs((alpha * 10))) & (!is.nan(ci))){
 						pvalue <- 0.005
 					}else{
 						pvalue <- 1
