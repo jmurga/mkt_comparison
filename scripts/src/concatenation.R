@@ -17,14 +17,14 @@ samplingGenes = function(geneList,B,bins,seed=213,path=NULL){
 	return(output)
 }
 
-sampleAnalysis = function(data,sampling,bins,population,recomb=FALSE,xlow=0.1,xhigh=0.9){
-	data = data %>% as.data.table
-	data = data[pop==population]
+sampleAnalysis = function(data,sampling,bins,population,recomb=FALSE){
+
+	data    = data %>% as.data.table
+	data    = data[pop==population]
 	data$id = as.character(data$id)
-	tmp = list()
+	tmp     = list()
 
 	for (i in 1:length(sampling)) {
-	# for (i in 2600:3500) {
 		print(i)	
 		sampling[[i]]           = sampling[[i]] %>% as.data.frame
 		colnames(sampling[[i]]) = 'id'
@@ -79,34 +79,26 @@ sampleAnalysis = function(data,sampling,bins,population,recomb=FALSE,xlow=0.1,xh
 			}
 			else{
 				resultEmkt1 = eMKT(daf,divergence,listCutoffs = c(0.025))
-				alphaEmkt1 = resultEmkt1$alphaCorrected$alphaCorrected
+				alphaEmkt1  = resultEmkt1$alphaCorrected$alphaCorrected
 				resultEmkt2 = eMKT(daf,divergence,listCutoffs = c(0.075))
-				alphaEmkt2 = resultEmkt1$alphaCorrected$alphaCorrected
+				alphaEmkt2  = resultEmkt2$alphaCorrected$alphaCorrected
 
 			}
 
-			resultFww1 = FWW(daf,divergence,listCutoffs = c(0.025))
-			alphaFww1 = resultFww1$alphaCorrected$alphaCorrected
-
-			resultFww2 = FWW(daf,divergence,listCutoffs = c(0.075))
-			alphaFww2 = resultFww2$alphaCorrected$alphaCorrected
-
-			##Asymptotic
-			alphaAsymptotic1 = tryCatch({
-				resultiMK1 = aMKT(daf,divergence,xlow = xlow, xhigh = xhigh, plot=F)
-				alphaAsymptotic1 = resultiMK1$alphaCorrected$alphaAsymptotic
-			},error=function(e){alphaAsymptotic1 = NA})
-
-			# # daf1 = daf
-			# # daf1$daf10 = sort(rep(seq(0.05, 0.95, 0.1), 
-			# # 2))
-			# # daf1 = daf1[c("daf10", "Pi", "P0")]
-			# # daf1 = aggregate(. ~ daf10, data = daf1, FUN = sum)
-			# # colnames(daf1) = c("daf", "Pi", "P0")
+			resultFww1         = FWW(daf,divergence,listCutoffs = c(0.025))
+			alphaFww1          = resultFww1$alphaCorrected$alphaCorrected
 			
+			resultFww2         = FWW(daf,divergence,listCutoffs = c(0.075))
+			alphaFww2          = resultFww2$alphaCorrected$alphaCorrected
+			
+			##Asymptotic
+			alphaAsymptotic1   = tryCatch({
+				resultiMK1         = aMKT(daf,divergence,xlow = 0.1, xhigh = 0.9, plot=F)
+				alphaAsymptotic1   = resultiMK1$alphaCorrected$alphaAsymptotic
+			},error            =function(e){alphaAsymptotic1 = NA})
 
-			tmp[[i]] = c(alphaStandard,alphaEmkt1,alphaEmkt2,alphaFww1,alphaFww2,alphaAsymptotic1)
-			# tmp = data.frame(alphaStandard,alphaEmkt1,alphaEmkt2,alphaFww1,alphaFww2,alphaAsymptotic1)
+			tmp[[i]]           = c(alphaStandard,alphaEmkt1,alphaEmkt2,alphaFww1,alphaFww2,alphaAsymptotic1)
+			# tmp              = data.frame(alphaStandard,alphaEmkt1,alphaEmkt2,alphaFww1,alphaFww2,alphaAsymptotic1)
 			
 		}
 		# tmp = data.frame(alphaStandard,alphaEmkt1,alphaEmkt2,alphaFww1,alphaFww2,alphaAsymptotic,alphaAsymptotic0.1)
