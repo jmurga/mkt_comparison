@@ -93,7 +93,7 @@ sampleAnalysis = function(data,sampling,bins,population,recomb=FALSE){
 			
 			##Asymptotic
 			alphaAsymptotic1   = tryCatch({
-				resultiMK1         = aMKT(daf,divergence,xlow = 0.1, xhigh = 0.9, plot=F)
+				resultiMK1         = aMKT(daf,divergence,xlow = 0, xhigh = 1, plot=F)
 				alphaAsymptotic1   = resultiMK1$alphaCorrected$alphaAsymptotic
 			},error            =function(e){alphaAsymptotic1 = NA})
 
