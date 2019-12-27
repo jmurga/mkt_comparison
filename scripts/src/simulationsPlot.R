@@ -4,7 +4,7 @@ library(cowplot)
 library(reshape2)
 library(data.table)
 library(dplyr)
-source('/home/jmurga/mkt/201902/scripts/src/plotStyle.R')
+source('/home/jmurga/mktComparision/scripts/src/plotStyle.R')
 
 mktOnsimulatedData <- function(scenario,simulationsPath='/home/jmurga/mkt/201902/rawData/simulations/alphaComparisons/'){
 	
@@ -186,6 +186,34 @@ wdOnsimulatedData <- function(scenario,simulationsPath){
 		guides(fill=FALSE) + 
 		ggtitle(paste0(scenario)) + 
 		theme(axis.text.x = element_text(angle = 45, hjust = 1,size=20),axis.text.y= element_text(size=20),plot.title=element_text(size=20),axis.title.y = element_text(size=24),axis.title.x = element_text(size=24))
+
+	# method <- rep(c("Standard","eMKT","FWW cutoff 5%","MKT FWW cutoff 10%","Asymptotic MKT","Asymptotic MKT 0.1-0.9","True alpha"),2)
+					 
+
+	plotTable[['plot']] <- plotAlpha
+	plotTable[['table']] <- meanSd
+	plotTable[['data']] <- dataPlot
+					 
+	return(plotTable)
+					 
+}
+
+wdOnsimulatedPlot <- function(scenario,simulationsPath){
+
+	simulationResults <- get(load(paste0(simulationsPath,'/',scenario,'.RData')))
+	simulationResults <- simulationResults$data
+
+	plotAlpha <- ggplot(simulationResults, aes(x=variable, y=value, fill=variable)) + 
+		geom_boxplot(color="grey20",alpha=0.7) + 
+		labs(x = "MKT methods", y='b') + 
+		scaleFillPublication(name="Method", labels=c('bDGRP1' = 'eMKT 5%', 'bDGRP2' = 'eMKT 10%', 'bFWW1' = 'FWW 5%', 'bFWW2' = 'FWW 10%','bAsymptotic1'='Asymptotic MKT','bAsymptotic2'='Asymptotic MKT', 'trueB'='True b')) + 
+		scale_y_continuous(breaks = pretty(simulationResults$value, n = 5)) + 
+		scale_x_discrete(labels=c('bStandard'='Standard', 'bDGRP1' = 'eMKT 5%', 'bDGRP2' = 'eMKT 10%','bAsymptotic1'='Asymptotic MKT','bAsymptotic2'='Asymptotic MKT 0.1-0.9', 'trueB'='True b')) +  
+		guides(fill=FALSE) + 
+		ggtitle(paste0(scenario)) + 
+		theme(axis.text.x = element_text(angle = 45, hjust = 1,size=20),axis.text.y= element_text(size=20),plot.title=element_text(size=20),axis.title.y = element_text(size=24),axis.title.x = element_text(size=24))+
+		geom_jitter(shape=16, position=position_jitter(0.2))
+				themePublication()
 
 	# method <- rep(c("Standard","eMKT","FWW cutoff 5%","MKT FWW cutoff 10%","Asymptotic MKT","Asymptotic MKT 0.1-0.9","True alpha"),2)
 					 
