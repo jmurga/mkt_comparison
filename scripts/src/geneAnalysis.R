@@ -78,7 +78,7 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 
 				if(PiGreater== 0 | P0Greater  == 0){
 				
-					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=test,stringsAsFactors=F)
+					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=paste0(test,as.character(cutoff)),stringsAsFactors=F)
 					tmp[[iter]] <- tmpDf
 					
 				}else{
@@ -86,11 +86,10 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 					mkt <- eMKT(daf=daf,div=div,listCutoffs=cutoff,plot=FALSE)
 					alpha <- mkt$alphaCorrected$alphaCorrected
 					pvalue <- mkt$alphaCorrected$pvalue
-					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test,stringsAsFactors=F)
+					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=paste0(test,as.character(cutoff)),stringsAsFactors=F)
 					tmp[[iter]] <- tmpDf
-
-					tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test,stringsAsFactors=F)
-					tmp[[iter]] <- tmpDf
+					# tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=alpha,'pvalue'=pvalue,'test'=test,stringsAsFactors=F)
+					# tmp[[iter]] <- tmpDf
 					# tmp <- rbind(tmp,tmpDf)
 
 				}
@@ -153,7 +152,13 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 	# Formating alpha table with total, mean and sd
 	output[['alphaTable']] <- as.data.frame(rbind(analyzable,positive,negative))
 	colnames(output[['alphaTable']]) <- c('N','mean','sd')
-	output[['alphaTable']][['test']] <- test
+	
+	if(test == 'eMKT' | test == 'FWW'){
+		output[['alphaTable']][['test']] <- paste0(test,as.character(cutoff))
+	}
+	else{
+		output[['alphaTable']][['test']] <- test
+	}
 	output[['alphaTable']][['type']] <- c('analyzable','positive','negative')
 	output[['alphaTable']][['pop']] <- population
 
