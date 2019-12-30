@@ -4,7 +4,7 @@ library(cowplot)
 library(reshape2)
 library(data.table)
 library(dplyr)
-source('/home/jmurga/mktComparision/scripts/src/plotStyle.R')
+source('/home/jmurga/mktComparison/scripts/src/plotStyle.R')
 
 mktOnsimulatedData <- function(scenario,simulationsPath='/home/jmurga/mkt/201902/rawData/simulations/alphaComparisons/'){
 	
