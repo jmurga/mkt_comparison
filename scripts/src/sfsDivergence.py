@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import pyfaidx as px
 
-sys.path.insert(0, '/home/jmurga/mkt/201903/scripts/src')
+sys.path.insert(0, '/home/jmurga/mktComparison/scripts/src')
 from reverseComplement import reverseComplement
 from degenerancy import degenerate
 import time
@@ -16,7 +16,7 @@ import time
 # args.population='RAL' 
 # args.sampling=160
 # args.outgroup='dsim'
-# args.path='/home/jmurga/mkt/201903/rawData/dmel'    
+# args.path='/home/jmurga/mktComparison/rawData/dmel'    
 
 if __name__ == "__main__":
 	'''Parse arguments and show the required inputs if only name is given to command line'''
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 	parser.add_argument("--seed", type = int, required = False, help = "Input seed")
 
 	# Default arguments
-	parser.add_argument("--path", type = str, default = '/home/jmurga/mkt/201903/rawData/dmel', help = "Path to output file")
+	parser.add_argument("--path", type = str, default = '/home/jmurga/mktComparison/rawData/dmel', help = "Path to output file")
 
 	# Parsing common arguments
 	args = parser.parse_args()
