@@ -51,14 +51,12 @@ if __name__ == "__main__":
 	parser.add_argument("--ancSize", type = int, required = 1000, help = "Effective population size of the ancestral population")
 	parser.add_argument("--generations", type = int, required = 210000, help = "Burnin period")
 	parser.add_argument("--bins", type = int, required = 20, help = "Burnin period")
-	parser.add_argument("--sample", type = int, required = 20, help = "Number of replica by scenario")
 	parser.add_argument("--gammaShape", type = float, required=True, help = "Burnin period")
 	parser.add_argument("--replica", type = int, required = 20, help = "Number of replica by scenario")
-
 	parser.add_argument("--scenario", type = str, required=True ,help = "Output name without extension")
 	
 	# Default arguments
-	parser.add_argument("--path", type = str, default = '/home/jmurga/mkt/201902/rawData/simulations', help = "Path to output file")
+	parser.add_argument("--path", type = str, default = '/home/jmurga/mktComparison/rawData/simulations', help = "Path to output file")
 
 	
 	# Parsing common arguments
@@ -72,7 +70,7 @@ if __name__ == "__main__":
 	generations = burnin + args.generations
 	# Selecting baseline recipe
 
-	slimRecipe = Template(open("/home/jmurga/mkt/201902/scripts/slimRecipes/" + args.recipe + '.slim', "r").read())
+	slimRecipe = Template(open("/home/jmurga/mktComparison/scripts/slimRecipes/" + args.recipe + '.slim', "r").read())
 
 	mapping = {
 		'mutRate'           : args.mutRate,
@@ -90,13 +88,13 @@ if __name__ == "__main__":
 		'burnin'            : burnin,
 		'bins'              : int(args.bins),
 		'gammaShape'        : float(args.gammaShape),
-		'sample'	    : int(args.sample),
 		'output'            : output
 	}
 
 
 
-	# print(slimRecipe.substitute(mapping))
+	print(slimRecipe.substitute(mapping))
+
 	with NamedTemporaryFile("w") as slim_file:
 		print(slimRecipe.substitute(mapping), file= slim_file,flush=True)
 
@@ -108,7 +106,7 @@ if __name__ == "__main__":
 
 			# Opening slim procces and save custom string output in python variable v
 			# str(random.randint(1, 10**13))
-			slimResults = subprocess.run(["/home/jmurga/software/SLiM3.3/slim", "-s", str(random.randint(1, 10**13)),slim_file.name],universal_newlines=True,stdout=subprocess.PIPE)
+			slimResults = subprocess.run(["/home/jmurga/mktComparison/software/SLiM/build/slim", "-s", str(random.randint(1, 10**13)),slim_file.name],universal_newlines=True,stdout=subprocess.PIPE)
 			
 			# Parsing string output, we checked position on slim custom printed output and procces each variable taking into account correspondent positions. Excluding recipe execution info
 			slimResults = slimResults.stdout.split('\n')
@@ -118,7 +116,7 @@ if __name__ == "__main__":
 				slimDaf = slimResults[slimResults.index('daf\tPi\tP0\tPneu\tPwd\tPd'):slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tf\tb\td')]
 				slimDiv = slimResults[slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha\tf\tb\td'):-1]
 			else:
-				slimDaf = slimResults[slimResults.index('daf\tPi\tP0\tPneu'):slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha')]
+				slimDaf = slimResults[slimResults.index('daf\tPi\tP0'):slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha')]
 				slimDiv = slimResults[slimResults.index('D0\tDi\tm0\tmi\ttrueAlpha'):-1]
 
 			# Extract daf info from slim results
@@ -146,3 +144,4 @@ if __name__ == "__main__":
 			div.to_csv(output + '/' + 'div' + str(i)+'.tab',index=False,header=True, sep='\t')
 
 			print(daf); print(div)
+ 

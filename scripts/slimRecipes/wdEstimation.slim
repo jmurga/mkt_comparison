@@ -11,7 +11,6 @@ initialize() {
 	defineConstant('deleteriousFitness', $deleteriousFitness);
 	defineConstant('beneficialFitness', $beneficialFitness);
 	defineConstant('gammaShape', $gammaShape);
-	defineConstant('sample', $sample);
 	defineConstant('ancSize', $ancSize);
 	defineConstant('h', $h);
 	
@@ -65,10 +64,11 @@ $burnin:$generations late()	// generations after burn-in
 	}
 
 	//Sample individuals
-	sampledIndividuals = p1.sampleIndividuals(sample,replace=F).genomes;
+	//sampledIndividuals = p1.sampleIndividuals(sample,replace=F).genomes;
 
 	// Get m2 mutations
-	gammaMuts = sortBy(unique(sampledIndividuals.mutationsOfType(m2)),'position');
+	//gammaMuts = sortBy(unique(sampledIndividuals.mutationsOfType(m2)),'position');
+	gammaMuts = sim.mutationsOfType(m2);
 	nes = (gammaMuts.selectionCoeff * ancSize);
 	//Check weaklyDel through fitness coefficient in gamma distribution
 	weaklyDeleterious = gammaMuts[(nes > -10) & (nes < -1)];
@@ -82,15 +82,20 @@ $burnin:$generations late()	// generations after burn-in
 	stronglyDeleterious = gammaMuts[(nes < -10)];
 	stronglyDeleterious = sim.mutationFrequencies(NULL, stronglyDeleterious);
 
-	//Get all mutations frequencies
-	m1Sampled = sortBy(unique(sampledIndividuals.mutationsOfType(m1)),'position');
-	m1Freq = sim.mutationFrequencies(NULL, m1Sampled);
-
-	m2Sampled = sortBy(unique(sampledIndividuals.mutationsOfType(m2)),'position');
-	m2Freq = sim.mutationFrequencies(NULL, m2Sampled);
-
-	m3Sampled = sortBy(unique(sampledIndividuals.mutationsOfType(m3)),'position');
-	m3Freq = sim.mutationFrequencies(NULL, m3Sampled);
+	////Get all mutations frequencies
+	muts = sim.mutations;
+	freqs  = sim.mutationFrequencies(NULL);
+	m1Freq = freqs[muts.mutationType == m1];
+	m2Freq = freqs[muts.mutationType == m2];
+	m3Freq = freqs[muts.mutationType == m3];
+	//m1Sampled = sortBy(unique(sampledIndividuals.mutationsOfType(m1)),'position');
+	//m1Freq = sim.mutationFrequencies(NULL, m1Sampled);
+//
+	//m2Sampled = sortBy(unique(sampledIndividuals.mutationsOfType(m2)),'position');
+	//m2Freq = sim.mutationFrequencies(NULL, m2Sampled);
+//
+	//m3Sampled = sortBy(unique(sampledIndividuals.mutationsOfType(m3)),'position');
+	//m3Freq = sim.mutationFrequencies(NULL, m3Sampled);
 
 
 	// Calculate p0 polymorphism from m1 mutations
@@ -160,7 +165,7 @@ $generations late()
 	// Output data in the format expected by the MK web service
 	catn("daf\tPi\tP0\tPneu\tPwd\tPd");
 	line = "daf\tPi\tP0\tPneu\tPwd\tPd";
-	writeFile("/home/jmurga/mkt/201902/scripts/slimRecipes/daf.tab", line, append=F);
+	//writeFile("/home/jmurga/mkt/201902/scripts/slimRecipes/daf.tab", line, append=F);
 	for (i in 0:(bins-1)){
 		catn(daf[i] + "\t" + pi[i] + "\t" + p0[i] + "\t" + pneu[i] + "\t" + pwd[i] + "\t" + pd[i]);
 		//line = daf[i] + "\t" + pi[i] + "\t" + p0[i] + "\t" + pneu[i] + "\t" + pwd[i] + "\t" + pd[i];

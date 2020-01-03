@@ -33,3 +33,7 @@ SLiM simulations automatized with *src/scripts/slimProcess.py*. Simulations base
 
 ## Analysis
 ### Simulations analysis
+#### [04_Alpha and b analysis from simulations (R)](https://github.com/jmurga/mktComparison/blob/master/scripts/notebooks/SLiMAnalysis.ipynb)
+#### [05_Gene-by-gene analysis (R)](https://github.com/jmurga/mktComparison/blob/master/scripts/notebooks/alphaTable.ipynb)
+#### [06_Concatenation and recombination effect (R)](https://github.com/jmurga/mktComparison/blob/master/scripts/notebooks/concatenation.ipynb)
+#### [07_Power (R)](https://github.com/jmurga/mktComparison/blob/master/scripts/notebooks/power.ipynb)
