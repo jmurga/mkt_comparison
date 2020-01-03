@@ -3,5 +3,7 @@ software/*
 scripts/src/iMKT*
 results/b/ciCeu.RData
 results/b/ciRal.RData
+scripts/src/__pycache__/*
+scripts/notebooks/.ipynb_checkpoints/*
 !rawData/popflydata.RData
 
