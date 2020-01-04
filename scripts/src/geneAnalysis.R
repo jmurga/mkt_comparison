@@ -29,8 +29,8 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 
 			## Group genes
 			f <- seq(0.025,0.975,0.05)
-			pi <- do.call(rbind,lapply(as.character(subsetGene[['daf0f']]), function(z) unlist(strsplit(z, split = ";")) %>% as.numeric())) %>% colSums()
-			p0 <- do.call(rbind,lapply(as.character(subsetGene[['daf4f']]), function(z) unlist(strsplit(z, split = ";")) %>% as.numeric())) %>% colSums()
+			pi <- do.call(rbind,lapply(as.character(subsetGene[['daf0f']]), function(z) unlist(strsplit(z, split = ';')) %>% as.numeric())) %>% colSums()
+			p0 <- do.call(rbind,lapply(as.character(subsetGene[['daf4f']]), function(z) unlist(strsplit(z, split = ';')) %>% as.numeric())) %>% colSums()
 
 			mi <- subsetGene[['mi']]
 			m0 <- subsetGene[['m0']]
@@ -39,9 +39,9 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 
 			## Proper formats
 			daf <- cbind(f, pi, p0) %>% as.data.frame()
-			names(daf) <- c("daf","Pi","P0")
+			names(daf) <- c('daf','Pi','P0')
 			div <- cbind(mi, di, m0, d0) %>% as.data.frame()
-			names(div) <- c("mi","Di","m0","D0")
+			names(div) <- c('mi','Di','m0','D0')
 			
 			if(test == 'standardMKT'){
 				mkt <- standardMKT(daf=daf,div=div)
@@ -208,8 +208,8 @@ dosByGene <- function(data=NULL,geneList=NULL,population=NULL,cutoff=NULL){
 				di <- 0; d0 <- 0
 
 				## Group genes
-				pi <- do.call(rbind,lapply(as.character(subsetGene$DAF0f), function(z) unlist(strsplit(z, split = ";")) %>% as.numeric())) %>% colSums()
-				p0 <- do.call(rbind,lapply(as.character(subsetGene$DAF4f), function(z) unlist(strsplit(z, split = ";")) %>% as.numeric())) %>% colSums()
+				pi <- do.call(rbind,lapply(as.character(subsetGene$DAF0f), function(z) unlist(strsplit(z, split = ';')) %>% as.numeric())) %>% colSums()
+				p0 <- do.call(rbind,lapply(as.character(subsetGene$DAF4f), function(z) unlist(strsplit(z, split = ';')) %>% as.numeric())) %>% colSums()
 				mi <- subsetGene$mi
 				m0 <- subsetGene$m0
 				di <- subsetGene$di
@@ -217,19 +217,19 @@ dosByGene <- function(data=NULL,geneList=NULL,population=NULL,cutoff=NULL){
 
 				## Proper formats
 				daf <- cbind(f, pi, p0); daf <- as.data.frame(daf)
-				names(daf) <- c("daf","Pi","P0")
+				names(daf) <- c('daf','Pi','P0')
 				div <- cbind(mi, di, m0, d0); div <- as.data.frame(div)
-				names(div) <- c("mi","Di","m0","D0")
+				names(div) <- c('mi','Di','m0','D0')
 				## Cleaning slightly deleterious mutation by cutoff
 				Pi <- sum(daf$Pi); P0 <- sum(daf$P0)
 				dafBelowCutoff <- daf[daf$daf <= cutoff, ]
 				dafAboveCutoff <- daf[daf$daf > cutoff, ]
 
 
-				mktTableStandard <- data.frame(Polymorphism = c(sum(daf$P0),sum(daf$Pi)), divergence = c(div$D0, div$Di),row.names = c("Neutral class", "Selected class"))
+				mktTableStandard <- data.frame(Polymorphism = c(sum(daf$P0),sum(daf$Pi)), divergence = c(div$D0, div$Di),row.names = c('Neutral class', 'Selected class'))
 											   
 				mktTable <- data.frame(`dafBelowCutoff` = c(sum(dafBelowCutoff$P0),sum(dafBelowCutoff$Pi)), `dafAboveCutoff` = c(sum(dafAboveCutoff$P0),
-					sum(dafAboveCutoff$Pi)), row.names = c("neutralClass", "selectedClass"))
+					sum(dafAboveCutoff$Pi)), row.names = c('neutralClass', 'selectedClass'))
 
 				fNeutral <- mktTable[1, 1]/sum(daf$P0)
 				piNeutralBelowCutoff <- Pi * fNeutral
@@ -286,6 +286,43 @@ dosByGene <- function(data=NULL,geneList=NULL,population=NULL,cutoff=NULL){
 	return(output)
 }
 
+vennPlot <- function(a,b,c,population,palette){
+	require('VennDiagram')
+
+	venn.diagram(
+		x              = list(a,b,c),
+		category.names = c(paste0('Standard (',length(a),')') , paste0('FWW (',length(b),')'), paste0('imputedMKT (',length(c),')')),
+		filename       = paste0('/home/jmurga/mktComparison/results/alphaTables/',population,'Diagram.png'),
+		output         = TRUE,
+		# Output features
+		imagetype      = 'png' ,
+		height         = 800 , 
+		width          = 800 , 
+		resolution     = 300,
+		compression    = 'lzw',
+
+	    # Circles
+		lwd  = 2,
+		lty  = 'blank',
+		fill = palette,
+
+	    # Numbers
+		cex = .6,
+		fontface = 'bold',
+		fontfamily = 'sans',
+		
+	    # Set names
+		main = paste0(population,' positive selected genes'),
+		cat.cex = 0.6,
+		cat.fontface = 'bold',
+		cat.default.pos = 'outer',
+		cat.pos = c(-27, 27, 135),
+		cat.dist = c(0.055, 0.055, 0.1),
+		cat.col = palette,
+		cat.fontfamily = 'sans',
+		rotation = 1
+	)
+}
 
 # else if(test == 'FWW' & cutoff==0.1){
 
