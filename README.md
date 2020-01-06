@@ -7,9 +7,7 @@ Both real and simulated population genomics data are used to assess their perfor
 
 This repository only include raw code to get main results. notebooks/ folder include Jupyter Notebooks running on Python 3.6 kernel to execute step by step the pipeline. src/ folder contain raw scripts to needed to execute the pipelin. Please note that multiple step could be parallelized, in this case create yourself customs bash scripts or run it on your server manually.  
 
-Pipeline were developed in the conda enviroment imktReplicate.yml in local server: 100GB RAM and 16 Intel(R) Xeon(R) CPU.  
-
-In addition structure.sh deposited in scr/ create the folders we used to complete the whole process. If you decided execute it, ovewrite notebook/ and src/ with the same folders deposited at this repository.
+Pipeline were developed with the following [conda enviroment](https://github.com/jmurga/mktComparison/blob/master/mktComparison.yml) in local server: 100GB RAM and 16 Intel(R) Xeon(R) CPU.  
 
 Pipelines execution requiere to download  files. Paths would need to be changed too.
 
