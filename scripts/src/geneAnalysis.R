@@ -16,7 +16,7 @@ mktByGene <- function(data=NULL,geneList=NULL,test=NULL,population=NULL,cutoff=0
 			subsetGene <- subsetGene[1]
 		}
 
-		if(subsetGene$m0 == 0 | subsetGene$mi == 0 | subsetGene$p0 == 0 | subsetGene$pi == 0 | subsetGene$di == 0 | subsetGene$d0 == 0){
+		if(subsetGene$m0 == 0 | subsetGene$mi == 0 | subsetGene$p0 == 0 | subsetGene$pi == 0 | subsetGene$di == 0 | subsetGene$d0 == 0 | sum(subsetGene$d0 + subsetGene$p0) > subsetGene$m0){
 			tmpDf <- data.frame('id'=subsetGene$id,'pop'=population,'alpha'=NA,'pvalue'=NA,'test'=test,stringsAsFactors=F)
 			tmp[[iter]] <- tmpDf
 		}
