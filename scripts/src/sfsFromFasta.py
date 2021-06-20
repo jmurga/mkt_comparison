@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import pyfaidx as px
 import pybedtools
+
 def degenerancy(data,codonDict):
 	
 	#DEGENERANCY DICTIONARIES
@@ -107,6 +108,7 @@ def sequencesToMatrix(multiFasta,split=None):
 		matrix = np.asarray(matrix[:,(matrix[0]=='0') | (matrix[0]=='4')],order='C')  
 
 		return(matrix)
+		
 def uSfsFromFasta(sequenceMatrix):
 	output = list()
 	for x in np.nditer(sequenceMatrix, order='F',flags=['external_loop']): 

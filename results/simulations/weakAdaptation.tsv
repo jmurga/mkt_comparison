@@ -1,0 +1,4 @@
+"Simulations"	"MKT"	"eMKT 0.05"	"eMKT 0.25"	"fwwMKT 0.05"	"fwwMKT 0.25"	"impMKT 0.05"	"impMKT 0.25"	"aMKT"	"Grapes"	"True $$\alpha$$"
+"Base"	-0.273	-0.078	-0.112	-0.012	0.242	-0.012	0.283	0.305	0.384	0.358
+"Base + weak adaptation"	-0.187	-0.010	-0.070	0.204	0.292	0.204	0.292	0.314	0.422	0.405
+"Base + weak adaptation + BGS"	-0.671	-0.412	-0.504	-0.094	0.012	-0.094	0.012	0.047	0.279	0.158

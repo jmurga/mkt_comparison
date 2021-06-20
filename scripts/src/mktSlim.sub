@@ -1,0 +1,18 @@
+
+executable=/data/bioinfo/software/SLiM/build/slim
+args=-d exon=300 -d intron=100 -d ngenes=7 -d negStrength=-2000 -d posStrength=500 -d shape=0.3 -d pposH=0.000122763 -d rho=0.001 -d theta=0.001 -d nF=$(Item)  -d p=\"/nfs/pic.es/user/j/jmurgamo/simulations/mktComparison/base\" /nfs/pic.es/user/j/jmurgamo/src/mktComparision.slim
+error = err/err.$(Item)
+log = log/log.$(Item)
+
+queue from seq 1 2000 |
+
+# Changing rho
+# args=slim -d negStrength=-2000 -d posStrength=500 -d pposH=0.000122763 -d exon=300 -d intron=100 -d ngenes=7 -d rho=0.001 -d theta=0.001 -d nF={} -d shape=0.3 -d p=\"/nfs/pic.es/user/j/jmurgamo/simulations/mkdir/twoepochs_s1\" /nfs/pic.es/user/j/jmurgamo/src/mktComparision.slim
+
+# Changing mu
+# args=slim -d negStrength=-2000 -d posStrength=500 -d pposH=0.000122763 -d exon=300 -d intron=100 -d ngenes=7 -d rho=0.001 -d theta=0.001 -d nF={} -d shape=0.3 -d p=\"/nfs/pic.es/user/j/jmurgamo/simulations/mkdir/twoepochs_s1\" /nfs/pic.es/user/j/jmurgamo/src/mktComparision.slim
+
+# Chaging fixation probability 
+# args=slim -d negStrength=-2000 -d posStrength=500 -d pposH=0.000122763 -d exon=300 -d intron=100 -d ngenes=7 -d rho=0.001 -d theta=0.001 -d nF={} -d shape=0.3 -d p=\"/nfs/pic.es/user/j/jmurgamo/simulations/mkdir/twoepochs_s1\" /nfs/pic.es/user/j/jmurgamo/src/mktComparision.slim
+
+# Chaging total length

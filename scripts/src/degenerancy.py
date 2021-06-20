@@ -82,3 +82,26 @@ def degenerateFullPositions(data):
 
 	# return(zeroFold,fourFold)
 				
+def foldPositions(x):
+    if('0' in x):
+        return('0fold')
+    elif('4' in x and '0' not in x and '2' not in x and '3' not in x):
+        return('4fold')
+    elif('2' in x and '0' not in x):
+        return('2fold')
+    elif('2' not in x and '0' not in x and '4' not in x) :
+        return('3fold')
+    else:
+        return(x)
+        
+def reverseComplement(seq):
+	# Sequence on dgn/sp contains M. No idea why
+	seq = seq[::-1]
+	letters = list(seq)
+	baseComplement = {'A':'T','C':'G','G':'C','T':'A','N':'N','-':'-'}
+#	letters = [baseComplement[base] for base in letters]
+	letters = [baseComplement[base] if base in baseComplement.keys() else base for base in letters]
+	seq = ''.join(letters)
+
+	return(seq)
+
