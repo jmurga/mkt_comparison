@@ -97,7 +97,7 @@ def cumulativeSfs(x):
 
 def reduceSfs(x,bins):
 
-	bins = (bins*2) -1 
+	bins = (bins*2) - 1 
 	f = x[:,0]
 	sfs = x[:,1:]
 	
@@ -159,6 +159,8 @@ def impMK(sfs, divergence,l,h=None,m=None):
 	# output[0] = round(1 - ((pnNeutral/ps) * (ds / dn)),3)
 
 	output['pvalue'] = pvalue(ps, ds, pnNeutral, dn).two_tail
+	output['s'] = pn+ps	
+	output['deleterious'] = deleterious
 
 	if(m is not None):
 		m0 = m[1];mi = m[0]
@@ -172,10 +174,11 @@ def impMK(sfs, divergence,l,h=None,m=None):
 		output['d'] = 1 - (output['f'] + output['b'])
 
 
-	# # divergence metrics
-	# output['Ka']       = di / mi
-	# output['Ks']       = ds / m0
-	# output['omega']    = output['Ka'] / output['Ks']
+		# divergence metrics
+		output['Ka']       = dn / mi
+		output['Ks']       = ds / m0
+		output['omega']    = output['Ka'] / output['Ks']
+		output['gamma'] = (pnNeutral/ps - dn/ds) * m0/mi
 
 
 	## Omega A and Omega D
@@ -191,7 +194,7 @@ def impMK(sfs, divergence,l,h=None,m=None):
 	return output
 
 def FWW(sfs, divergence,m, cutoff=0.15):
-	
+
 	output = {}
 
 	pn = np.sum(sfs[:,1])
@@ -207,6 +210,8 @@ def FWW(sfs, divergence,m, cutoff=0.15):
 
 	output['alpha'] = 1 - (pnGreater / psGreater * (ds / dn))
 	output['pvalue'] = pvalue(psGreater, ds, pnGreater, dn).two_tail
+	output['s'] = pn+ps
+	output['deleterious'] = sfs[sfs[:,0] <= cutoff,1:].sum()
 	return output
 
 def eMKT(sfs, divergence, m,cutoff=0.15):
@@ -218,10 +223,9 @@ def eMKT(sfs, divergence, m,cutoff=0.15):
 	Pi = sum(sfs[:,1])
 	P0 = sum(sfs[:,2]) 
  
-
 	## Estimate fractions
 	f_neutral = daf_below_cutoff[1]/P0
-	Pi_neutral_below_cutoff=  Pi * f_neutral
+	Pi_neutral_below_cutoff =  Pi * f_neutral
 	Pi_wd = daf_below_cutoff[0] - Pi_neutral_below_cutoff
 	Pi_neutral =  round(Pi_neutral_below_cutoff + daf_above_cutoff[0])
 	
@@ -239,6 +243,10 @@ def eMKT(sfs, divergence, m,cutoff=0.15):
 	
 	## Fisher exact test p-value from the MKT
 	output['pvalue'] = pvalue(P0, divergence[1], Pi_neutral, divergence[0]).two_tail
+
+	output['s'] = Pi + P0
+	output['deleterious'] = Pi_wd
+
 	return(output) 
 
 def standardMK(sfs,divergence,m):

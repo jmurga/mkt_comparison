@@ -12,7 +12,7 @@ initialize() {
 	defineConstant("pposH", 0.00021);
 	defineConstant("nGenes", 7);
 	defineConstant("nF", 1);
-	defineConstant("fullPath", '/home/jmurga/test');
+	defineConstant("fullPath", path);
 
 	defineConstant("exon", 300);
 	defineConstant("intron", 100);
@@ -111,6 +111,7 @@ initialize() {
 	line = "daf\tpi\tp0";
 	writeFile( fullPath + "/daf/daf" + nF +  ".tsv.gz", line, compress=T);
 	for (i in 0:(bn-1)){
+	catn(line);
 		line = f[i] + "\t" + pi[i] + "\t" + p0[i];
 			writeFile(fullPath + "/daf/daf" + nF +  ".tsv.gz", line,append=T, compress=T);
 	}

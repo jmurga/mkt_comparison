@@ -12,7 +12,7 @@ import glob
 import sys
 import os
 sys.path.insert(0, '/home/jmurga/mkt/201902/scripts/src/')
-from pyAmkt import *
+from mkt import *
 
 
 # DAF SHOULD BE A NUMPY ARRAY CONTAINING FREQ, PI AND P0 IN THAT ORDER
@@ -102,24 +102,33 @@ def dataEstimates(sfs,d,m,geneId,population,dofe):
 	std =  standardMK(sfs=sfs,divergence=d,m=m);
 
 	checkDaf = sfs[sfs[:,0] > 0.15,:]
-	if((np.sum(checkDaf[:,1]) == 0) | (np.sum(checkDaf[:,2]) == 0)):
-		fww1 = {"alpha":np.nan,"pvalue":np.nan}
-		emkt1 = {"alpha":np.nan,"pvalue":np.nan}		
-		imp1 = {"alpha":np.nan,"pvalue":np.nan}
+	if((checkDaf[:,1].sum() == 0) | (checkDaf[:,2].sum() == 0)):
+		fww1 = {"alpha":np.nan,"pvalue":np.nan,'s': np.nan, 'deleterious': np.nan}
+		imp1 = {"alpha":np.nan,"pvalue":np.nan,'s': np.nan, 'deleterious': np.nan}
+
 	else:
 		fww1 = FWW(sfs=sfs,divergence=d,m=m,cutoff=0.15);
-		emkt1 = eMKT(sfs=sfs,divergence=d,m=m,cutoff=0.15)
 		imp1 = impMK(sfs=sfs,divergence=d,m=m,l=0.15);
+
+
+	if(checkDaf[:,2].sum() == 0):
+		emkt1 = {"alpha":np.nan,"pvalue":np.nan,'s': np.nan, 'deleterious': np.nan}
+	else:
+		emkt1 = eMKT(sfs=sfs,divergence=d,m=m,cutoff=0.15)
 	
 	checkDaf = sfs[sfs[:,0] > 0.25,:]
 	if((np.sum(checkDaf[:,1]) == 0) | (np.sum(checkDaf[:,2]) == 0)):
-		fww2 = {"alpha":np.nan,"pvalue":np.nan}
-		emkt2 = {"alpha":np.nan,"pvalue":np.nan}
-		imp2 = {"alpha":np.nan,"pvalue":np.nan}
+		fww2 = {"alpha":np.nan,"pvalue":np.nan,'s': np.nan, 'deleterious': np.nan}
+		imp2 = {"alpha":np.nan,"pvalue":np.nan,'s': np.nan, 'deleterious': np.nan}
 	else:
 		fww2 = FWW(sfs=sfs,divergence=d,m=m,cutoff=0.25);
-		emkt2 = eMKT(sfs=sfs,divergence=d,m=m,cutoff=0.25)
 		imp2 = impMK(sfs=sfs,divergence=d,m=m,l=0.25);
+
+	if(checkDaf[:,2].sum() == 0):
+		emkt2 = {"alpha":np.nan,"pvalue":np.nan,'s': np.nan, 'deleterious': np.nan}
+	else:
+		emkt2 = eMKT(sfs=sfs,divergence=d,m=m,cutoff=0.25)
+
 
 	if (sfs == 0).any():
 		asymp1 = amkt(sfs,d)[0]
@@ -135,8 +144,13 @@ def dataEstimates(sfs,d,m,geneId,population,dofe):
 
 	tmp = pd.DataFrame([np.repeat(dataset,n),np.repeat(population,n),alphas,pvalues,np.array(["std","emkt1","emkt2","fww1","fww2","imp1","imp2","asymp1","asymp2"])]).T
 	tmp.columns= ["id","pop","alpha","pvalue","test"]
+	deleterious = np.array([0,emkt1["deleterious"],emkt2["deleterious"],fww1["deleterious"],fww2["deleterious"],imp1["deleterious"],imp2["deleterious"]])
+	s = np.array([sfs[:,1].sum(),emkt1["s"],emkt2["s"],fww1["s"],fww2["s"],imp1["s"],imp2["s"]])
+	tmp_deleterious = pd.DataFrame([np.repeat(dataset,6),np.repeat(population,6),s,deleterious,np.array(["std","emkt1","emkt2","fww1","fww2","imp1","imp2"])]).T
+	tmp_deleterious.columns= ["id","pop","s","deleterious","test"]
 
-	return(tmp)
+
+	return(tmp,tmp_deleterious)
 
 def mktByGene(df,population,nthreads,dofe,grapes=False):
 
@@ -153,7 +167,7 @@ def mktByGene(df,population,nthreads,dofe,grapes=False):
 	pool.terminate()
 
 	pool = Pool(processes = nthreads)
-	tmpAlphas = pool.starmap(dataEstimates,zip(lSfs,lDiv,lM,genes,[population]*n,[outDofe]*n))
+	tmpAlphas,tmp_deleterious = zip(*pool.starmap(dataEstimates,zip(lSfs,lDiv,lM,genes,[population]*n,[outDofe]*n)))
 	pool.terminate()	
 
 	if grapes:
@@ -164,7 +178,7 @@ def mktByGene(df,population,nthreads,dofe,grapes=False):
 	dfAlpha[dfAlpha.alpha > 1] = np.nan
 	dfAlpha.alpha = dfAlpha.alpha.astype(float)
 	dfAlpha.pvalue = dfAlpha.pvalue.astype(float)
-	flt = dfAlpha.dropna()
+	flt = dfAlpha
 
 	analyzable = flt.groupby(['test','pop'], as_index=False).agg({'alpha':['count','mean','std'],'id':','.join}).reset_index(drop=True)
 	analyzable.columns = analyzable.columns.droplevel(0) 
@@ -185,7 +199,9 @@ def mktByGene(df,population,nthreads,dofe,grapes=False):
 
 	positiveRaw = flt[(flt.alpha > 0)]
 
-	return(flt,pd.concat([analyzable,positive,negative]))
+	df_deleterious = pd.concat(tmp_deleterious).infer_objects()
+
+	return(flt,pd.concat([analyzable,positive,negative]),df_deleterious)
 
 def samplingGenes(geneList,replicas,sample):
 
@@ -194,12 +210,12 @@ def samplingGenes(geneList,replicas,sample):
 
 def binByRecombRate(dfRecomb,replicas,selectBin,bins):
 
-	dfRecomb['grp'] = pd.qcut(dfRecomb.cM_Mb,bins)
+	dfRecomb['grp'] = pd.qcut(dfRecomb.cM_Mb,bins,duplicates='drop')
 	# tmpRecomb = [dfRecomb[dfRecomb.grp == i].id.unique().tolist() for i in dfRecomb.grp.cat.categories]
 
 	tmpRecomb = dfRecomb[dfRecomb.grp == dfRecomb.grp.cat.categories[selectBin]].id.unique()
 
-	gList = [np.random.choice(tmpRecomb,tmpRecomb.shape[0],replace=True) for i in range(0,replicas)]
+	gList = [np.random.choice(tmpRecomb,900,replace=True) for i in range(0,replicas)]
 	
 	grp = str(dfRecomb.grp.cat.categories[selectBin])
 
@@ -216,17 +232,18 @@ def sampleAnalysis(df,population,sample,replicas,dofe,nthreads,grapes=False,reco
 		sampling, grp = binByRecombRate(tmp,replicas,recombBin,bins)
 	else:
 
-		allGenes = df.id.unique()
+		tmp = df[df['pop'] == population]
+		allGenes = tmp.id.unique()
 		np.random.seed(1331272)
 		geneList = np.random.choice(allGenes,3500)
 
 		outDofe = dofe + "/" + population.lower() + "/" + str(sample)
 		os.makedirs(outDofe, exist_ok=True)
 		outDofeList = [ outDofe + "/" + str(i) for i in range(1,replicas+1)]
-		sampling = samplingGenes(geneList,replicas,sample)	
+		sampling = samplingGenes(geneList,replicas,sample)
 
 	pool = Pool(processes = nthreads)
-	lSfs,lDiv,lM,genes = zip(*pool.starmap(parseBinnedSfs,zip([df]*replicas,[population]*replicas,sampling)))
+	lSfs,lDiv,lM,genes = zip(*pool.starmap(parseBinnedSfs,zip([tmp]*replicas,[population]*replicas,sampling)))
 	pool.terminate()
 
 	pool = Pool(processes = nthreads)
@@ -261,17 +278,17 @@ def sampleAnalysis(df,population,sample,replicas,dofe,nthreads,grapes=False,reco
 
 	return(dfAlpha,analyzable)
 
-def mktOnsimulatedData(path,nthreads):
+def mktOnsimulatedData(path,model,nthreads):
 
 	sfsFiles = np.sort(glob.glob(path + "/sfs*"))[1:]
 	divFiles = np.sort(glob.glob(path + "/div*"))[2:]
-	dofeFiles = np.sort(glob.glob(path + "/*dofe"))
+	dofeFiles = np.sort(glob.glob(path + "/*" + model))
 
 	pool = Pool(processes = nthreads)
 	alphas = pool.starmap(simulationsEstimates,zip(sfsFiles,divFiles,dofeFiles))
 	pool.terminate()
 
-	df = pd.DataFrame(np.vstack(alphas),columns=['std','emkt1','emkt2','emkt3','fww1','fww2','fww3','imp1','imp2','imp3','asymp1','asymp2','grapes','trueAlpha'])
+	df = pd.DataFrame(np.vstack(alphas),columns=['std','emkt1','emkt2','emkt3','emkt4','fww1','fww2','fww3','fww4','imp1','imp2','imp3','imp4','asymp1','asymp2','grapes','trueAlpha'])
 	df = np.round(df,3)
 	df['simulation'] = path.split('/')[-1]
 
@@ -304,7 +321,7 @@ def mktOnsimulatedData(path,nthreads):
 	errorMeanSd = pd.concat([error,meanSd])
 	return(df,dfPlot,errorMeanSd,p)
 
-def simulationsEstimates(sfile,dfile,dofe):
+def simulationsEstimates(sfile,dfile,outGrapes):
 
 	sfs = pd.read_csv(sfile,sep='\t').to_numpy()
 	d   = pd.read_csv(dfile,sep='\t').to_numpy().flatten()
@@ -321,26 +338,30 @@ def simulationsEstimates(sfile,dfile,dofe):
 
 	cSfs = cumulativeSfs(sfs)
 
-	emkt1 = eMKT(sfs=sfs,divergence=d,m=m,cutoff=0.15)
-	fww1  = FWW(sfs=sfs,divergence=d,m=m,cutoff=0.15);
-	imp1  = impMK(sfs=sfs,divergence=d,m=m,l=0.15);
-	emkt2 = eMKT(sfs=sfs,divergence=d,m=m,cutoff=0.25)
-	fww2  = FWW(sfs=sfs,divergence=d,m=m,cutoff=0.25);
-	imp2  = impMK(sfs=sfs,divergence=d,m=m,l=0.25);	
+	emkt1 = eMKT(sfs=sfs,divergence=d,m=m,cutoff=0.05)
+	emkt2 = eMKT(sfs=sfs,divergence=d,m=m,cutoff=0.15)
 	emkt3 = eMKT(sfs=sfs,divergence=d,m=m,cutoff=0.35)
-	fww3  = FWW(sfs=sfs,divergence=d,m=m,cutoff=0.35);
-	imp3  = impMK(sfs=sfs,divergence=d,m=m,l=0.35);
+	emkt4 = eMKT(sfs=sfs,divergence=d,m=m,cutoff=0.35)
+
+	fww1  = FWW(sfs=sfs,divergence=d,m=m,cutoff=0.05);
+	fww2  = FWW(sfs=sfs,divergence=d,m=m,cutoff=0.15);
+	fww3  = FWW(sfs=sfs,divergence=d,m=m,cutoff=0.25);
+	fww4  = FWW(sfs=sfs,divergence=d,m=m,cutoff=0.35);
+
+	imp1  = impMK(sfs=sfs,divergence=d,m=m,l=0.05);
+	imp2  = impMK(sfs=sfs,divergence=d,m=m,l=0.15);	
+	imp3  = impMK(sfs=sfs,divergence=d,m=m,l=0.25);
+	imp4  = impMK(sfs=sfs,divergence=d,m=m,l=0.35);
 
 
 	asymp1 = amkt(cSfs,d)[0]
 	asymp2 = amkt(cSfs,d,0.1,0.9)[0]
 
-	outGrapes = dofe.replace("dofe","GammaExpo")
 	# subprocess.run(["grapes", "-in",dofe,"-out",outGrapes,"-model","GammaZero"])
 	
 	grapes = pd.read_csv(outGrapes)
 
-	alphas = np.array([std["alpha"],emkt1["alpha"],emkt2["alpha"],emkt3["alpha"],fww1["alpha"],fww2["alpha"],fww3["alpha"],imp1["alpha"],imp2["alpha"],imp3["alpha"],asymp1["alpha"],asymp2["alpha"],grapes.alpha.iloc[1],trueAlpha])
+	alphas = np.array([std["alpha"],emkt1["alpha"],emkt2["alpha"],emkt3["alpha"],emkt4["alpha"],fww1["alpha"],fww2["alpha"],fww3["alpha"],fww4["alpha"],imp1["alpha"],imp2["alpha"],imp3["alpha"],imp4["alpha"],asymp1["alpha"],asymp2["alpha"],grapes.alpha.iloc[1],trueAlpha])
 	return alphas
 
 def openFiles(sfsFile,divFile):
@@ -419,7 +440,7 @@ def grapesOutput(path,model,population,nthreads):
 
 	df = pd.concat(n)
 
-	tmpGrapes = df[(df.alpha_range < 0.25) & (df.alpha_range !=0)];
+	tmpGrapes = df[(df.alpha_down < 0.25) & (df.alpha_range !=0)];
 	tmp = tmpGrapes.iloc[:,[0,2,6]].values
 	tmp = pd.DataFrame({'id':tmp[:,0],'pop':population,'alpha':tmp[:,1].astype(float),'pvalue':np.nan,'test':tmp[:,2]})
 
@@ -447,10 +468,11 @@ def readGrapes(file,model):
 	with warnings.catch_warnings():
 		warnings.simplefilter('ignore')
 		tmp = df[df.model==model]
-		tmp['alpha_up'] = tmp['alpha_up'].astype(float) 
+		tmp['alpha_up'] = tmp['alpha_up'].astype(float)
 		tmp.alpha_down = tmp.alpha_down.astype(float) 
+		tmp.omegaA = tmp.omegaA.astype(float) 
 
-	out = tmp.loc[:,['dataset','model','alpha','alpha_down','alpha_up']]
+	out = tmp.loc[:,['dataset','model','alpha','alpha_down','alpha_up','omegaA']]
 	out['alpha_range'] = tmp.alpha_up - tmp.alpha_down
 	out['test'] = 'grapes'
 	return(out)	
@@ -491,9 +513,10 @@ def grapesBootstrap(bins,replicas,path):
 		o = path + "/" + str(i) + "/bootstrap"
 		os.makedirs(o, exist_ok=True)
 
-		df    = pd.read_csv(path + "/" + str(i) + "/1_concat.dofe",sep='\t',skiprows=2,header=None)
+		df    = pd.read_csv(path + "/" + str(i) + "/429_concat.dofe",sep='\t',skiprows=2,header=None)
 		name  = df.iloc[:,0:2].to_numpy()
 		m     = df.iloc[:,2:].to_numpy()
+		out=[]
 		for j in range(1,replicas+1):
 			mpois = np.random.poisson(m)
 			data = pd.DataFrame(np.hstack([name,mpois]))
@@ -501,6 +524,10 @@ def grapesBootstrap(bins,replicas,path):
 			f = open(oDofe,"w")
 			f.write(" \n#unfolded\n")
 			f.close()
+			try:
+				out.append(dofeToSfs(data))
+			except:
+				out.append(np.nan)
 			data.to_csv(oDofe,sep='\t',header=None,index=False,mode='a')
 
 def dofeToSfs(df):
@@ -511,6 +538,13 @@ def dofeToSfs(df):
 	ps = df.iloc[:,(n+3):(n+n+2)].to_numpy().flatten()
 	m = df.iloc[:,n+n+2:].to_numpy().flatten()
 	d = m[[1,3]]
+
 	sfs = pd.DataFrame({'f':np.arange(1,pn.shape[0]+1)/pn.shape[0],'pn':pn,'ps':ps}).to_numpy()
 
-	return(impMK(sfs,d,0.25)['alpha'])
+	checkDaf = sfs[sfs[:,0] > 0.25,:]
+	if((np.sum(checkDaf[:,1]) == 0) | (np.sum(checkDaf[:,2]) == 0)):
+		imp1 = {"alpha":np.nan,"pvalue":np.nan}
+	else:
+		imp1 = impMK(sfs=sfs,divergence=d,m=m,l=0.15);
+
+	return(imp1['alpha'])
