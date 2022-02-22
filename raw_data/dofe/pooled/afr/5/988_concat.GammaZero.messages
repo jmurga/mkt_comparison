@@ -1,0 +1,5 @@
+!!! Function at new point is greater than at current point: 29.0836>28.8572. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.3487). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.0345). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.3608). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.4959). Moving in the other direction.

@@ -1,0 +1,105 @@
+!!! Second order derivative is negative for parameter posGmean(0.972955). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-1.09861). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(0.754616). Moving in the other direction.
+!!! Function at new point is greater than at current point: 387.215>303.132. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 302.247>275.905. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 270.299>270.199. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 266.303>266.18. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 265.58>265.504. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 267.265>265.061. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 266.322>265.061. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 265.927>265.061. Applying Felsenstein-Churchill correction: 2
+!!! Felsenstein-Churchill correction applied too many times.
+Use conjugate gradients optimization.
+!!! Function at new point is greater than at current point: 258.307>258.28. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.38>258.268. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.283>258.257. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.242>258.241. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.09708). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.242>258.225. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.265>258.214. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.214>258.204. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.10213). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(9.11493). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.214>258.193. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.11926). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.185>258.182. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.12048). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.186>258.173. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.12481). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.166>258.166. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.1269). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.162>258.157. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.13798). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.162>258.15. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.145>258.144. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.14138). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.144>258.138. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.14401). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(9.15698). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.151>258.133. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.132>258.128. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.15871). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.132>258.124. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.16143). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.121>258.12. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.16276). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(9.16414). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.121>258.116. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.125>258.113. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.112>258.109. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.113>258.107. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.105>258.104. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.18427). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(9.18784). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.105>258.101. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.1>258.1. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.099>258.097. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.20041). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.1>258.096. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.20699). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.095>258.094. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.095>258.092. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.091>258.091. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.21358). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.091>258.09. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.092>258.089. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.2213). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.088>258.087. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.088>258.086. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.2269). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.086>258.086. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.086>258.085. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.23781). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.086>258.084. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.084>258.083. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.23895). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(9.24094). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.084>258.083. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.082>258.082. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.24411). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(9.24561). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.082>258.081. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.25475). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.081>258.081. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.25649). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.081>258.081. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.081>258.08. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.08>258.08. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.2709). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.08>258.079. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.2733). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.079>258.079. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.27378). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(9.27527). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.079>258.079. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.27935). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.079>258.079. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 258.078>258.078. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.28299). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.079>258.078. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.29196). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.078>258.078. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.30483). Moving in the other direction.
+!!! Function at new point is greater than at current point: 258.078>258.078. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(9.30818). Moving in the other direction.

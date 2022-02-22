@@ -1,0 +1,37 @@
+!!! Second order derivative is negative for parameter syno_orientation_error(-1.09861). Moving in the other direction.
+!!! Function at new point is greater than at current point: 51.2088>41.3191. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(-0.584818). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(4.66511). Moving in the other direction.
+!!! Function at new point is greater than at current point: 42.3264>41.0115. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(4.41503). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(3.91541). Moving in the other direction.
+!!! Function at new point is greater than at current point: 40.5863>40.5721. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(3.66515). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(3.16433). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(2.66174). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(2.15463). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(1.63494). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(1.07555). Moving in the other direction.
+!!! Function at new point is greater than at current point: 40.4872>40.4743. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 40.4948>40.4743. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 40.4991>40.4743. Applying Felsenstein-Churchill correction: 2
+!!! Felsenstein-Churchill correction applied too many times.
+Use conjugate gradients optimization.
+!!! Second order derivative is negative for parameter syno_orientation_error(0.360774). Moving in the other direction.
+!!! Function at new point is greater than at current point: 40.4945>40.4712. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 40.4933>40.4712. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 40.4927>40.4712. Applying Felsenstein-Churchill correction: 2
+!!! Felsenstein-Churchill correction applied too many times.
+Use conjugate gradients optimization.
+!!! Second order derivative is negative for parameter syno_orientation_error(0.306401). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-6.04918). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-5.54752). Moving in the other direction.
+!!! Function at new point is greater than at current point: 40.3563>40.3562. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(-5.29748). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-4.79673). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-4.29624). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-3.79494). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-3.29125). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-2.78103). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-2.25156). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-1.65563). Moving in the other direction.

@@ -1,0 +1,111 @@
+initialize() {
+
+	/*defineConstant("theta", 0.02); // 2Nes
+	defineConstant("rho", 0.05); // 2Nes
+	defineConstant("shape", 0.3); // 2Nes*/
+    /*to simulate N=500;alpha 0.4;gH=250;pposH = 0.00024562 Analytical.jl*/
+	/*to simulate N=2500;alpha 0.4;gH=250;pposH=0.000191626*/
+	/*defineConstant("pposH", 0.000191626);*/
+	/*defineConstant("nGenes", 7);*/	
+	/*defineConstant("nF", 1);*/
+	/*defineConstant("p", '/home/jmurga/test');*/
+
+	defineConstant("exon", 300);
+	defineConstant("intron", 100);
+	defineConstant("exonNumber", 5);
+	
+	// m1 mutation type: neutral
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	// m2 mutation type: deleterious
+	initializeMutationType("m2", 0.5, "g", negStrength/(2*N), shape);
+	// m3 mutation type: advantageous
+	initializeMutationType("m3", 0.5, 'f', posStrength/(2*N));
+	// g1 genomic element type: uses m1 for all mutations
+	initializeGenomicElementType("g1", c(m1,m2,m3), c(0.25,0.75*(1-(pposH)), 0.75*(pposH)));
+	
+
+	// N genes modeled. 5 exons per gene.
+	base       = 0;
+	intergenic = 8100;
+	exonL      = exon - 1;
+	intronL    = intron- 1;
+	for(i in 1:nGenes){
+		for(l in 1:exonNumber){
+			initializeGenomicElement(g1, base, base+exonL);
+			base = base + exonL + intronL;
+		}
+		base = base + intergenic;
+	}
+	initializeGenomicElement(g1, base, base);
+		
+	initializeRecombinationRate(rho/(4*N));
+	initializeMutationRate(theta/(4*N));
+
+}
+
+1 {
+	sim.addSubpop("p1", N);
+}
+
+22000 late() {
+	
+	// Sample individuals
+	sampledIndividuals = p1.sampleIndividuals(20).genomes;  
+	//sampledIndividuals.outputMS("/home/jmurga/ms.txt");
+	//m1muts = sim.mutationsOfType(m1);
+	//m1_in_p2 = (sim.mutationCounts(sampledIndividuals, m1muts) > 0);
+
+	// Segregating sites within the sample. 
+	m = unique(sampledIndividuals.mutations);
+
+	m0 = unique(sampledIndividuals.mutationsOfType(m1));
+	mf2 = unique(sampledIndividuals.mutationsOfType(m2));
+	mf3 = unique(sampledIndividuals.mutationsOfType(m3));
+	mi  = c(mf2,mf3);
+
+	bn = 39;
+	if( sum(m0.size()) == 0){
+		p0 = rep(0,bn);
+	}else{
+		// Get frequencies and cleaning fixed within sample
+		f0 = sapply(m0, "mean(sampledIndividuals.containsMutations(applyValue));");
+		p0  = sapply(0:(bn), " sum((f0 >= applyValue / (bn)) & (f0 < (applyValue + 1) / (bn))); ");
+	}
+	
+	if(sum(mi.size()) == 0){
+		pi = rep(0,bn);
+	}else{
+		fi = sapply(mi, "mean(sampledIndividuals.containsMutations(applyValue));");             
+		//  Make binned SFS
+		pi  = sapply(0:(bn), " sum((fi >= applyValue / (bn)) & (fi < (applyValue + 1) / (bn))); ");
+	}
+
+
+	// Get substitution info
+	subs = sim.substitutions;
+	subs[subs.fixationGeneration > (34*N)];
+
+	m1Subs = subs[subs.mutationType == m1];
+	m2Subs = subs[subs.mutationType == m2];
+	m3Subs = subs[subs.mutationType == m3];
+
+	trueAlpha = m3Subs.size() / (m2Subs.size() + m3Subs.size());
+
+	d0 = m1Subs.size();
+	di = m2Subs.size() + m3Subs.size();
+	ds = m3Subs.size();
+	
+	f = (1:(bn)) / (bn);
+	line = "daf\tpi\tp0";
+	writeFile( p + "/daf/daf" + nF +  ".tsv.gz", line, compress=T);
+	for (i in 0:(bn-1)){
+		line = f[i] + "\t" + pi[i] + "\t" + p0[i];
+			writeFile(p + "/daf/daf" + nF +  ".tsv.gz", line,append=T, compress=T);
+	}
+
+	line  = "di\td0\tds";
+	writeFile(p + "/div/div" + nF +  ".tsv.gz", line, compress=T); 
+	line  = di + "\t" + d0 + "\t" + ds;
+	writeFile(p + "/div/div" + nF +  ".tsv.gz", line,append=T ,compress=T);
+}
+

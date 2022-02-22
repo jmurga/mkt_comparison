@@ -1,0 +1,121 @@
+!!! Second order derivative is negative for parameter posGmean(0.972955). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-1.09861). Moving in the other direction.
+!!! Second order derivative is negative for parameter negGshape(-3.45896). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(0.545594). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(3.70677). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(0.350631). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-3.7943). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(3.70392). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(6.99145). Moving in the other direction.
+!!! Function at new point is greater than at current point: 236.076>232.597. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter posGmean(-3.52441). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(3.45067). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(6.73538). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(6.22557). Moving in the other direction.
+!!! Function at new point is greater than at current point: 231.855>231.76. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter posGmean(-3.21368). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(3.18915). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(5.98001). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(2.68414). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(5.48248). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-2.795). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(2.08393). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(4.98325). Moving in the other direction.
+!!! Function at new point is greater than at current point: 231.466>231.328. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter pos_prop(1.81269). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(4.73243). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(4.23204). Moving in the other direction.
+!!! Function at new point is greater than at current point: 232.249>231.07. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 232.179>231.07. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 231.485>231.07. Applying Felsenstein-Churchill correction: 2
+!!! Felsenstein-Churchill correction applied too many times.
+Use conjugate gradients optimization.
+!!! Second order derivative is negative for parameter syno_orientation_error(4.23204). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-2.6247). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(3.73207). Moving in the other direction.
+!!! Function at new point is greater than at current point: 232.992>231.001. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 232.195>231.001. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 231.078>231.001. Applying Felsenstein-Churchill correction: 2
+!!! Second order derivative is negative for parameter syno_orientation_error(3.66948). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-2.47673). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(3.16864). Moving in the other direction.
+!!! Function at new point is greater than at current point: 233.315>230.96. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 231.27>230.96. Applying Felsenstein-Churchill correction: 1
+!!! Second order derivative is negative for parameter syno_orientation_error(3.0431). Moving in the other direction.
+!!! Function at new point is greater than at current point: 230.99>230.911. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(2.79169). Moving in the other direction.
+!!! Function at new point is greater than at current point: 231.722>230.871. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 230.917>230.871. Applying Felsenstein-Churchill correction: 1
+!!! Second order derivative is negative for parameter syno_orientation_error(2.66553). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(2.15955). Moving in the other direction.
+!!! Function at new point is greater than at current point: 233.936>230.784. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 232.282>230.784. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 230.814>230.784. Applying Felsenstein-Churchill correction: 2
+!!! Second order derivative is negative for parameter syno_orientation_error(2.09497). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(1.576). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(1.02039). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-1.91623). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(0.329763). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-1.07366). Moving in the other direction.
+!!! Function at new point is greater than at current point: 222.644>222.571. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter posGmean(-0.841136). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-1.13978). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.705719). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-7.86321). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.705453). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.70553). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.36109). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.705538). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.60408). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-8.55759). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.705545). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.66424). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.65985). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.83159). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.705467). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.68792). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.705286). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.495). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.705174). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.70002). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.5621). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.70533). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.73774). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.5739). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.705266). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.72916). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.5845). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.705238). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.70508). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.71747). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.6043). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.6836). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.68281). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.988). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.66501). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.0012). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.70442). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.62543). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.0361). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.60384). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.704212). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.58302). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.1059). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.704147). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.1118). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.704296). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.42393). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.144). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.704268). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.41729). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.1463). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.704161). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.703974). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.21327). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.2063). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.704571). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.14272). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.2118). Moving in the other direction.
+!!! Second order derivative is negative for parameter posGmean(-0.704524). Moving in the other direction.
+!!! Second order derivative is negative for parameter pos_prop(-8.09664). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.2157). Moving in the other direction.

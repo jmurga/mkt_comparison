@@ -1,0 +1,24 @@
+!!! Second order derivative is negative for parameter syno_orientation_error(-1.09861). Moving in the other direction.
+!!! Second order derivative is negative for parameter negGshape(-3.53912). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(1.78691). Moving in the other direction.
+!!! Function at new point is greater than at current point: 6795.05>90.6991. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 671.824>90.6991. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 122.75>90.6991. Applying Felsenstein-Churchill correction: 2
+!!! Felsenstein-Churchill correction applied too many times.
+Use conjugate gradients optimization.
+!!! Second order derivative is negative for parameter syno_orientation_error(2.28844). Moving in the other direction.
+!!! Function at new point is greater than at current point: 89.5316>89.2793. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 91.1141>88.9946. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 90.5508>88.9946. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 89.211>88.9946. Applying Felsenstein-Churchill correction: 2
+!!! Function at new point is greater than at current point: 89.1763>88.9742. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 89.0315>88.9338. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 88.8865>88.8699. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 88.9029>88.7918. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 88.7468>88.7331. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 88.6795>88.6571. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 88.5989>88.5862. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 88.5155>88.5153. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 88.4285>88.4277. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 88.3595>88.3569. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 88.3201>88.3194. Applying Felsenstein-Churchill correction: 0

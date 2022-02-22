@@ -1,0 +1,5 @@
+!!! Second order derivative is negative for parameter negGmean(-2.0455). Moving in the other direction.
+!!! Function at new point is greater than at current point: 42.4452>26.7009. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 28.4253>26.7009. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 27.0022>26.7009. Applying Felsenstein-Churchill correction: 2
+!!! Second order derivative is negative for parameter negGmean(-1.95695). Moving in the other direction.

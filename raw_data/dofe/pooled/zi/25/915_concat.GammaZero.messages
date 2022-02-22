@@ -1,0 +1,18 @@
+!!! Second order derivative is negative for parameter syno_orientation_error(-1.09861). Moving in the other direction.
+!!! Second order derivative is negative for parameter negGshape(-3.51137). Moving in the other direction.
+!!! Function at new point is greater than at current point: 192082>155.38. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 141171>155.38. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 17216.9>155.38. Applying Felsenstein-Churchill correction: 2
+!!! Felsenstein-Churchill correction applied too many times.
+Use conjugate gradients optimization.
+!!! Function at new point is greater than at current point: 150.958>150.848. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 150.856>150.74. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 150.708>150.624. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 150.528>150.496. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 150.422>150.364. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 150.219>150.218. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 150.033>150.02. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 149.86>149.842. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 149.657>149.65. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 149.461>149.461. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 149.323>149.323. Applying Felsenstein-Churchill correction: 0

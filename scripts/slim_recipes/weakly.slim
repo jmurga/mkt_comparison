@@ -1,0 +1,148 @@
+initialize() {
+
+    //adap = Analytical.parameters(N=1000,n=661,gam_neg=-457,Lf=2*10^5, B=0.999)
+    //mu = Analytical.set_theta_f(adap)
+
+    // rescale and not, check 
+    //defineConstant("N", 500);
+    //defineConstant("sampleSisze", 500);
+    //defineConstant("nF", nF);
+    //defineConstant("p", "/home/jmurga/test/");
+//
+    //// Command line arguments
+    //defineConstant("wS", w); // 2Nes
+    //defineConstant("sS", 500); // 2Nes
+    //defineConstant("muBgs", 8.22e-20); // 2Nes
+//  
+    //defineConstant("pposL", 0.003);
+    //defineConstant("pposH", 0.0003);
+
+    // Solve analytical to obtain the mutation rate in non-coding locus 
+    // The reduction depends on rho, locus lenght and negative selection strength
+    // adap = Analytical.parameters(N=1000,n=661,Lf=2*10^5,gam_neg=-457);
+    // Analytical.set_theta_f(adap)
+    //bgsMutationRate = 1.64e-6;
+
+    defineConstant("bn", (sampleSize*2)-1);
+    defineConstant('nc_length', asInteger(10^5));
+    defineConstant('ex_length', codingLength);
+
+    rates = c (muBgs, 0.001/(4*N),muBgs); 
+    // mutation rate end positions
+    // 99999 100499 100999 201999
+    ends = c(nc_length-1,
+                nc_length+ex_length-1,
+                (nc_length*2)+ex_length-1);
+
+
+    initializeMutationRate(rates, ends);    
+    initializeRecombinationRate(0.001/(4*N));   
+
+    // mutation types
+    //initializeMutationType("m1", 0.5, "g", -0.000402, 0.184); // non-coding neutral
+    //initializeMutationType("m2", 0.5, "g", -457/(2*N), 0.184); // non-coding deleterious
+
+    initializeMutationType("m1", 0.5, "f", -500/(2*N)); // non-coding deleterious
+    initializeMutationType("m2", 0.5, "f", 0.0); // synonymous neutral
+    initializeMutationType("m3", 0.5, "g", -500/(2*N), 0.3); // deleterious
+    initializeMutationType("m4", 0.5, "f", sS/(2*N)); // strong beneficial
+    initializeMutationType("m5", 0.5, "f", wS/(2*N)); // weakly beneficial
+    
+
+    initializeGenomicElementType("g1", c(m2,m3,m4,m5), c(0.25,0.75*(1-(pposH+pposL)),0.75*pposH,0.75*pposL)); // exon; relative proportion to get ~0.25 syn, ~0.75 non-syn
+    initializeGenomicElementType("g3", c(m1), c(1)); // non-coding whith only deleterious mutations
+    g3.color="black";
+
+    // Generate gene structure
+    base = 0;
+    initializeGenomicElement(g3, base, base + nc_length - 1);
+    base = base + nc_length;
+    
+    // Two coding locus each under different mutation rate account for strongly or weak adaptation.
+    initializeGenomicElement(g1, base, base + ex_length - 1);
+    base = base + ex_length;
+    //initializeGenomicElement(g2, base, base + ex_length - 1);
+    //base = base + ex_length;
+
+    initializeGenomicElement(g3, base, base + nc_length - 1);
+    base = base + nc_length;
+}
+
+// Create the ancestral African population
+1 { 
+    sim.addSubpop("p1", N); 
+}
+
+// Generation 5800 is the present. Output and terminate.
+22000 late() {
+    
+    // Sample individuals
+    sampledIndividuals = p1.sampleIndividuals(sampleSize).genomes;  
+    //sampledIndividuals.outputMS("/home/jmurga/ms.txt");
+    //m1muts = sim.mutationsOfType(m1);
+    //m1_in_p2 = (sim.mutationCounts(sampledIndividuals, m1muts) > 0);
+
+    // Segregating sites within the sample. 
+    m = unique(sampledIndividuals.mutations);
+
+    m0 = unique(sampledIndividuals.mutationsOfType(m2));
+    mf3 = unique(sampledIndividuals.mutationsOfType(m3));
+    mf4 = unique(sampledIndividuals.mutationsOfType(m4));
+    mf5 = unique(sampledIndividuals.mutationsOfType(m5));
+    mi  = c(mf3,mf4,mf5);
+
+    if( sum(m0.size()) == 0){
+        p0 = rep(0,bn);
+    }else{
+        // Get frequencies and cleaning fixed within sample
+        f0 = sapply(m0, "mean(sampledIndividuals.containsMutations(applyValue));");
+        p0  = sapply(0:(bn), " sum((f0 >= applyValue / (bn)) & (f0 < (applyValue + 1) / (bn))); ");
+    }
+
+    if(sum(mi.size()) == 0){
+        pi = rep(0,bn);
+    }else{
+        fi = sapply(mi, "mean(sampledIndividuals.containsMutations(applyValue));");             
+        //  Make binned SFS
+        pi  = sapply(0:(bn), " sum((fi >= applyValue / (bn)) & (fi < (applyValue + 1) / (bn))); ");
+    }
+
+    if (sum(mf5.size()) == 0){
+        pw = rep(0,bn);
+    }else{
+        fw = sapply(mf5, "mean(sampledIndividuals.containsMutations(applyValue));");
+        pw  = sapply(0:(bn), " sum((fw >= applyValue / (bn)) & (fw < (applyValue + 1) / (bn))); ");
+    }
+
+    // Get substitution info
+    subs = sim.substitutions;
+    //catn(subs.fixationGeneration);
+    //subs = subs[subs.fixationGeneration > (N*34)];
+    //catn(subs.fixationGeneration);
+
+    m1Subs = subs[subs.mutationType == m1];
+    // Coding locus
+    m2Subs = subs[subs.mutationType == m2];
+    m3Subs = subs[subs.mutationType == m3];
+    m4Subs = subs[subs.mutationType == m4];
+    m5Subs = subs[subs.mutationType == m5];
+
+    di = m5Subs.size() + m4Subs.size() + m3Subs.size();
+    dw = m5Subs.size();
+    d0 = m2Subs.size();
+    ds = m4Subs.size();
+    
+    f = (1:(bn)) / (bn);
+    line = "daf\tpi\tp0\tpw";
+    writeFile(output + "/daf/daf" + nF +  ".tsv.gz", line, compress=T);
+    for (i in 0:(bn-1)){
+        line = f[i] + "\t" + pi[i] + "\t" + p0[i] + "\t" + pw[i];
+        writeFile(output + "/daf/daf" + nF +  ".tsv.gz", line,append=T, compress=T);
+    }
+
+    line  = "di\td0\tdw\tds";
+    writeFile(output + "/div/div" + nF +  ".tsv.gz",line, compress=T); 
+    line  = di + "\t" + d0 + "\t" + dw + "\t" + ds;
+    writeFile(output + "/div/div" + nF +  ".tsv.gz", line,append=T ,compress=T);
+
+}

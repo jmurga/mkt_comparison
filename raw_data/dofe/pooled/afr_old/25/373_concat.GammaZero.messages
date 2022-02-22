@@ -1,0 +1,18 @@
+!!! Second order derivative is negative for parameter syno_orientation_error(-1.09861). Moving in the other direction.
+!!! Function at new point is greater than at current point: 2321.55>90.0725. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 273.712>90.0725. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 98.771>90.0725. Applying Felsenstein-Churchill correction: 2
+!!! Felsenstein-Churchill correction applied too many times.
+Use conjugate gradients optimization.
+!!! Function at new point is greater than at current point: 90.6823>90.0625. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 90.1469>89.9268. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 89.7869>89.763. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter syno_orientation_error(-7.70232). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-8.63736). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-8.82847). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.68238). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.70819). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.7136). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.71627). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.7636). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.2514). Moving in the other direction.

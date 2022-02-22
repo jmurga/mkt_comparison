@@ -1,0 +1,47 @@
+!!! Second order derivative is negative for parameter syno_orientation_error(-1.09861). Moving in the other direction.
+!!! Second order derivative is negative for parameter negGshape(-3.48379). Moving in the other direction.
+!!! Function at new point is greater than at current point: 422926>211.206. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 320423>211.206. Applying Felsenstein-Churchill correction: 1
+!!! Function at new point is greater than at current point: 55559.1>211.206. Applying Felsenstein-Churchill correction: 2
+!!! Felsenstein-Churchill correction applied too many times.
+Use conjugate gradients optimization.
+!!! Function at new point is greater than at current point: 193.852>193.848. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 193.653>193.164. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 194.45>192.569. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 194.627>192.221. Applying Felsenstein-Churchill correction: 0
+!!! Function at new point is greater than at current point: 192.248>192.221. Applying Felsenstein-Churchill correction: 1
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.44624). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.65263). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.76321). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.9698). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-9.99122). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.3287). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.6742). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.6968). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.7058). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.7465). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.7572). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.8387). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.8484). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-10.9117). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.0336). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.0511). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.084). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.0926). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.1203). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.1651). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.2062). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.226). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.2461). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.28). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.286). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.3265). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.344). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.3551). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.3686). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.3755). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.3785). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.4234). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.5497). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.5999). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(-11.6017). Moving in the other direction.

@@ -1,0 +1,5 @@
+!!! Second order derivative is negative for parameter syno_orientation_error(-1.09861). Moving in the other direction.
+!!! Function at new point is greater than at current point: 37.3498>37.2435. Applying Felsenstein-Churchill correction: 0
+!!! Second order derivative is negative for parameter negGmean(-1.25401). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(9.46949). Moving in the other direction.
+!!! Second order derivative is negative for parameter syno_orientation_error(9.79397). Moving in the other direction.
