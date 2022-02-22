@@ -1,5 +1,0 @@
-!!! Function at new point is greater than at current point: 6691.31>26.0575. Applying Felsenstein-Churchill correction: 0
-!!! Function at new point is greater than at current point: 426.192>26.0575. Applying Felsenstein-Churchill correction: 1
-!!! Function at new point is greater than at current point: 63.7313>26.0575. Applying Felsenstein-Churchill correction: 2
-!!! Felsenstein-Churchill correction applied too many times.
-Use conjugate gradients optimization.

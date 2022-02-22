@@ -1,6 +1,0 @@
-!!! Second order derivative is negative for parameter syno_orientation_error(-1.09861). Moving in the other direction.
-!!! Second order derivative is negative for parameter negGshape(-3.61623). Moving in the other direction.
-!!! Function at new point is greater than at current point: 471.05>103.235. Applying Felsenstein-Churchill correction: 0
-!!! Function at new point is greater than at current point: 120.505>103.235. Applying Felsenstein-Churchill correction: 1
-!!! Function at new point is greater than at current point: 103.643>103.235. Applying Felsenstein-Churchill correction: 2
-!!! Function at new point is greater than at current point: 101.922>101.915. Applying Felsenstein-Churchill correction: 0

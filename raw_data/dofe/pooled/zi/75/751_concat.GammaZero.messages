@@ -1,8 +1,0 @@
-!!! Second order derivative is negative for parameter syno_orientation_error(-1.09861). Moving in the other direction.
-!!! Function at new point is greater than at current point: 96788.1>222.11. Applying Felsenstein-Churchill correction: 0
-!!! Function at new point is greater than at current point: 7857.16>222.11. Applying Felsenstein-Churchill correction: 1
-!!! Function at new point is greater than at current point: 779.25>222.11. Applying Felsenstein-Churchill correction: 2
-!!! Felsenstein-Churchill correction applied too many times.
-Use conjugate gradients optimization.
-!!! Function at new point is greater than at current point: 208.598>208.579. Applying Felsenstein-Churchill correction: 0
-!!! Function at new point is greater than at current point: 206.031>206.016. Applying Felsenstein-Churchill correction: 0

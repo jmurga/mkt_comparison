@@ -1,5 +1,0 @@
-!!! Second order derivative is negative for parameter negGshape(-3.6895). Moving in the other direction.
-!!! Second order derivative is negative for parameter negGmean(-2.07158). Moving in the other direction.
-!!! Second order derivative is negative for parameter negGmean(-2.06313). Moving in the other direction.
-!!! Function at new point is greater than at current point: 29.4895>28.9562. Applying Felsenstein-Churchill correction: 0
-!!! Function at new point is greater than at current point: 29.1457>28.9562. Applying Felsenstein-Churchill correction: 1

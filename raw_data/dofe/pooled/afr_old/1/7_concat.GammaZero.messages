@@ -1,8 +1,0 @@
-!!! Non derivable point at negGmean. No move performed. (f=nan, d1=-nan, d2=-nan).
-!!! Non derivable point at negGshape. No move performed. (f=nan, d1=-nan, d2=-nan).
-!!! Non derivable point at syno_orientation_error. No move performed. (f=nan, d1=-nan, d2=-nan).
-!!! Function at new point is greater than at current point: nan>nan. Applying Felsenstein-Churchill correction: 0
-!!! Function at new point is greater than at current point: nan>nan. Applying Felsenstein-Churchill correction: 1
-!!! Function at new point is greater than at current point: nan>nan. Applying Felsenstein-Churchill correction: 2
-!!! Felsenstein-Churchill correction applied too many times.
-Use conjugate gradients optimization.
