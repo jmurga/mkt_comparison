@@ -154,6 +154,9 @@ def impMK(sfs, divergence,l,h=None,m=None):
 	deleterious   = pnLow - (pnInter * ratiops)
 	pnNeutral     = round(pn - deleterious - toFix,3)
 
+	if(deleterious < 0):
+		deleterious = 0
+
 	output['alpha'] = round(1 - (((pn - deleterious) / ps) * (ds / dn)),3)
 	# output[0] = round(1 - ((pnNeutral/ps) * (ds / dn)),3)
 
@@ -179,17 +182,6 @@ def impMK(sfs, divergence,l,h=None,m=None):
 		output['omega']    = output['Ka'] / output['Ks']
 		output['gamma'] = (pnNeutral/ps - dn/ds) * m0/mi
 
-
-	## Omega A and Omega D
-	# output['omegaA'] = output['omega'] * output['alpha']
-	# output['omegaD'] = output['omega'] - output['omegaA']
-	# r1 = round(pnLow/psLow,3)
-	# r2 = round(piInter/p0Inter,3)
-	# try:
-	#     r3 = round(piHigh/p0High,3)
-	# except:
-	#     r3 = np.nan
-	# return output, np.array([pi, piNeutral, p0, r1,r2,r3,di, d0])
 	return output
 
 def FWW(sfs, divergence,m, cutoff=0.15):

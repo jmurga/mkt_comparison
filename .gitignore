@@ -1,8 +1,8 @@
-rawData/*
+raw_data/*
 software/*
 scripts/src/iMKT*
 results/b/ciCeu.RData
 results/b/ciRal.RData
 scripts/src/__pycache__/*
-!rawData/popflydata.RData
+!raw_data/popflydata.RData
 
