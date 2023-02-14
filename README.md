@@ -1,4 +1,4 @@
-# The Imputed McDonald and Kreitman test (impMKT): a
+# The Imputed McDonald and Kreitman test (impMKT):
 straightforward correction that significantly increases the evidence of positive selection of gene-by-gene MKT analyses
 
 Here, we perform a comparison of five different MKT  methods: (i) the standard (original) MKT (sMKT, McDonald and Kreitman  1991); (ii) the Fay, Wickoff and Wu correction (FWWMKT, Fay 2001); (iii) a new imputation method based on FWWMKT (imputedMKT); (iii) the Extended MKT (eMKT, Mackay et al. 2012); and (iv) the asymptotic MKT (aMKT, Messer  and Petrov 2012) and (v) Grapes (Galtier 2016)
